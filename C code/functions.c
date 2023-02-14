@@ -3,8 +3,8 @@
 /*
  Returns the smallest of a and b. If both are equivalent, a is returned.
 */
-float min(float a, float b) {
-  float min = a;
+apfixed min(apfixed a, apfixed b) {
+  apfixed min = a;
 
   if (a > b) {
     min = b;
@@ -16,8 +16,8 @@ float min(float a, float b) {
 /*
  Returns the largest of a and b. If both are equivalent, a is returned.
 */
-float max(float a, float b) {
-  float max = a;
+apfixed max(apfixed a, apfixed b) {
+  apfixed max = a;
 
   if (b > a) {
     max = b;
@@ -33,7 +33,7 @@ Rectified Linear Unit implementation.
   Returns:
     The ReLU output of x
 */
-float ReLU(float x) {
+apfixed ReLU(apfixed x) {
   if (x < 0) {
     return 0;
   }
@@ -47,9 +47,9 @@ Softmax implementation
     x - Input array to perform softmax
     y - Array to save the softmax resultant values
 */
-void Softmax(float x[N_STATES], float y[N_STATES]) {
-  float expx[N_STATES];
-  float expsum = 0;
+void Softmax(apfixed x[N_STATES], apfixed y[N_STATES]) {
+  apfixed expx[N_STATES];
+  apfixed expsum = 0;
 
   for (int i = 0; i < N_STATES; i++) {
     expx[i] = exp(x[i]);
@@ -72,8 +72,8 @@ Argmax implementation
     x - Input array to perform argmax
     y - Array to save the argmax resultant values
 */
-void Argmax(float x[N_STATES], float y[N_STATES]) {
-  float maxvalue = __FLT_MIN__;
+void Argmax(apfixed x[N_STATES], apfixed y[N_STATES]) {
+  apfixed maxvalue = __FLT_MIN__;
   int maxindex = 0;
 
   for (int i = 0; i < N_STATES; i++) {

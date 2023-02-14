@@ -7,7 +7,7 @@
 #include "weights.h"
 
 int main(int argc, char *argv[]){
-    float y[N][N_STATES];
+    apfixed y[N][N_STATES];
 
     clock_t time = clock();
 

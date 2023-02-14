@@ -1,8 +1,8 @@
 #include "segmenter.h"
 
-float min(float a, float b);
-float max(float a, float b);
+apfixed min(apfixed a, apfixed b);
+apfixed max(apfixed a, apfixed b);
 
-void Argmax(float x[N_STATES], float y[N_STATES]);
-void Softmax(float x[N_STATES], float y[N_STATES]);
-float ReLU(float x);
+void Argmax(apfixed x[N_STATES], apfixed y[N_STATES]);
+void Softmax(apfixed x[N_STATES], apfixed y[N_STATES]);
+apfixed ReLU(apfixed x);

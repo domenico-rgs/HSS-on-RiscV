@@ -14,8 +14,8 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
-    float y[N][N_STATES];
-    float value;
+    apfixed y[N][N_STATES];
+    apfixed value;
 
     //VALIDATION OF THE NETWORK
     for(int i=0; i<1;i++){ //i<TEST_SAMPLES_BATCH
@@ -23,8 +23,13 @@ int main(int argc, char *argv[]){
         //Validation of the input data
         for(int j=0; j<N; j++){
             for(int k=0; k<N_FEATURES;k++){
+                #ifdef FLOAT
                 fscanf(input,"%f",&value);
-                if(test_data[i*TEST_SAMPLES_BATCH+j*N_FEATURES+k]!=value,5){
+                #endif
+                #ifdef DOUBLE
+                fscanf(input,"%lf",&value);
+                #endif               
+                if(test_data[i*TEST_SAMPLES_BATCH+j*N_FEATURES+k]!=value){
                     printf("Input data are different!\nROW: %d COL: %d - %.10f %.10f\n",j,k,test_data[i*TEST_SAMPLES_BATCH+j*N_FEATURES+k],value);
                 }
             }
@@ -43,7 +48,12 @@ int main(int argc, char *argv[]){
         //Checking whether results from the network and the one from Python code are the same or not
         for(int j=0; j<N; j++){
             for(int k=0; k<N_STATES; k++){
+                #ifdef FLOAT
                 fscanf(pythonOutput,"%f",&value);
+                #endif
+                #ifdef DOUBLE
+                fscanf(pythonOutput,"%lf",&value);
+                #endif  
                 if(y[j][k]!=value){
                     printf("Results are different\nROW: %d COL: %d - %.10f %.10f\n",j,k,y[j][k],value);
                 }
