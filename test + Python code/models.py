@@ -162,3 +162,55 @@ def get_model(N: int = 64, n_features: int = 4, num_classes: int = 4) -> Model:
 
     return model
 
+def get_model_parametrized(N: int, base_filter: int, n_blocks) -> Model:
+    """Returns the model described in [1].
+
+    Args:
+    -----
+        N (int): Number of samples in the input tensor.
+        n_features (int): Number of features in the input tensor.
+        num_classes (int): Number of classes in the output tensor.
+    
+    Returns:
+    --------
+        model (Model): CNN-model instance.
+    
+    References:
+    -----------
+        [1] F. Renna, J. Oliveira and M. T. Coimbra, "Deep Convolutional Neural
+        Networks for Heart Sound Segmentation," in IEEE Journal of Biomedical
+        and Health Informatics, vol. 23, no. 6, pp. 2435-2445, Nov. 2019, doi:
+        10.1109/JBHI.2019.2894222.
+    """
+    # Input tensor
+    input = layers.Input(shape=(N, 4))
+
+    x = input
+
+    res = []
+
+    # Encoding phase of the network: downsampling inputs
+    for i in range(n_blocks):
+        x, res_tmp = encoding_block(x, filters=base_filter*(2**i), kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_"+str(i))
+        res.append(res_tmp)
+
+    # Intermediate layer 
+    # 2 x ( Conv + ReLU )
+    x = layers.Conv1D(filters=base_filter*(2**n_blocks), kernel_size=3, strides=1, activation="relu", padding="same", use_bias=False, name='central_conv_relu_0')(x)
+    x = layers.Conv1D(filters=base_filter*(2**n_blocks), kernel_size=3, strides=1, activation="relu", padding="same", use_bias=False, name='central_conv_relu_1')(x)
+    
+
+    # Decoding phase of the network: upsampling inputs
+    for i in range(n_blocks):
+        x = decoding_block(x, res[n_blocks-i-1], filters=base_filter*(2**(n_blocks-i-1)), kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_"+str(i))
+
+    # Output of the model 
+    # 1 x ( Conv + Softmax )
+    x = layers.Conv1D(filters=4, kernel_size=3, strides=1, padding="same", use_bias=False, name='final_conv')(x)
+    output = layers.Softmax()(x)
+    
+    # Define the model
+    model = Model(input, output)
+
+    return model
+
