@@ -18,7 +18,7 @@
 /* -----------------------------DEPENDENCIES------------------------------------*/
 
 #include <math.h> 
-
+#include <stdio.h>
 /*------------------------------------------------------------------------------
 -------------------------------TESTING METHOD PARAMETERS------------------------
 ------------------------------------------------------------------------------*/
@@ -159,28 +159,28 @@
 #define EPSILON 1e-8
 
 
-void Segmenter(float x[N][N_FEATURES],
-               float enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K][ENC_0_CONV_RELU_0_INPUT_FEATURES][ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_K][ENC_0_CONV_RELU_1_INPUT_FEATURES][ENC_0_CONV_RELU_1_OUTPUT_FEATURES],
-               float enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_K][ENC_1_CONV_RELU_0_INPUT_FEATURES][ENC_1_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_1_conv_relu_1_w[ENC_1_CONV_RELU_1_K][ENC_1_CONV_RELU_1_INPUT_FEATURES][ENC_1_CONV_RELU_1_OUTPUT_FEATURES],
-               float enc_2_conv_relu_0_w[ENC_2_CONV_RELU_0_K][ENC_2_CONV_RELU_0_INPUT_FEATURES][ENC_2_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_2_conv_relu_1_w[ENC_2_CONV_RELU_1_K][ENC_2_CONV_RELU_1_INPUT_FEATURES][ENC_2_CONV_RELU_1_OUTPUT_FEATURES],
-               float enc_3_conv_relu_0_w[ENC_3_CONV_RELU_0_K][ENC_3_CONV_RELU_0_INPUT_FEATURES][ENC_3_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_3_conv_relu_1_w[ENC_3_CONV_RELU_1_K][ENC_3_CONV_RELU_1_INPUT_FEATURES][ENC_3_CONV_RELU_1_OUTPUT_FEATURES],
-               float central_conv_relu_0_w[CENTRAL_CONV_RELU_0_K][CENTRAL_CONV_RELU_0_INPUT_FEATURES][CENTRAL_CONV_RELU_0_OUTPUT_FEATURES],
-               float central_conv_relu_1_w[CENTRAL_CONV_RELU_1_K][CENTRAL_CONV_RELU_1_INPUT_FEATURES][CENTRAL_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_0_up_conv_relu_w[DEC_0_UP_CONV_RELU_K][DEC_0_UP_CONV_RELU_INPUT_FEATURES][DEC_0_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_0_conv_relu_0_w[DEC_0_CONV_RELU_0_K][DEC_0_CONV_RELU_0_INPUT_FEATURES][DEC_0_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_0_conv_relu_1_w[DEC_0_CONV_RELU_1_K][DEC_0_CONV_RELU_1_INPUT_FEATURES][DEC_0_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_1_up_conv_relu_w[DEC_1_UP_CONV_RELU_K][DEC_1_UP_CONV_RELU_INPUT_FEATURES][DEC_1_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_1_conv_relu_0_w[DEC_1_CONV_RELU_0_K][DEC_1_CONV_RELU_0_INPUT_FEATURES][DEC_1_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_1_conv_relu_1_w[DEC_1_CONV_RELU_1_K][DEC_1_CONV_RELU_1_INPUT_FEATURES][DEC_1_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_2_up_conv_relu_w[DEC_2_UP_CONV_RELU_K][DEC_2_UP_CONV_RELU_INPUT_FEATURES][DEC_2_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_2_conv_relu_0_w[DEC_2_CONV_RELU_0_K][DEC_2_CONV_RELU_0_INPUT_FEATURES][DEC_2_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_2_conv_relu_1_w[DEC_2_CONV_RELU_1_K][DEC_2_CONV_RELU_1_INPUT_FEATURES][DEC_2_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_3_up_conv_relu_w[DEC_3_UP_CONV_RELU_K][DEC_3_UP_CONV_RELU_INPUT_FEATURES][DEC_3_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_3_conv_relu_0_w[DEC_3_CONV_RELU_0_K][DEC_3_CONV_RELU_0_INPUT_FEATURES][DEC_3_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_3_conv_relu_1_w[DEC_3_CONV_RELU_1_K][DEC_3_CONV_RELU_1_INPUT_FEATURES][DEC_3_CONV_RELU_1_OUTPUT_FEATURES],
-               float final_conv_w[FINAL_CONV_K][FINAL_CONV_INPUT_FEATURES][FINAL_CONV_OUTPUT_FEATURES],
+void Segmenter(float x[N*N_FEATURES],
+               float enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_K*ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES],
+               float enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_1_conv_relu_1_w[ENC_1_CONV_RELU_1_K*ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES],
+               float enc_2_conv_relu_0_w[ENC_2_CONV_RELU_0_K*ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_2_conv_relu_1_w[ENC_2_CONV_RELU_1_K*ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES],
+               float enc_3_conv_relu_0_w[ENC_3_CONV_RELU_0_K*ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_3_conv_relu_1_w[ENC_3_CONV_RELU_1_K*ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES],
+               float central_conv_relu_0_w[CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES],
+               float central_conv_relu_1_w[CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_0_up_conv_relu_w[DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_0_conv_relu_0_w[DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_0_conv_relu_1_w[DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_1_up_conv_relu_w[DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_1_conv_relu_0_w[DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_1_conv_relu_1_w[DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_2_up_conv_relu_w[DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_2_conv_relu_0_w[DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_2_conv_relu_1_w[DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_3_up_conv_relu_w[DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_3_conv_relu_0_w[DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_3_conv_relu_1_w[DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES],
+               float final_conv_w[FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES],
                float y[N][N_STATES]);

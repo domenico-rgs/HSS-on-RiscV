@@ -1,7 +1,7 @@
 #include "segmenter.h"
 
-int min(int a, int b);
-int max(int a, int b);
+float min(float a, float b);
+float max(float a, float b);
 
 void Argmax(float x[N_STATES], float y[N_STATES]);
 void Softmax(float x[N_STATES], float y[N_STATES]);

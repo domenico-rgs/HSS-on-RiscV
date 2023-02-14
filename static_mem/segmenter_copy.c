@@ -18,30 +18,30 @@
 #include "segmenter.h"
 #include "functions.h"
 
-void Segmenter(float x[N*N_FEATURES],
-               float enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_K*ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES],
-               float enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_1_conv_relu_1_w[ENC_1_CONV_RELU_1_K*ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES],
-               float enc_2_conv_relu_0_w[ENC_2_CONV_RELU_0_K*ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_2_conv_relu_1_w[ENC_2_CONV_RELU_1_K*ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES],
-               float enc_3_conv_relu_0_w[ENC_3_CONV_RELU_0_K*ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES],
-               float enc_3_conv_relu_1_w[ENC_3_CONV_RELU_1_K*ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES],
-               float central_conv_relu_0_w[CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES],
-               float central_conv_relu_1_w[CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_0_up_conv_relu_w[DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_0_conv_relu_0_w[DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_0_conv_relu_1_w[DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_1_up_conv_relu_w[DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_1_conv_relu_0_w[DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_1_conv_relu_1_w[DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_2_up_conv_relu_w[DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_2_conv_relu_0_w[DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_2_conv_relu_1_w[DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES],
-               float dec_3_up_conv_relu_w[DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES],
-               float dec_3_conv_relu_0_w[DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES],
-               float dec_3_conv_relu_1_w[DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES],
-               float final_conv_w[FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES],
+void Segmenter(float x[N][N_FEATURES],
+               float enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K][ENC_0_CONV_RELU_0_INPUT_FEATURES][ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_K][ENC_0_CONV_RELU_1_INPUT_FEATURES][ENC_0_CONV_RELU_1_OUTPUT_FEATURES],
+               float enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_K][ENC_1_CONV_RELU_0_INPUT_FEATURES][ENC_1_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_1_conv_relu_1_w[ENC_1_CONV_RELU_1_K][ENC_1_CONV_RELU_1_INPUT_FEATURES][ENC_1_CONV_RELU_1_OUTPUT_FEATURES],
+               float enc_2_conv_relu_0_w[ENC_2_CONV_RELU_0_K][ENC_2_CONV_RELU_0_INPUT_FEATURES][ENC_2_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_2_conv_relu_1_w[ENC_2_CONV_RELU_1_K][ENC_2_CONV_RELU_1_INPUT_FEATURES][ENC_2_CONV_RELU_1_OUTPUT_FEATURES],
+               float enc_3_conv_relu_0_w[ENC_3_CONV_RELU_0_K][ENC_3_CONV_RELU_0_INPUT_FEATURES][ENC_3_CONV_RELU_0_OUTPUT_FEATURES],
+               float enc_3_conv_relu_1_w[ENC_3_CONV_RELU_1_K][ENC_3_CONV_RELU_1_INPUT_FEATURES][ENC_3_CONV_RELU_1_OUTPUT_FEATURES],
+               float central_conv_relu_0_w[CENTRAL_CONV_RELU_0_K][CENTRAL_CONV_RELU_0_INPUT_FEATURES][CENTRAL_CONV_RELU_0_OUTPUT_FEATURES],
+               float central_conv_relu_1_w[CENTRAL_CONV_RELU_1_K][CENTRAL_CONV_RELU_1_INPUT_FEATURES][CENTRAL_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_0_up_conv_relu_w[DEC_0_UP_CONV_RELU_K][DEC_0_UP_CONV_RELU_INPUT_FEATURES][DEC_0_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_0_conv_relu_0_w[DEC_0_CONV_RELU_0_K][DEC_0_CONV_RELU_0_INPUT_FEATURES][DEC_0_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_0_conv_relu_1_w[DEC_0_CONV_RELU_1_K][DEC_0_CONV_RELU_1_INPUT_FEATURES][DEC_0_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_1_up_conv_relu_w[DEC_1_UP_CONV_RELU_K][DEC_1_UP_CONV_RELU_INPUT_FEATURES][DEC_1_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_1_conv_relu_0_w[DEC_1_CONV_RELU_0_K][DEC_1_CONV_RELU_0_INPUT_FEATURES][DEC_1_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_1_conv_relu_1_w[DEC_1_CONV_RELU_1_K][DEC_1_CONV_RELU_1_INPUT_FEATURES][DEC_1_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_2_up_conv_relu_w[DEC_2_UP_CONV_RELU_K][DEC_2_UP_CONV_RELU_INPUT_FEATURES][DEC_2_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_2_conv_relu_0_w[DEC_2_CONV_RELU_0_K][DEC_2_CONV_RELU_0_INPUT_FEATURES][DEC_2_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_2_conv_relu_1_w[DEC_2_CONV_RELU_1_K][DEC_2_CONV_RELU_1_INPUT_FEATURES][DEC_2_CONV_RELU_1_OUTPUT_FEATURES],
+               float dec_3_up_conv_relu_w[DEC_3_UP_CONV_RELU_K][DEC_3_UP_CONV_RELU_INPUT_FEATURES][DEC_3_UP_CONV_RELU_OUTPUT_FEATURES],
+               float dec_3_conv_relu_0_w[DEC_3_CONV_RELU_0_K][DEC_3_CONV_RELU_0_INPUT_FEATURES][DEC_3_CONV_RELU_0_OUTPUT_FEATURES],
+               float dec_3_conv_relu_1_w[DEC_3_CONV_RELU_1_K][DEC_3_CONV_RELU_1_INPUT_FEATURES][DEC_3_CONV_RELU_1_OUTPUT_FEATURES],
+               float final_conv_w[FINAL_CONV_K][FINAL_CONV_INPUT_FEATURES][FINAL_CONV_OUTPUT_FEATURES],
                float y[N][N_STATES]){
 
   // Initialize the feature maps
@@ -88,7 +88,7 @@ void Segmenter(float x[N*N_FEATURES],
   float dec_3_conv_relu_0[DEC_3_CONV_RELU_0_N][DEC_3_CONV_RELU_0_OUTPUT_FEATURES];
   float dec_3_conv_relu_1[DEC_3_CONV_RELU_1_N][DEC_3_CONV_RELU_1_OUTPUT_FEATURES];
 
-  float final_conv[FINAL_CONV_N][FINAL_CONV_OUTPUT_FEATURES]={{0}};
+  float final_conv[FINAL_CONV_N][FINAL_CONV_OUTPUT_FEATURES];
 
   float acc; // The accumulator
 
@@ -108,11 +108,11 @@ void Segmenter(float x[N*N_FEATURES],
       
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_0_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += x[l*ENC_0_CONV_RELU_0_INPUT_FEATURES+j]*enc_0_conv_relu_0_w[(l-i+ENC_0_CONV_RELU_0_K/2)*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += x[l][j]*enc_0_conv_relu_0_w[l-i+ENC_0_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
-      enc_0_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+    enc_0_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -127,7 +127,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_0_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_0_conv_relu_0[l][j]*enc_0_conv_relu_1_w[(l-i+ENC_0_CONV_RELU_1_K/2)*ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_0_CONV_RELU_1_OUTPUT_FEATURES+k]; // Multiply the input and the weight
+          acc += enc_0_conv_relu_0[l][j]*enc_0_conv_relu_1_w[l-i+ENC_0_CONV_RELU_1_K/2][j][k]; // Multiply the input and the weight
         }
       }
 
@@ -155,11 +155,11 @@ void Segmenter(float x[N*N_FEATURES],
       
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_1_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_0_maxpool[l][j]*enc_1_conv_relu_0_w[(l-i+ENC_1_CONV_RELU_0_K/2)*ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_1_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_0_maxpool[l][j]*enc_1_conv_relu_0_w[l-i+ENC_1_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
-      enc_1_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+    enc_1_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -174,7 +174,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_1_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_1_conv_relu_0[l][j]*enc_1_conv_relu_1_w[(l-i+ENC_1_CONV_RELU_1_K/2)*ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_1_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_1_conv_relu_0[l][j]*enc_1_conv_relu_1_w[l-i+ENC_1_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -202,11 +202,11 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_2_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_1_maxpool[l][j]*enc_2_conv_relu_0_w[(l-i+ENC_2_CONV_RELU_0_K/2)*ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_2_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_1_maxpool[l][j]*enc_2_conv_relu_0_w[l-i+ENC_2_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
-      enc_2_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+    enc_2_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -221,7 +221,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_2_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_2_conv_relu_0[l][j]*enc_2_conv_relu_1_w[(l-i+ENC_2_CONV_RELU_1_K/2)*ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_2_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_2_conv_relu_0[l][j]*enc_2_conv_relu_1_w[l-i+ENC_2_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -249,11 +249,11 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_3_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_2_maxpool[l][j]*enc_3_conv_relu_0_w[(l-i+ENC_3_CONV_RELU_0_K/2)*ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_3_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_2_maxpool[l][j]*enc_3_conv_relu_0_w[l-i+ENC_3_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
-      enc_3_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+    enc_3_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -268,7 +268,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_3_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_3_conv_relu_0[l][j]*enc_3_conv_relu_1_w[(l-i+ENC_3_CONV_RELU_1_K/2)*ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_3_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_3_conv_relu_0[l][j]*enc_3_conv_relu_1_w[l-i+ENC_3_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -298,9 +298,10 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<CENTRAL_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_3_maxpool[l][j]*central_conv_relu_0_w[(l-i+CENTRAL_CONV_RELU_0_K/2)*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+j*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_3_maxpool[l][j]*central_conv_relu_0_w[l-i+CENTRAL_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
+
       central_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
@@ -316,7 +317,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<CENTRAL_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += central_conv_relu_0[l][j]*central_conv_relu_1_w[(l-i+CENTRAL_CONV_RELU_1_K/2)*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES+j*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += central_conv_relu_0[l][j]*central_conv_relu_1_w[l-i+CENTRAL_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -345,9 +346,10 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_0_upsample[l][j]*dec_0_up_conv_relu_w[(l-i+DEC_0_UP_CONV_RELU_K/2)*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_0_upsample[l][j]*dec_0_up_conv_relu_w[l-i+DEC_0_UP_CONV_RELU_K/2][j][k];  // Multiply the input and the weight
         }
       }
+
       dec_0_up_conv_relu[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
@@ -371,9 +373,10 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_0_concatenate[l][j]*dec_0_conv_relu_0_w[(l-i+DEC_0_CONV_RELU_0_K/2)*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_0_concatenate[l][j]*dec_0_conv_relu_0_w[l-i+DEC_0_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
+
       dec_0_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
@@ -389,7 +392,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_0_conv_relu_0[l][j]*dec_0_conv_relu_1_w[(l-i+DEC_0_CONV_RELU_1_K/2)*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_0_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_0_conv_relu_0[l][j]*dec_0_conv_relu_1_w[l-i+DEC_0_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -418,7 +421,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_1_upsample[l][j]*dec_1_up_conv_relu_w[(l-i+DEC_1_UP_CONV_RELU_K/2)*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_1_upsample[l][j]*dec_1_up_conv_relu_w[l-i+DEC_1_UP_CONV_RELU_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -445,7 +448,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_1_concatenate[l][j]*dec_1_conv_relu_0_w[(l-i+DEC_1_CONV_RELU_0_K/2)*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_1_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_1_concatenate[l][j]*dec_1_conv_relu_0_w[l-i+DEC_1_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -464,7 +467,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_1_conv_relu_0[l][j]*dec_1_conv_relu_1_w[(l-i+DEC_1_CONV_RELU_1_K/2)*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_1_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_1_conv_relu_0[l][j]*dec_1_conv_relu_1_w[l-i+DEC_1_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -493,7 +496,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_2_upsample[l][j]*dec_2_up_conv_relu_w[(l-i+DEC_2_UP_CONV_RELU_K/2)*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_2_upsample[l][j]*dec_2_up_conv_relu_w[l-i+DEC_2_UP_CONV_RELU_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -520,7 +523,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_2_concatenate[l][j]*dec_2_conv_relu_0_w[(l-i+DEC_2_CONV_RELU_0_K/2)*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_2_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_2_concatenate[l][j]*dec_2_conv_relu_0_w[l-i+DEC_2_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -539,7 +542,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_2_conv_relu_0[l][j]*dec_2_conv_relu_1_w[(l-i+DEC_2_CONV_RELU_1_K/2)*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_2_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_2_conv_relu_0[l][j]*dec_2_conv_relu_1_w[l-i+DEC_2_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -568,7 +571,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_3_upsample[l][j]*dec_3_up_conv_relu_w[(l-i+DEC_3_UP_CONV_RELU_K/2)*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_upsample[l][j]*dec_3_up_conv_relu_w[l-i+DEC_3_UP_CONV_RELU_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -595,7 +598,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_3_concatenate[l][j]*dec_3_conv_relu_0_w[(l-i+DEC_3_CONV_RELU_0_K/2)*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_3_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_concatenate[l][j]*dec_3_conv_relu_0_w[l-i+DEC_3_CONV_RELU_0_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -614,7 +617,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_3_conv_relu_0[l][j]*dec_3_conv_relu_1_w[(l-i+DEC_3_CONV_RELU_1_K/2)*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_3_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_conv_relu_0[l][j]*dec_3_conv_relu_1_w[l-i+DEC_3_CONV_RELU_1_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -634,7 +637,7 @@ void Segmenter(float x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<FINAL_CONV_INPUT_FEATURES; j++){
-          acc += dec_3_conv_relu_1[l][j]*final_conv_w[(l-i+FINAL_CONV_K/2)*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES+j*FINAL_CONV_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_conv_relu_1[l][j]*final_conv_w[l-i+FINAL_CONV_K/2][j][k];  // Multiply the input and the weight
         }
       }
 
@@ -644,8 +647,7 @@ void Segmenter(float x[N*N_FEATURES],
 
   //----------------------------argmax-----------------------------------------
   for(int i=0; i<FINAL_CONV_N; i++){  // Iterate over the input matrix
-    Softmax(final_conv[i], y[i]);
+    Argmax(final_conv[i], y[i]);
   }
   //----------------------------------------------------------------------------
-
 }

@@ -3,8 +3,8 @@
 /*
  Returns the smallest of a and b. If both are equivalent, a is returned.
 */
-int min(int a, int b) {
-  int min = a;
+float min(float a, float b) {
+  float min = a;
 
   if (a > b) {
     min = b;
@@ -16,8 +16,8 @@ int min(int a, int b) {
 /*
  Returns the largest of a and b. If both are equivalent, a is returned.
 */
-int max(int a, int b) {
-  int max = a;
+float max(float a, float b) {
+  float max = a;
 
   if (b > a) {
     max = b;
@@ -36,9 +36,9 @@ Rectified Linear Unit implementation.
 float ReLU(float x) {
   if (x < 0) {
     return 0;
-  } else {
-    return x;
   }
+    
+  return x;
 }
 
 /*
