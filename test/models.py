@@ -136,30 +136,29 @@ def get_model(N: int = 64, n_features: int = 4, num_classes: int = 4) -> Model:
 
     # Encoding phase of the network: downsampling inputs 
     x, res_8 = encoding_block(input, filters=8, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_0")
-    # x, res_16 = encoding_block(x, filters=16, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_1")
-    # x, res_32 = encoding_block(x, filters=32, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_2")
-    # x, res_64 = encoding_block(x, filters=64, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_3")
+    x, res_16 = encoding_block(x, filters=16, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_1")
+    x, res_32 = encoding_block(x, filters=32, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_2")
+    x, res_64 = encoding_block(x, filters=64, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "enc_3")
 
-    # # Intermediate layer 
-    # # 2 x ( Conv + ReLU )
-    # x = layers.Conv1D(filters=128, kernel_size=3, strides=1, activation="relu", padding="same", name='central_conv_relu_0')(x)
-    # x = layers.Conv1D(filters=128, kernel_size=3, strides=1, activation="relu", padding="same", name='central_conv_relu_1')(x)
+    # Intermediate layer 
+    # 2 x ( Conv + ReLU )
+    x = layers.Conv1D(filters=128, kernel_size=3, strides=1, activation="relu", padding="same", name='central_conv_relu_0', use_bias=False)(x)
+    x = layers.Conv1D(filters=128, kernel_size=3, strides=1, activation="relu", padding="same", name='central_conv_relu_1', use_bias=False)(x)
        
-    # # Decoding phase of the network: upsampling inputs
-    # x = decoding_block(x, res_64, filters=64, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_0")
-    # x = decoding_block(x, res_32, filters=32, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_1")
-    # x = decoding_block(x, res_16, filters=16, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_2")
-    # x = decoding_block(x, res_8, filters=8, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_3")
+    # Decoding phase of the network: upsampling inputs
+    x = decoding_block(x, res_64, filters=64, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_0")
+    x = decoding_block(x, res_32, filters=32, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_1")
+    x = decoding_block(x, res_16, filters=16, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_2")
+    x = decoding_block(x, res_8, filters=8, kernel_size=3, stride = 1, activation = "relu", padding = "same", name_prefix = "dec_3")
 
-    # # Output of the model 
-    # # 1 x ( Conv + Softmax )
-    # x = layers.Conv1D(filters=num_classes, kernel_size=3, strides=1, padding="same", name='final_conv')(x)
-    # output = layers.Softmax()(x)
+    # Output of the model 
+    # 1 x ( Conv + Softmax )
+    x = layers.Conv1D(filters=num_classes, kernel_size=3, strides=1, padding="same", name='final_conv', use_bias = False)(x)
+    output = layers.Softmax()(x)
 
-    output = x; 
-    
     # Define the model
     model = Model(input, output)
 
 
     return model
+
