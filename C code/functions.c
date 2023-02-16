@@ -1,47 +1,6 @@
 #include "functions.h"
 
 /*
- Returns the smallest of a and b. If both are equivalent, a is returned.
-*/
-apfixed min(apfixed a, apfixed b) {
-  apfixed min = a;
-
-  if (a > b) {
-    min = b;
-  }
-
-  return min;
-}
-
-/*
- Returns the largest of a and b. If both are equivalent, a is returned.
-*/
-apfixed max(apfixed a, apfixed b) {
-  apfixed max = a;
-
-  if (b > a) {
-    max = b;
-  }
-
-  return max;
-}
-
-/*
-Rectified Linear Unit implementation.
-  Args:
-    x - Input value
-  Returns:
-    The ReLU output of x
-*/
-apfixed ReLU(apfixed x) {
-  if (x < 0) {
-    return 0;
-  }
-    
-  return x;
-}
-
-/*
 Softmax implementation
   Args:
     x - Input array to perform softmax

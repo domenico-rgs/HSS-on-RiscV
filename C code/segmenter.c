@@ -95,7 +95,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   int l_min; // Two auxiliary variables for the fitter's positions
   int l_max;
 
-
+  //CALLGRIND_START_INSTRUMENTATION;
+  //CALLGRIND_TOGGLE_COLLECT;
   //-----------------------------ENCODER 0--------------------------------------
   //-------------------------enc_0_conv_relu_0----------------------------------
   for(int k=0; k<ENC_0_CONV_RELU_0_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
@@ -108,14 +109,17 @@ void Segmenter(apfixed x[N*N_FEATURES],
       
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_0_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += x[l*ENC_0_CONV_RELU_0_INPUT_FEATURES+j]*enc_0_conv_relu_0_w[(l-i+ENC_0_CONV_RELU_0_K/2)*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          //acc += x[l*ENC_0_CONV_RELU_0_INPUT_FEATURES+j]*enc_0_conv_relu_0_w[(l-i+ENC_0_CONV_RELU_0_K/2)*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += x[l*ENC_0_CONV_RELU_0_INPUT_FEATURES+j]*enc_0_conv_relu_0_w[k*ENC_0_CONV_RELU_0_K*ENC_0_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_0_CONV_RELU_0_K/2)*ENC_0_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          //printf("%f %f\n",enc_0_conv_relu_0_w[k*l_max*ENC_0_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_0_CONV_RELU_0_K/2)*ENC_0_CONV_RELU_0_INPUT_FEATURES+j],enc_0_conv_relu_0_w[(l-i+ENC_0_CONV_RELU_0_K/2)*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+k]);
         }
       }
 
       enc_0_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
     }  
   }
-
+               
+  //CALLGRIND_TOGGLE_COLLECT;          
   //-------------------------enc_0_conv_relu_1----------------------------------
   for(int k=0; k<ENC_0_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
     for(int i=0; i<ENC_0_CONV_RELU_1_N; i++){    // Iterate over the input matrix
@@ -127,7 +131,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_0_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_0_conv_relu_0[l][j]*enc_0_conv_relu_1_w[(l-i+ENC_0_CONV_RELU_1_K/2)*ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_0_CONV_RELU_1_OUTPUT_FEATURES+k]; // Multiply the input and the weight
+          acc += enc_0_conv_relu_0[l][j]*enc_0_conv_relu_1_w[k*ENC_0_CONV_RELU_1_K*ENC_0_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_0_CONV_RELU_1_K/2)*ENC_0_CONV_RELU_1_INPUT_FEATURES+j]; // Multiply the input and the weight
         }
       }
 
@@ -136,8 +140,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //-----------------------------enc_0_maxpool----------------------------------
-  for(int k=0; k<ENC_0_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<ENC_0_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<ENC_0_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<ENC_0_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       enc_0_maxpool[i][k] = max(enc_0_conv_relu_1[2*i][k], enc_0_conv_relu_1[2*i+1][k]);
     }
   }
@@ -155,7 +159,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
       
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_1_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_0_maxpool[l][j]*enc_1_conv_relu_0_w[(l-i+ENC_1_CONV_RELU_0_K/2)*ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_1_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_0_maxpool[l][j]*enc_1_conv_relu_0_w[k*ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_1_CONV_RELU_0_K/2)*ENC_1_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -174,7 +178,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_1_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_1_conv_relu_0[l][j]*enc_1_conv_relu_1_w[(l-i+ENC_1_CONV_RELU_1_K/2)*ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_1_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_1_conv_relu_0[l][j]*enc_1_conv_relu_1_w[k*ENC_1_CONV_RELU_1_K*ENC_1_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_1_CONV_RELU_1_K/2)*ENC_1_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -183,8 +187,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //-----------------------------enc_1_maxpool----------------------------------
-  for(int k=0; k<ENC_1_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<ENC_1_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<ENC_1_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<ENC_1_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       enc_1_maxpool[i][k] = max(enc_1_conv_relu_1[2*i][k], enc_1_conv_relu_1[2*i+1][k]);
     }
   }
@@ -202,7 +206,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_2_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_1_maxpool[l][j]*enc_2_conv_relu_0_w[(l-i+ENC_2_CONV_RELU_0_K/2)*ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_2_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_1_maxpool[l][j]*enc_2_conv_relu_0_w[k*ENC_2_CONV_RELU_0_K*ENC_2_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_2_CONV_RELU_0_K/2)*ENC_2_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -221,7 +225,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_2_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_2_conv_relu_0[l][j]*enc_2_conv_relu_1_w[(l-i+ENC_2_CONV_RELU_1_K/2)*ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_2_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_2_conv_relu_0[l][j]*enc_2_conv_relu_1_w[k*ENC_2_CONV_RELU_1_K*ENC_2_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_2_CONV_RELU_1_K/2)*ENC_2_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -230,8 +234,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //-----------------------------enc_2_maxpool----------------------------------
-  for(int k=0; k<ENC_2_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<ENC_2_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<ENC_2_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<ENC_2_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       enc_2_maxpool[i][k] = max(enc_2_conv_relu_1[2*i][k], enc_2_conv_relu_1[2*i+1][k]);
     }
   }
@@ -249,7 +253,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_3_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_2_maxpool[l][j]*enc_3_conv_relu_0_w[(l-i+ENC_3_CONV_RELU_0_K/2)*ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES+j*ENC_3_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_2_maxpool[l][j]*enc_3_conv_relu_0_w[k*ENC_3_CONV_RELU_0_K*ENC_3_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_3_CONV_RELU_0_K/2)*ENC_3_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -268,7 +272,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_3_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_3_conv_relu_0[l][j]*enc_3_conv_relu_1_w[(l-i+ENC_3_CONV_RELU_1_K/2)*ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES+j*ENC_3_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_3_conv_relu_0[l][j]*enc_3_conv_relu_1_w[k*ENC_3_CONV_RELU_1_K*ENC_3_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_3_CONV_RELU_1_K/2)*ENC_3_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -277,8 +281,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //-----------------------------enc_3_maxpool----------------------------------
-  for(int k=0; k<ENC_3_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<ENC_3_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<ENC_3_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<ENC_3_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       enc_3_maxpool[i][k] = max(enc_3_conv_relu_1[2*i][k], enc_3_conv_relu_1[2*i+1][k]);
     }
   }
@@ -298,7 +302,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<CENTRAL_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_3_maxpool[l][j]*central_conv_relu_0_w[(l-i+CENTRAL_CONV_RELU_0_K/2)*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+j*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += enc_3_maxpool[l][j]*central_conv_relu_0_w[k*CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES+(l-i+CENTRAL_CONV_RELU_0_K/2)*CENTRAL_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
       central_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
@@ -316,7 +320,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<CENTRAL_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += central_conv_relu_0[l][j]*central_conv_relu_1_w[(l-i+CENTRAL_CONV_RELU_1_K/2)*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES+j*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += central_conv_relu_0[l][j]*central_conv_relu_1_w[k*CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES+(l-i+CENTRAL_CONV_RELU_1_K/2)*CENTRAL_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -327,8 +331,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
   //-----------------------------DECODER 0--------------------------------------
   //-----------------------------dec_0_upsample---------------------------------
-  for(int k=0; k<DEC_0_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_0_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_0_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_0_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_0_upsample[2*i][k] = central_conv_relu_1[i][k];
       dec_0_upsample[2*i+1][k] = central_conv_relu_1[i][k];
     }
@@ -345,7 +349,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_0_upsample[l][j]*dec_0_up_conv_relu_w[(l-i+DEC_0_UP_CONV_RELU_K/2)*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_0_upsample[l][j]*dec_0_up_conv_relu_w[k*DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_0_UP_CONV_RELU_K/2)*DEC_0_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
       dec_0_up_conv_relu[i][k] = ReLU(acc); // Save the accumulator value
@@ -353,8 +357,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //--------------------------dec_0_concatenate---------------------------------
-  for(int k=0; k<DEC_0_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_0_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_0_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_0_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_0_concatenate[i][k] = enc_3_conv_relu_1[i][k];
       dec_0_concatenate[i][k+DEC_0_UP_CONV_RELU_OUTPUT_FEATURES] = dec_0_up_conv_relu[i][k];
     }
@@ -371,7 +375,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_0_concatenate[l][j]*dec_0_conv_relu_0_w[(l-i+DEC_0_CONV_RELU_0_K/2)*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_0_concatenate[l][j]*dec_0_conv_relu_0_w[k*DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_0_CONV_RELU_0_K/2)*DEC_0_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
       dec_0_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
@@ -389,7 +393,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_0_conv_relu_0[l][j]*dec_0_conv_relu_1_w[(l-i+DEC_0_CONV_RELU_1_K/2)*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_0_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_0_conv_relu_0[l][j]*dec_0_conv_relu_1_w[k*DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_0_CONV_RELU_1_K/2)*DEC_0_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -397,11 +401,11 @@ void Segmenter(apfixed x[N*N_FEATURES],
     }  
   }
   //----------------------------------------------------------------------------
-
+              
   //-----------------------------DECODER 1--------------------------------------
   //-----------------------------dec_1_upsample---------------------------------
-  for(int k=0; k<DEC_1_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_1_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_1_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_1_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_1_upsample[2*i][k] = dec_0_conv_relu_1[i][k];
       dec_1_upsample[2*i+1][k] = dec_0_conv_relu_1[i][k];
     }
@@ -418,7 +422,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_1_upsample[l][j]*dec_1_up_conv_relu_w[(l-i+DEC_1_UP_CONV_RELU_K/2)*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_1_upsample[l][j]*dec_1_up_conv_relu_w[k*DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_1_UP_CONV_RELU_K/2)*DEC_1_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -427,8 +431,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //--------------------------dec_1_concatenate---------------------------------
-  for(int k=0; k<DEC_1_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_1_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_1_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_1_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_1_concatenate[i][k] = enc_2_conv_relu_1[i][k];
       dec_1_concatenate[i][k+DEC_1_UP_CONV_RELU_OUTPUT_FEATURES] = dec_1_up_conv_relu[i][k];
     }
@@ -445,7 +449,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_1_concatenate[l][j]*dec_1_conv_relu_0_w[(l-i+DEC_1_CONV_RELU_0_K/2)*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_1_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_1_concatenate[l][j]*dec_1_conv_relu_0_w[k*DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_1_CONV_RELU_0_K/2)*DEC_1_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -464,7 +468,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_1_conv_relu_0[l][j]*dec_1_conv_relu_1_w[(l-i+DEC_1_CONV_RELU_1_K/2)*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_1_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_1_conv_relu_0[l][j]*dec_1_conv_relu_1_w[k*DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_1_CONV_RELU_1_K/2)*DEC_1_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -475,8 +479,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
   //-----------------------------DECODER 2--------------------------------------
   //-----------------------------dec_2_upsample---------------------------------
-  for(int k=0; k<DEC_2_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_2_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_2_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_2_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_2_upsample[2*i][k] = dec_1_conv_relu_1[i][k];
       dec_2_upsample[2*i+1][k] = dec_1_conv_relu_1[i][k];
     }
@@ -493,7 +497,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_2_upsample[l][j]*dec_2_up_conv_relu_w[(l-i+DEC_2_UP_CONV_RELU_K/2)*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_2_upsample[l][j]*dec_2_up_conv_relu_w[k*DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_2_UP_CONV_RELU_K/2)*DEC_2_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -502,8 +506,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //--------------------------dec_2_concatenate---------------------------------
-  for(int k=0; k<DEC_2_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_2_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_2_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_2_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_2_concatenate[i][k] = enc_1_conv_relu_1[i][k];
       dec_2_concatenate[i][k+DEC_2_UP_CONV_RELU_OUTPUT_FEATURES] = dec_2_up_conv_relu[i][k];
     }
@@ -520,7 +524,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_2_concatenate[l][j]*dec_2_conv_relu_0_w[(l-i+DEC_2_CONV_RELU_0_K/2)*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_2_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_2_concatenate[l][j]*dec_2_conv_relu_0_w[k*DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_2_CONV_RELU_0_K/2)*DEC_2_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -539,7 +543,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_2_conv_relu_0[l][j]*dec_2_conv_relu_1_w[(l-i+DEC_2_CONV_RELU_1_K/2)*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_2_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_2_conv_relu_0[l][j]*dec_2_conv_relu_1_w[k*DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_2_CONV_RELU_1_K/2)*DEC_2_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -550,8 +554,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
   //-----------------------------DECODER 3--------------------------------------
   //-----------------------------dec_3_upsample---------------------------------
-  for(int k=0; k<DEC_3_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_3_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_3_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_3_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_3_upsample[2*i][k] = dec_2_conv_relu_1[i][k];
       dec_3_upsample[2*i+1][k] = dec_2_conv_relu_1[i][k];
     }
@@ -568,7 +572,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_3_upsample[l][j]*dec_3_up_conv_relu_w[(l-i+DEC_3_UP_CONV_RELU_K/2)*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES+j*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_upsample[l][j]*dec_3_up_conv_relu_w[k*DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_3_UP_CONV_RELU_K/2)*DEC_3_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -577,8 +581,8 @@ void Segmenter(apfixed x[N*N_FEATURES],
   }
 
   //--------------------------dec_3_concatenate---------------------------------
-  for(int k=0; k<DEC_3_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-    for(int i=0; i<DEC_3_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+  for(int i=0; i<DEC_3_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
+    for(int k=0; k<DEC_3_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
       dec_3_concatenate[i][k] = enc_0_conv_relu_1[i][k];
       dec_3_concatenate[i][k+DEC_3_UP_CONV_RELU_OUTPUT_FEATURES] = dec_3_up_conv_relu[i][k];
     }
@@ -595,7 +599,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_3_concatenate[l][j]*dec_3_conv_relu_0_w[(l-i+DEC_3_CONV_RELU_0_K/2)*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES+j*DEC_3_CONV_RELU_0_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_concatenate[l][j]*dec_3_conv_relu_0_w[k*DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_3_CONV_RELU_0_K/2)*DEC_3_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -614,7 +618,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_3_conv_relu_0[l][j]*dec_3_conv_relu_1_w[(l-i+DEC_3_CONV_RELU_1_K/2)*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES+j*DEC_3_CONV_RELU_1_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_conv_relu_0[l][j]*dec_3_conv_relu_1_w[k*DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_3_CONV_RELU_1_K/2)*DEC_3_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -634,7 +638,7 @@ void Segmenter(apfixed x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<FINAL_CONV_INPUT_FEATURES; j++){
-          acc += dec_3_conv_relu_1[l][j]*final_conv_w[(l-i+FINAL_CONV_K/2)*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES+j*FINAL_CONV_OUTPUT_FEATURES+k];  // Multiply the input and the weight
+          acc += dec_3_conv_relu_1[l][j]*final_conv_w[k*FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES+(l-i+FINAL_CONV_K/2)*FINAL_CONV_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -642,10 +646,11 @@ void Segmenter(apfixed x[N*N_FEATURES],
     }  
   }
 
-  //----------------------------argmax-----------------------------------------
+  //----------------------------softmax-----------------------------------------
   for(int i=0; i<FINAL_CONV_N; i++){  // Iterate over the input matrix
     Softmax(final_conv[i], y[i]);
   }
   //----------------------------------------------------------------------------
 
+  //CALLGRIND_STOP_INSTRUMENTATION;
 }
