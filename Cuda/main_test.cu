@@ -262,7 +262,7 @@ int main(){
     //----------------------------------------------------------------------------
 
     //----------------------------FINAL LAYER--------------------------------------
-    conv_relu<<<dimGrid_fin, dimBlock>>>(FINAL_CONV_OUTPUT_FEATURES,FINAL_CONV_N,FINAL_CONV_K,FINAL_CONV_INPUT_FEATURES,d_final_conv_w,d_dec_3_conv_relu_1,d_final_conv);
+    conv_relu_last_layer<<<dimGrid_fin, dimBlock>>>(FINAL_CONV_OUTPUT_FEATURES,FINAL_CONV_N,FINAL_CONV_K,FINAL_CONV_INPUT_FEATURES,d_final_conv_w,d_dec_3_conv_relu_1,d_final_conv);
     Softmax<<<1,FINAL_CONV_N>>>(d_final_conv, d_y);
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------

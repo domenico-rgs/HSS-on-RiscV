@@ -84,6 +84,27 @@ __global__ void conv_relu(int conv_relu_output_features, int conv_relu_n, int co
   }
 }
 
+__global__ void conv_relu_last_layer(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, float *d_weights, float *d_input, float *d_output){
+	int i = blockIdx.x*blockDim.x+threadIdx.x;
+  int k = blockIdx.y*blockDim.y+threadIdx.y;
+
+  if((k<conv_relu_output_features)&&(i<conv_relu_n)){
+    float acc = 0;
+    int l_min, l_max;
+
+    // Calculate the auxiliary positions respect to the input
+    l_min = 0 > (i - conv_relu_k / 2) ? 0 : (i - conv_relu_k / 2); //max
+    l_max = (conv_relu_n) < (i + conv_relu_k / 2 + 1) ? (conv_relu_n) : (i + conv_relu_k / 2 + 1); //min
+
+    for (int l = l_min; l < l_max; l++) {
+      for (int j = 0; j < conv_relu_input_features; j++) {
+        acc += d_input[l*conv_relu_input_features+j] * d_weights[k*conv_relu_k*conv_relu_input_features+(l-i+conv_relu_k/2)*conv_relu_input_features+j]; // Multiply the input and the weight
+      }
+    }
+    d_output[i*conv_relu_output_features+k] = acc;
+  }
+}
+
 __global__ void maxpooling(int enc_conv_relu_output_features, int enc_conv_relu_n, float *d_maxpool_output, float *d_input_from_conv_rel){
   int k = blockIdx.x*blockDim.x+threadIdx.x;
   int i = blockIdx.y*blockDim.y+threadIdx.y;
