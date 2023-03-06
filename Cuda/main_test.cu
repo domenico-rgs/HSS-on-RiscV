@@ -5,14 +5,14 @@
 #include "weights.cuh"
 
 int main(){
-  FILE *pythonOutput;
+  /*FILE *pythonOutput;
 
   if((pythonOutput = fopen("python_result.txt","r"))==NULL){
       printf("Failed opening files\n");
       return 1;
   }
 
-  float value;
+  float value;*/
   float *y = (float *)malloc(sizeof(float) *N*N_STATES);
   float *final_conv = (float *)malloc(sizeof(float) *FINAL_CONV_N * FINAL_CONV_OUTPUT_FEATURES);
 
@@ -190,7 +190,7 @@ int main(){
   
   clock_t time2 = clock();
   
-  for(int i=0; i<1;i++){ //TEST_SAMPLES_BATCH
+  for(int i=0; i<TEST_SAMPLES_BATCH;i++){ //TEST_SAMPLES_BATCH
     //-----------------------------ENCODER 0--------------------------------------
     conv_relu<<<dimGrid_enc00, dimBlock>>>(ENC_0_CONV_RELU_0_OUTPUT_FEATURES,ENC_0_CONV_RELU_0_N,ENC_0_CONV_RELU_0_K,ENC_0_CONV_RELU_0_INPUT_FEATURES,d_enc_0_conv_relu_0_w,(d_x+i*TEST_SAMPLES_BATCH),d_enc_0_conv_relu_0);
     conv_relu<<<dimGrid_enc01, dimBlock>>>(ENC_0_CONV_RELU_1_OUTPUT_FEATURES,ENC_0_CONV_RELU_1_N,ENC_0_CONV_RELU_1_K,ENC_0_CONV_RELU_1_INPUT_FEATURES,d_enc_0_conv_relu_1_w,d_enc_0_conv_relu_0,d_enc_0_conv_relu_1);
@@ -283,7 +283,7 @@ int main(){
   //cudaProfilerStop();
 
   //VALIDATION
-  for(int j=0; j<N; j++){
+  /*for(int j=0; j<N; j++){
       for(int k=0; k<N_STATES; k++){
           fscanf(pythonOutput,"%f",&value); 
           
@@ -291,7 +291,7 @@ int main(){
               printf("ROW: %d COL: %d - %.10f %.10f - abs_err:  %.10f \n",j,k,y[j*N_STATES+k],value, abs(y[j*N_STATES+k]-value));
           }
       }
-  }
+  }*/
 
   cudaFree(d_enc_0_conv_relu_0);
   cudaFree(d_enc_0_conv_relu_1);
@@ -377,6 +377,6 @@ int main(){
   free(y);
   free(final_conv);
 
-  fclose(pythonOutput);
+  //fclose(pythonOutput);
   return 0;
 }

@@ -1,33 +1,5 @@
 #include "segmenter.cuh"
 #include "float.h"
-//Returns the largest of a and b. If both are equivalent, a is returned.
-#define max(a,b)             \
-({                           \
-    __typeof__ (a) _a = (a); \
-    __typeof__ (b) _b = (b); \
-    _a > _b ? _a : _b;       \
-})
-
-//Returns the smallest of a and b. If both are equivalent, a is returned.
-#define min(a,b)             \
-({                           \
-    __typeof__ (a) _a = (a); \
-    __typeof__ (b) _b = (b); \
-    _a < _b ? _a : _b;       \
-})
-
-/*
-Rectified Linear Unit implementation.
-  Args:
-    x - Input value
-  Returns:
-    The ReLU output of x
-*/
-#define ReLU(x)             \
-({                           \
-    __typeof__ (x) _x = (x); \
-    _x < 0 ? 0 : _x;       \
-})
 
 __global__ void conv_relu(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, float *d_weights, float *d_input, float *d_output);
 __global__ void conv_relu_last_layer(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, float *d_weights, float *d_input, float *d_output);
