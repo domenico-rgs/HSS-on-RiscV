@@ -29,5 +29,5 @@ Rectified Linear Unit implementation.
     _x < 0 ? 0 : _x;       \
 })
 
-void Argmax(apfixed x[N_STATES], apfixed y[N_STATES]);
-void Softmax(apfixed x[N_STATES], apfixed y[N_STATES]);
+void Argmax(datatype x[N_STATES], datatype y[N_STATES]);
+void Softmax(datatype x[N_STATES], datatype y[N_STATES]);

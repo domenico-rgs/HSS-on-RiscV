@@ -6,11 +6,11 @@ Softmax implementation
     x - Input array to perform softmax
     y - Array to save the softmax resultant values
 */
-__global__ void Softmax(float *x, float *y) {
+__global__ void Softmax(datatype *x, datatype *y) {
 	int index = blockIdx.x*blockDim.x+threadIdx.x; //0*64+0...63
 
-  float expx[N_STATES];
-  float expsum = 0;
+  datatype expx[N_STATES];
+  datatype expsum = 0;
 
   for (int i = 0; i < N_STATES; i++) {
     expx[i] = exp((x+index*N_STATES)[i]);
@@ -33,10 +33,14 @@ Argmax implementation
     x - Input array to perform argmax
     y - Array to save the argmax resultant values
 */
-__global__ void Argmax(float *x, float *y) {
+__global__ void Argmax(datatype *x, datatype *y) {
 	int index = blockIdx.x*blockDim.x+threadIdx.x;
-
-  float maxvalue = FLT_MIN;
+  #ifdef FLOAT
+  datatype maxvalue = FLT_MIN;
+  #endif
+  #ifdef DOUBLE
+  datatype maxvalue = DBL_MIN;
+  #endif 
   int maxindex = 0;
 
   for (int i = 0; i < N_STATES; i++) {
@@ -63,12 +67,12 @@ __host__ void checkCudaError(int line) {
 	}
 }
 
-__global__ void conv_relu(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, float *d_weights, float *d_input, float *d_output){
+__global__ void conv_relu(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, datatype *d_weights, datatype *d_input, datatype *d_output){
 	int i = blockIdx.x*blockDim.x+threadIdx.x;
   int k = blockIdx.y*blockDim.y+threadIdx.y;
 
   if((k<conv_relu_output_features)&&(i<conv_relu_n)){
-    float acc = 0;
+    datatype acc = 0;
     int l_min, l_max;
 
     // Calculate the auxiliary positions respect to the input
@@ -84,12 +88,12 @@ __global__ void conv_relu(int conv_relu_output_features, int conv_relu_n, int co
   }
 }
 
-__global__ void conv_relu_last_layer(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, float *d_weights, float *d_input, float *d_output){
+__global__ void conv_relu_last_layer(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, datatype *d_weights, datatype *d_input, datatype *d_output){
 	int i = blockIdx.x*blockDim.x+threadIdx.x;
   int k = blockIdx.y*blockDim.y+threadIdx.y;
 
   if((k<conv_relu_output_features)&&(i<conv_relu_n)){
-    float acc = 0;
+    datatype acc = 0;
     int l_min, l_max;
 
     // Calculate the auxiliary positions respect to the input
@@ -105,7 +109,7 @@ __global__ void conv_relu_last_layer(int conv_relu_output_features, int conv_rel
   }
 }
 
-__global__ void maxpooling(int enc_conv_relu_output_features, int enc_conv_relu_n, float *d_maxpool_output, float *d_input_from_conv_rel){
+__global__ void maxpooling(int enc_conv_relu_output_features, int enc_conv_relu_n, datatype *d_maxpool_output, datatype *d_input_from_conv_rel){
   int k = blockIdx.x*blockDim.x+threadIdx.x;
   int i = blockIdx.y*blockDim.y+threadIdx.y;
   
@@ -115,7 +119,7 @@ __global__ void maxpooling(int enc_conv_relu_output_features, int enc_conv_relu_
   }
 }
 
-__global__ void upsampling(int dec_up_conv_relu_input_features, int dec_up_conv_relu_n, int dim_conv_relu_input, float *d_dec_upsample, float *d_conv_relu_input){
+__global__ void upsampling(int dec_up_conv_relu_input_features, int dec_up_conv_relu_n, int dim_conv_relu_input, datatype *d_dec_upsample, datatype *d_conv_relu_input){
   int k = blockIdx.x*blockDim.x+threadIdx.x;
   int i = blockIdx.y*blockDim.y+threadIdx.y;
 
@@ -125,7 +129,7 @@ __global__ void upsampling(int dec_up_conv_relu_input_features, int dec_up_conv_
   }
 }
 
-__global__ void concatenation(int dec_up_conv_relu_output_features, int dec_up_conv_relu_n, float *d_dec_concatenate, float *d_enc_conv_relu, float *d_dec_up_conv_relu){
+__global__ void concatenation(int dec_up_conv_relu_output_features, int dec_up_conv_relu_n, datatype *d_dec_concatenate, datatype *d_enc_conv_relu, datatype *d_dec_up_conv_relu){
   int k = blockIdx.x*blockDim.x+threadIdx.x;
   int i = blockIdx.y*blockDim.y+threadIdx.y;
 

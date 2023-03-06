@@ -25,6 +25,15 @@
 #include "cuda_runtime.h"
 //#include "cuda_profiler_api.h"
 
+#define DOUBLE
+
+#ifdef DOUBLE
+    typedef double datatype;
+#endif
+#ifdef FLOAT
+    typedef float datatype;
+#endif
+
 /*------------------------------------------------------------------------------
 -------------------------------TESTING METHOD PARAMETERS------------------------
 ------------------------------------------------------------------------------*/
@@ -165,12 +174,12 @@
 #define EPSILON 1e-8
 #define THREADS 32
 
-void Segmenter(float *d_x,
-               float *d_enc_0_conv_relu_0_w, float *d_enc_0_conv_relu_1_w, float *d_enc_1_conv_relu_0_w,
-               float *d_enc_1_conv_relu_1_w, float *d_enc_2_conv_relu_0_w, float *d_enc_2_conv_relu_1_w,
-               float *d_enc_3_conv_relu_0_w, float *d_enc_3_conv_relu_1_w, float *d_central_conv_relu_0_w,
-               float *d_central_conv_relu_1_w, float *d_dec_0_up_conv_relu_w, float *d_dec_0_conv_relu_0_w,
-               float *d_dec_0_conv_relu_1_w, float *d_dec_1_up_conv_relu_w, float *d_dec_1_conv_relu_0_w,
-               float *d_dec_1_conv_relu_1_w, float *d_dec_2_up_conv_relu_w, float *d_dec_2_conv_relu_0_w, 
-               float *d_dec_2_conv_relu_1_w, float *d_dec_3_up_conv_relu_w, float *d_dec_3_conv_relu_0_w,
-               float *d_dec_3_conv_relu_1_w, float *d_final_conv_w, float *y);
+void Segmenter(datatype *d_x,
+               datatype *d_enc_0_conv_relu_0_w, datatype *d_enc_0_conv_relu_1_w, datatype *d_enc_1_conv_relu_0_w,
+               datatype *d_enc_1_conv_relu_1_w, datatype *d_enc_2_conv_relu_0_w, datatype *d_enc_2_conv_relu_1_w,
+               datatype *d_enc_3_conv_relu_0_w, datatype *d_enc_3_conv_relu_1_w, datatype *d_central_conv_relu_0_w,
+               datatype *d_central_conv_relu_1_w, datatype *d_dec_0_up_conv_relu_w, datatype *d_dec_0_conv_relu_0_w,
+               datatype *d_dec_0_conv_relu_1_w, datatype *d_dec_1_up_conv_relu_w, datatype *d_dec_1_conv_relu_0_w,
+               datatype *d_dec_1_conv_relu_1_w, datatype *d_dec_2_up_conv_relu_w, datatype *d_dec_2_conv_relu_0_w, 
+               datatype *d_dec_2_conv_relu_1_w, datatype *d_dec_3_up_conv_relu_w, datatype *d_dec_3_conv_relu_0_w,
+               datatype *d_dec_3_conv_relu_1_w, datatype *d_final_conv_w, datatype *y);

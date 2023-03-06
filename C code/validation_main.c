@@ -14,8 +14,8 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
-    apfixed y[N][N_STATES];
-    apfixed value;
+    datatype y[N][N_STATES];
+    datatype value;
 
     //VALIDATION OF THE NETWORK
     for(int i=0; i<1;i++){ //i<TEST_SAMPLES_BATCH
