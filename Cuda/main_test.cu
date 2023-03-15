@@ -292,9 +292,7 @@ int main(){
           fscanf(pythonOutput,"%lf",&value); 
           #endif 
           
-          if(y[j*N_STATES+k]!=value){
-              printf("ROW: %d COL: %d - %.18f %.18f - abs_err:  %.18f \n",j,k,y[j*N_STATES+k],value, abs(y[j*N_STATES+k]-value));
-          }
+          printf("ROW: %d COL: %d - %.18f %.18f - abs_err:  %.18f \n",j,k,y[j*N_STATES+k],value, abs(y[j*N_STATES+k]-value));
       }
   }
 
