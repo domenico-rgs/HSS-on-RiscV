@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
                 fscanf(pythonOutput,"%lf",&value);
                 #endif  
                 if(y[j][k]!=value){
-                    printf("Results are different\nROW: %d COL: %d - %.10f %.10f\n",j,k,y[j][k],value);
+                    printf("ROW: %d COL: %d - %.18f %.18f - abs_err:  %.18f \n",j,k,y[j][k],value, fabs(y[j][k]-value));
                 }
             }
         }

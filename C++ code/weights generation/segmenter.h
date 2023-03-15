@@ -20,7 +20,7 @@
 ------------------------------------------------------------------------------*/
 
 // #define FIXED // FLOAT or FIXED
-#define FLOAT // FLOAT or FIXED
+//#define FLOAT // FLOAT or FIXED
 
 /*------------------------------------------------------------------------------
 -------------------------------DEPENDENCIES-------------------------------------
@@ -34,6 +34,17 @@
 // #ifdef FLOAT
 //     #include <cmath> //If float type is used
 // #endif
+
+#define DOUBLE
+
+#ifdef DOUBLE
+    typedef double datatype;
+#endif
+#ifdef FLOAT
+    typedef float datatype;
+#endif
+
+#define PRECISION 18
 
 
 /*------------------------------------------------------------------------------

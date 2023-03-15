@@ -19,10 +19,11 @@
 
 #include <math.h> 
 #include <stdio.h>
+#include <stdlib.h>
 
 //#include <valgrind/callgrind.h>
 
-#define FLOAT
+#define DOUBLE
 
 #ifdef DOUBLE
     typedef double datatype;
