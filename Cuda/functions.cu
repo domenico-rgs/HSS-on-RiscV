@@ -70,7 +70,7 @@ __host__ void checkCudaError(int line) {
 __global__ void conv_relu(int conv_relu_output_features, int conv_relu_n, int conv_relu_k, int conv_relu_input_features, datatype *d_weights, datatype *d_input, datatype *d_output){
 	int i = blockIdx.x*blockDim.x+threadIdx.x;
   int k = blockIdx.y*blockDim.y+threadIdx.y;
-
+  
   if((k<conv_relu_output_features)&&(i<conv_relu_n)){
     datatype acc = 0;
     int l_min, l_max;
@@ -82,6 +82,7 @@ __global__ void conv_relu(int conv_relu_output_features, int conv_relu_n, int co
     for (int l = l_min; l < l_max; l++) {
       for (int j = 0; j < conv_relu_input_features; j++) {
         acc += d_input[l*conv_relu_input_features+j] * d_weights[k*conv_relu_k*conv_relu_input_features+(l-i+conv_relu_k/2)*conv_relu_input_features+j]; // Multiply the input and the weight
+
       }
     }
     d_output[i*conv_relu_output_features+k] = acc < 0 ? 0 : acc; // Relu
