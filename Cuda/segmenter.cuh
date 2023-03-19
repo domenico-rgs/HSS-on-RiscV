@@ -25,7 +25,7 @@
 #include "cuda_runtime.h"
 //#include "cuda_profiler_api.h"
 
-#define DOUBLE
+#define FLOAT
 
 #ifdef DOUBLE
     typedef double datatype;
@@ -172,7 +172,7 @@
 #define FINAL_CONV_N N //Number of frames in the time dimension of the final_conv layer
 
 #define EPSILON 1e-8
-#define THREADS 32
+#define THREADS 8
 
 void Segmenter(datatype *d_x,
                datatype *d_enc_0_conv_relu_0_w, datatype *d_enc_0_conv_relu_1_w, datatype *d_enc_1_conv_relu_0_w,

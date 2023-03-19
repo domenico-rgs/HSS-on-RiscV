@@ -13,8 +13,8 @@ int main(){
   }
 
   datatype value;
-  datatype *y = (datatype *)malloc(sizeof(datatype) *N*N_STATES);
-  datatype *final_conv = (datatype *)malloc(sizeof(datatype) *FINAL_CONV_N * FINAL_CONV_OUTPUT_FEATURES);
+  datatype *y;
+  cudaMallocHost((void**)&y,sizeof(datatype) *N*N_STATES);
 
   //cudaProfilerStart();
   clock_t time1 = clock();
@@ -39,106 +39,116 @@ int main(){
   datatype *d_dec_3_upsample, *d_dec_3_up_conv_relu, *d_dec_3_concatenate, *d_dec_3_conv_relu_0, *d_dec_3_conv_relu_1; 
   datatype *d_final_conv;
 
-  //Weights initialization
+  //Weights and feature maps allocation/initialization
   cudaMalloc((void**)&d_x, sizeof(datatype) * TEST_SAMPLES_BATCH*N*N_FEATURES);
-  cudaMalloc((void**)&d_enc_0_conv_relu_0_w, sizeof(datatype) * ENC_0_CONV_RELU_0_K * ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_0_conv_relu_1_w, sizeof(datatype) * ENC_0_CONV_RELU_1_K * ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_1_conv_relu_0_w, sizeof(datatype) * ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_1_conv_relu_1_w, sizeof(datatype) * ENC_1_CONV_RELU_1_K*ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_2_conv_relu_0_w, sizeof(datatype) * ENC_2_CONV_RELU_0_K*ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_2_conv_relu_1_w, sizeof(datatype) * ENC_2_CONV_RELU_1_K*ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_3_conv_relu_0_w, sizeof(datatype) * ENC_3_CONV_RELU_0_K*ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_3_conv_relu_1_w, sizeof(datatype) * ENC_3_CONV_RELU_1_K*ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_central_conv_relu_0_w, sizeof(datatype) * CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_central_conv_relu_1_w, sizeof(datatype) * CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_0_up_conv_relu_w, sizeof(datatype) * DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_0_conv_relu_0_w, sizeof(datatype) * DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_0_conv_relu_1_w, sizeof(datatype) * DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_1_up_conv_relu_w, sizeof(datatype) * DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_1_conv_relu_0_w, sizeof(datatype) * DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_1_conv_relu_1_w, sizeof(datatype) * DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_2_up_conv_relu_w, sizeof(datatype) * DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_2_conv_relu_0_w, sizeof(datatype) * DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_2_conv_relu_1_w, sizeof(datatype) * DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_3_up_conv_relu_w, sizeof(datatype) * DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_3_conv_relu_0_w, sizeof(datatype) * DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_3_conv_relu_1_w, sizeof(datatype) * DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_final_conv_w, sizeof(datatype) * FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_y, sizeof(datatype) * N*N_STATES);
-  //checkCudaError(__LINE__);
-  
-  cudaMemcpy(d_x, test_data, TEST_SAMPLES_BATCH*N*N_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_enc_0_conv_relu_0_w, enc_0_conv_relu_0_w, ENC_0_CONV_RELU_0_K * ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_enc_0_conv_relu_1_w, enc_0_conv_relu_1_w, ENC_0_CONV_RELU_1_K * ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_enc_1_conv_relu_0_w, enc_1_conv_relu_0_w, ENC_1_CONV_RELU_0_K * ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_enc_1_conv_relu_1_w, enc_1_conv_relu_1_w, ENC_1_CONV_RELU_1_K * ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_enc_2_conv_relu_0_w, enc_2_conv_relu_0_w, ENC_2_CONV_RELU_0_K * ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_enc_2_conv_relu_1_w, enc_2_conv_relu_1_w, ENC_2_CONV_RELU_1_K * ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);    
-  cudaMemcpy(d_enc_3_conv_relu_0_w, enc_3_conv_relu_0_w, ENC_3_CONV_RELU_0_K * ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_enc_3_conv_relu_1_w, enc_3_conv_relu_1_w, ENC_3_CONV_RELU_1_K * ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);    
-  cudaMemcpy(d_central_conv_relu_0_w, central_conv_relu_0_w, CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_central_conv_relu_1_w, central_conv_relu_1_w, CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_0_up_conv_relu_w, dec_0_up_conv_relu_w, DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_0_conv_relu_0_w, dec_0_conv_relu_0_w, DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_0_conv_relu_1_w, dec_0_conv_relu_1_w, DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_1_up_conv_relu_w, dec_1_up_conv_relu_w, DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_1_conv_relu_0_w, dec_1_conv_relu_0_w, DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_1_conv_relu_1_w, dec_1_conv_relu_1_w, DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_2_up_conv_relu_w, dec_2_up_conv_relu_w, DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_2_conv_relu_0_w, dec_2_conv_relu_0_w, DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_2_conv_relu_1_w, dec_2_conv_relu_1_w, DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_3_up_conv_relu_w, dec_3_up_conv_relu_w, DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_3_conv_relu_0_w, dec_3_conv_relu_0_w, DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_dec_3_conv_relu_1_w, dec_3_conv_relu_1_w, DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_final_conv_w, final_conv_w, FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
-  //checkCudaError(__LINE__);
+  cudaMemcpyAsync(d_x, test_data, TEST_SAMPLES_BATCH*N*N_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
-  //Feature maps initialization
   cudaMalloc((void**)&d_enc_0_conv_relu_0, sizeof(datatype) * ENC_0_CONV_RELU_0_N * ENC_0_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_0_conv_relu_0_w, sizeof(datatype) * ENC_0_CONV_RELU_0_K * ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_0_conv_relu_0_w, enc_0_conv_relu_0_w, ENC_0_CONV_RELU_0_K * ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
   cudaMalloc((void**)&d_enc_0_conv_relu_1, sizeof(datatype) * ENC_0_CONV_RELU_1_N * ENC_0_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_0_conv_relu_1_w, sizeof(datatype) * ENC_0_CONV_RELU_1_K * ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_0_conv_relu_1_w, enc_0_conv_relu_1_w, ENC_0_CONV_RELU_1_K * ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
   cudaMalloc((void**)&d_enc_0_maxpool, sizeof(datatype) * (ENC_0_CONV_RELU_1_N/2) * ENC_0_CONV_RELU_1_OUTPUT_FEATURES);
 
   cudaMalloc((void**)&d_enc_1_conv_relu_0, sizeof(datatype) * ENC_1_CONV_RELU_0_N * ENC_1_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_1_conv_relu_0_w, sizeof(datatype) * ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_1_conv_relu_0_w, enc_1_conv_relu_0_w, ENC_1_CONV_RELU_0_K * ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
   cudaMalloc((void**)&d_enc_1_conv_relu_1, sizeof(datatype) * ENC_1_CONV_RELU_1_N * ENC_1_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_1_conv_relu_1_w, sizeof(datatype) * ENC_1_CONV_RELU_1_K*ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_1_conv_relu_1_w, enc_1_conv_relu_1_w, ENC_1_CONV_RELU_1_K * ENC_1_CONV_RELU_1_INPUT_FEATURES*ENC_1_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
   cudaMalloc((void**)&d_enc_1_maxpool, sizeof(datatype) * (ENC_1_CONV_RELU_1_N/2) * ENC_1_CONV_RELU_1_OUTPUT_FEATURES);
 
   cudaMalloc((void**)&d_enc_2_conv_relu_0, sizeof(datatype) * ENC_2_CONV_RELU_0_N * ENC_2_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_2_conv_relu_0_w, sizeof(datatype) * ENC_2_CONV_RELU_0_K*ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_2_conv_relu_0_w, enc_2_conv_relu_0_w, ENC_2_CONV_RELU_0_K * ENC_2_CONV_RELU_0_INPUT_FEATURES*ENC_2_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
   cudaMalloc((void**)&d_enc_2_conv_relu_1, sizeof(datatype) * ENC_2_CONV_RELU_1_N * ENC_2_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_2_conv_relu_1_w, sizeof(datatype) * ENC_2_CONV_RELU_1_K*ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_2_conv_relu_1_w, enc_2_conv_relu_1_w, ENC_2_CONV_RELU_1_K * ENC_2_CONV_RELU_1_INPUT_FEATURES*ENC_2_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);    
   cudaMalloc((void**)&d_enc_2_maxpool, sizeof(datatype) * (ENC_2_CONV_RELU_1_N/2) * ENC_2_CONV_RELU_1_OUTPUT_FEATURES);
 
   cudaMalloc((void**)&d_enc_3_conv_relu_0, sizeof(datatype) * ENC_3_CONV_RELU_0_N * ENC_3_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_3_conv_relu_1, sizeof(datatype) * ENC_3_CONV_RELU_1_N * ENC_3_CONV_RELU_1_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_enc_3_maxpool, sizeof(datatype) * (ENC_3_CONV_RELU_1_N/2) * ENC_3_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_3_conv_relu_0_w, sizeof(datatype) * ENC_3_CONV_RELU_0_K*ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_3_conv_relu_0_w, enc_3_conv_relu_0_w, ENC_3_CONV_RELU_0_K * ENC_3_CONV_RELU_0_INPUT_FEATURES*ENC_3_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
+  cudaMalloc((void**)&d_enc_3_conv_relu_1, sizeof(datatype) * ENC_3_CONV_RELU_1_N * ENC_3_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_enc_3_conv_relu_1_w, sizeof(datatype) * ENC_3_CONV_RELU_1_K*ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_enc_3_conv_relu_1_w, enc_3_conv_relu_1_w, ENC_3_CONV_RELU_1_K * ENC_3_CONV_RELU_1_INPUT_FEATURES*ENC_3_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);    
+  cudaMalloc((void**)&d_enc_3_maxpool, sizeof(datatype) * (ENC_3_CONV_RELU_1_N/2) * ENC_3_CONV_RELU_1_OUTPUT_FEATURES);
+  
   cudaMalloc((void**)&d_central_conv_relu_0, sizeof(datatype) * CENTRAL_CONV_RELU_0_N * CENTRAL_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_central_conv_relu_0_w, sizeof(datatype) * CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_central_conv_relu_0_w, central_conv_relu_0_w, CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
   cudaMalloc((void**)&d_central_conv_relu_1, sizeof(datatype) * CENTRAL_CONV_RELU_1_N * CENTRAL_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_central_conv_relu_1_w, sizeof(datatype) * CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_central_conv_relu_1_w, central_conv_relu_1_w, CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
   cudaMalloc((void**)&d_dec_0_upsample, sizeof(datatype) * DEC_0_UP_CONV_RELU_N * DEC_0_UP_CONV_RELU_INPUT_FEATURES);
   cudaMalloc((void**)&d_dec_0_up_conv_relu, sizeof(datatype) * DEC_0_UP_CONV_RELU_N * DEC_0_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_0_up_conv_relu_w, sizeof(datatype) * DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_0_up_conv_relu_w, dec_0_up_conv_relu_w, DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
   cudaMalloc((void**)&d_dec_0_concatenate, sizeof(datatype) * DEC_0_UP_CONV_RELU_N * DEC_0_UP_CONV_RELU_OUTPUT_FEATURES*2);
+
   cudaMalloc((void**)&d_dec_0_conv_relu_0, sizeof(datatype) * DEC_0_CONV_RELU_0_N * DEC_0_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_0_conv_relu_0_w, sizeof(datatype) * DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_0_conv_relu_0_w, dec_0_conv_relu_0_w, DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES*DEC_0_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
   cudaMalloc((void**)&d_dec_0_conv_relu_1, sizeof(datatype) * DEC_0_CONV_RELU_1_N * DEC_0_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_0_conv_relu_1_w, sizeof(datatype) * DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_0_conv_relu_1_w, dec_0_conv_relu_1_w, DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES*DEC_0_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
   cudaMalloc((void**)&d_dec_1_upsample, sizeof(datatype) * DEC_1_UP_CONV_RELU_N * DEC_1_UP_CONV_RELU_INPUT_FEATURES);
   cudaMalloc((void**)&d_dec_1_up_conv_relu, sizeof(datatype) * DEC_1_UP_CONV_RELU_N * DEC_1_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_1_up_conv_relu_w, sizeof(datatype) * DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_1_up_conv_relu_w, dec_1_up_conv_relu_w, DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
   cudaMalloc((void**)&d_dec_1_concatenate, sizeof(datatype) * DEC_1_UP_CONV_RELU_N * DEC_1_UP_CONV_RELU_OUTPUT_FEATURES*2);
+
   cudaMalloc((void**)&d_dec_1_conv_relu_0, sizeof(datatype) * DEC_1_CONV_RELU_0_N * DEC_1_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_1_conv_relu_0_w, sizeof(datatype) * DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_1_conv_relu_0_w, dec_1_conv_relu_0_w, DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES*DEC_1_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
   cudaMalloc((void**)&d_dec_1_conv_relu_1, sizeof(datatype) * DEC_1_CONV_RELU_1_N * DEC_1_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_1_conv_relu_1_w, sizeof(datatype) * DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_1_conv_relu_1_w, dec_1_conv_relu_1_w, DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES*DEC_1_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
   cudaMalloc((void**)&d_dec_2_upsample, sizeof(datatype) * DEC_2_UP_CONV_RELU_N * DEC_2_UP_CONV_RELU_INPUT_FEATURES);
   cudaMalloc((void**)&d_dec_2_up_conv_relu, sizeof(datatype) * DEC_2_UP_CONV_RELU_N * DEC_2_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_2_up_conv_relu_w, sizeof(datatype) * DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_2_up_conv_relu_w, dec_2_up_conv_relu_w, DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
   cudaMalloc((void**)&d_dec_2_concatenate, sizeof(datatype) * DEC_2_UP_CONV_RELU_N * DEC_2_UP_CONV_RELU_OUTPUT_FEATURES*2);
+
   cudaMalloc((void**)&d_dec_2_conv_relu_0, sizeof(datatype) * DEC_2_CONV_RELU_0_N * DEC_2_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_2_conv_relu_0_w, sizeof(datatype) * DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_2_conv_relu_0_w, dec_2_conv_relu_0_w, DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES*DEC_2_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
   cudaMalloc((void**)&d_dec_2_conv_relu_1, sizeof(datatype) * DEC_2_CONV_RELU_1_N * DEC_2_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_2_conv_relu_1_w, sizeof(datatype) * DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_2_conv_relu_1_w, dec_2_conv_relu_1_w, DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES*DEC_2_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
   cudaMalloc((void**)&d_dec_3_upsample, sizeof(datatype) * DEC_3_UP_CONV_RELU_N * DEC_3_UP_CONV_RELU_INPUT_FEATURES);
   cudaMalloc((void**)&d_dec_3_up_conv_relu, sizeof(datatype) * DEC_3_UP_CONV_RELU_N * DEC_3_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_3_up_conv_relu_w, sizeof(datatype) * DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_3_up_conv_relu_w, dec_3_up_conv_relu_w, DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
   cudaMalloc((void**)&d_dec_3_concatenate, sizeof(datatype) * DEC_3_UP_CONV_RELU_N * DEC_3_UP_CONV_RELU_OUTPUT_FEATURES*2);
-  cudaMalloc((void**)&d_dec_3_conv_relu_0, sizeof(datatype) * DEC_3_CONV_RELU_0_N * DEC_3_CONV_RELU_0_OUTPUT_FEATURES);
-  cudaMalloc((void**)&d_dec_3_conv_relu_1, sizeof(datatype) * DEC_3_CONV_RELU_1_N * DEC_3_CONV_RELU_1_OUTPUT_FEATURES);
 
+  cudaMalloc((void**)&d_dec_3_conv_relu_0, sizeof(datatype) * DEC_3_CONV_RELU_0_N * DEC_3_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_3_conv_relu_0_w, sizeof(datatype) * DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_3_conv_relu_0_w, dec_3_conv_relu_0_w, DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES*DEC_3_CONV_RELU_0_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
+  cudaMalloc((void**)&d_dec_3_conv_relu_1, sizeof(datatype) * DEC_3_CONV_RELU_1_N * DEC_3_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMalloc((void**)&d_dec_3_conv_relu_1_w, sizeof(datatype) * DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_dec_3_conv_relu_1_w, dec_3_conv_relu_1_w, DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES*DEC_3_CONV_RELU_1_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
+  cudaMalloc((void**)&d_final_conv_w, sizeof(datatype) * FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES);
+  cudaMemcpyAsync(d_final_conv_w, final_conv_w, FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
+
+  cudaMalloc((void**)&d_y, sizeof(datatype) * N*N_STATES);
   cudaMalloc((void**)&d_final_conv, sizeof(datatype) * FINAL_CONV_N * FINAL_CONV_OUTPUT_FEATURES);
-  cudaMemset(d_final_conv, 0, sizeof(datatype)* FINAL_CONV_N * FINAL_CONV_OUTPUT_FEATURES);
+  cudaMemsetAsync(d_final_conv, 0, sizeof(datatype)* FINAL_CONV_N * FINAL_CONV_OUTPUT_FEATURES);
   //checkCudaError(__LINE__);
 
   dim3 dimBlock(THREADS, THREADS); //each block is THREADxTHREAD
@@ -186,8 +196,9 @@ int main(){
   dim3 dimGrid_dec_31((DEC_3_CONV_RELU_1_N+dimBlock.x-1)/dimBlock.x, (DEC_3_CONV_RELU_1_OUTPUT_FEATURES+dimBlock.y-1)/dimBlock.y);
 
   dim3 dimGrid_fin((FINAL_CONV_N+dimBlock.x-1)/dimBlock.x, (FINAL_CONV_OUTPUT_FEATURES+dimBlock.y-1)/dimBlock.y);
+  cudaDeviceSynchronize();
   //checkCudaError(__LINE__);
-  
+
   clock_t time2 = clock();
   
   for(int i=0; i<1;i++){ //TEST_SAMPLES_BATCH
@@ -377,9 +388,8 @@ int main(){
   cudaFree(d_y);
   //checkCudaError(__LINE__);
 
-  free(y);
-  free(final_conv);
+  cudaFree(y);
 
-  //fclose(pythonOutput);
+  fclose(pythonOutput);
   return 0;
 }
