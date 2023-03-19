@@ -6,9 +6,9 @@ Softmax implementation
     x - Input array to perform softmax
     y - Array to save the softmax resultant values
 */
-void Softmax(apfixed x[N_STATES], apfixed y[N_STATES]) {
-  apfixed expx[N_STATES];
-  apfixed expsum = 0;
+void Softmax(datatype x[N_STATES], datatype y[N_STATES]) {
+  datatype expx[N_STATES];
+  datatype expsum = 0;
 
   for (int i = 0; i < N_STATES; i++) {
     expx[i] = exp(x[i]);
@@ -31,8 +31,8 @@ Argmax implementation
     x - Input array to perform argmax
     y - Array to save the argmax resultant values
 */
-void Argmax(apfixed x[N_STATES], apfixed y[N_STATES]) {
-  apfixed maxvalue = __FLT_MIN__;
+void Argmax(datatype x[N_STATES], datatype y[N_STATES]) {
+  datatype maxvalue = __FLT_MIN__;
   int maxindex = 0;
 
   for (int i = 0; i < N_STATES; i++) {
