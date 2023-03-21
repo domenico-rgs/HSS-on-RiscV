@@ -205,28 +205,28 @@ int main(){
     //-----------------------------ENCODER 0--------------------------------------
     conv_relu<<<dimGrid_enc00, dimBlock>>>(ENC_0_CONV_RELU_0_OUTPUT_FEATURES,ENC_0_CONV_RELU_0_N,ENC_0_CONV_RELU_0_K,ENC_0_CONV_RELU_0_INPUT_FEATURES,d_enc_0_conv_relu_0_w,(d_x+i*TEST_SAMPLES_BATCH),d_enc_0_conv_relu_0);
     conv_relu<<<dimGrid_enc01, dimBlock>>>(ENC_0_CONV_RELU_1_OUTPUT_FEATURES,ENC_0_CONV_RELU_1_N,ENC_0_CONV_RELU_1_K,ENC_0_CONV_RELU_1_INPUT_FEATURES,d_enc_0_conv_relu_1_w,d_enc_0_conv_relu_0,d_enc_0_conv_relu_1);
-    maxpooling<<<dimGrid_max01, dimBlock>>>(ENC_0_CONV_RELU_1_OUTPUT_FEATURES, ENC_0_CONV_RELU_1_N, d_enc_0_maxpool, d_enc_0_conv_relu_1);
+    maxpooling<<<dimGrid_max01, dimBlock,sizeof(datatype) * 2*ENC_0_CONV_RELU_1_N * ENC_0_CONV_RELU_1_OUTPUT_FEATURES>>>(ENC_0_CONV_RELU_1_OUTPUT_FEATURES, ENC_0_CONV_RELU_1_N, d_enc_0_maxpool, d_enc_0_conv_relu_1);
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------
 
     //-----------------------------ENCODER 1--------------------------------------
     conv_relu<<<dimGrid_enc10, dimBlock>>>(ENC_1_CONV_RELU_0_OUTPUT_FEATURES,ENC_1_CONV_RELU_0_N,ENC_1_CONV_RELU_0_K,ENC_1_CONV_RELU_0_INPUT_FEATURES,d_enc_1_conv_relu_0_w,d_enc_0_maxpool,d_enc_1_conv_relu_0);
     conv_relu<<<dimGrid_enc11, dimBlock>>>(ENC_1_CONV_RELU_1_OUTPUT_FEATURES,ENC_1_CONV_RELU_1_N,ENC_1_CONV_RELU_1_K,ENC_1_CONV_RELU_1_INPUT_FEATURES,d_enc_1_conv_relu_1_w,d_enc_1_conv_relu_0,d_enc_1_conv_relu_1);
-    maxpooling<<<dimGrid_max11, dimBlock>>>(ENC_1_CONV_RELU_1_OUTPUT_FEATURES, ENC_1_CONV_RELU_1_N, d_enc_1_maxpool, d_enc_1_conv_relu_1);
+    maxpooling<<<dimGrid_max11, dimBlock,sizeof(datatype) * 2* ENC_1_CONV_RELU_1_N * ENC_1_CONV_RELU_1_OUTPUT_FEATURES>>>(ENC_1_CONV_RELU_1_OUTPUT_FEATURES, ENC_1_CONV_RELU_1_N, d_enc_1_maxpool, d_enc_1_conv_relu_1);
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------
 
     //-----------------------------ENCODER 2--------------------------------------
     conv_relu<<<dimGrid_enc20, dimBlock>>>(ENC_2_CONV_RELU_0_OUTPUT_FEATURES,ENC_2_CONV_RELU_0_N,ENC_2_CONV_RELU_0_K,ENC_2_CONV_RELU_0_INPUT_FEATURES,d_enc_2_conv_relu_0_w,d_enc_1_maxpool,d_enc_2_conv_relu_0);
     conv_relu<<<dimGrid_enc21, dimBlock>>>(ENC_2_CONV_RELU_1_OUTPUT_FEATURES,ENC_2_CONV_RELU_1_N,ENC_2_CONV_RELU_1_K,ENC_2_CONV_RELU_1_INPUT_FEATURES,d_enc_2_conv_relu_1_w,d_enc_2_conv_relu_0,d_enc_2_conv_relu_1);
-    maxpooling<<<dimGrid_max21, dimBlock>>>(ENC_2_CONV_RELU_1_OUTPUT_FEATURES, ENC_2_CONV_RELU_1_N, d_enc_2_maxpool, d_enc_2_conv_relu_1);
+    maxpooling<<<dimGrid_max21, dimBlock,sizeof(datatype) * 2* ENC_2_CONV_RELU_1_N * ENC_2_CONV_RELU_1_OUTPUT_FEATURES>>>(ENC_2_CONV_RELU_1_OUTPUT_FEATURES, ENC_2_CONV_RELU_1_N, d_enc_2_maxpool, d_enc_2_conv_relu_1);
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------
 
     //-----------------------------ENCODER 3--------------------------------------
     conv_relu<<<dimGrid_enc30, dimBlock>>>(ENC_3_CONV_RELU_0_OUTPUT_FEATURES,ENC_3_CONV_RELU_0_N,ENC_3_CONV_RELU_0_K,ENC_3_CONV_RELU_0_INPUT_FEATURES,d_enc_3_conv_relu_0_w,d_enc_2_maxpool,d_enc_3_conv_relu_0);
     conv_relu<<<dimGrid_enc31, dimBlock>>>(ENC_3_CONV_RELU_1_OUTPUT_FEATURES,ENC_3_CONV_RELU_1_N,ENC_3_CONV_RELU_1_K,ENC_3_CONV_RELU_1_INPUT_FEATURES,d_enc_3_conv_relu_1_w,d_enc_3_conv_relu_0,d_enc_3_conv_relu_1);
-    maxpooling<<<dimGrid_max31, dimBlock>>>(ENC_3_CONV_RELU_1_OUTPUT_FEATURES, ENC_3_CONV_RELU_1_N, d_enc_3_maxpool, d_enc_3_conv_relu_1);
+    maxpooling<<<dimGrid_max31, dimBlock,sizeof(datatype) * 2*ENC_3_CONV_RELU_1_N * ENC_3_CONV_RELU_1_OUTPUT_FEATURES>>>(ENC_3_CONV_RELU_1_OUTPUT_FEATURES, ENC_3_CONV_RELU_1_N, d_enc_3_maxpool, d_enc_3_conv_relu_1);
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------
 
@@ -237,7 +237,7 @@ int main(){
     //----------------------------------------------------------------------------
 
     //-----------------------------DECODER 0--------------------------------------
-    upsampling<<<dimGrid_dec_0_up, dimBlock>>>(DEC_0_UP_CONV_RELU_INPUT_FEATURES, DEC_0_UP_CONV_RELU_N,CENTRAL_CONV_RELU_1_OUTPUT_FEATURES, d_dec_0_upsample, d_central_conv_relu_1);
+    upsampling<<<dimGrid_dec_0_up, dimBlock,sizeof(datatype) * CENTRAL_CONV_RELU_1_N * CENTRAL_CONV_RELU_1_OUTPUT_FEATURES>>>(DEC_0_UP_CONV_RELU_INPUT_FEATURES, DEC_0_UP_CONV_RELU_N,CENTRAL_CONV_RELU_1_OUTPUT_FEATURES, d_dec_0_upsample, d_central_conv_relu_1);
     conv_relu<<<dimGrid_dec_0_up_conv, dimBlock>>>(DEC_0_UP_CONV_RELU_OUTPUT_FEATURES,DEC_0_UP_CONV_RELU_N,DEC_0_UP_CONV_RELU_K,DEC_0_UP_CONV_RELU_INPUT_FEATURES,d_dec_0_up_conv_relu_w,d_dec_0_upsample,d_dec_0_up_conv_relu);
     concatenation<<<dimGrid_dec_0_conc, dimBlock>>>(DEC_0_UP_CONV_RELU_OUTPUT_FEATURES,DEC_0_UP_CONV_RELU_N, d_dec_0_concatenate, d_enc_3_conv_relu_1,d_dec_0_up_conv_relu);
     conv_relu<<<dimGrid_dec_00, dimBlock>>>(DEC_0_CONV_RELU_0_OUTPUT_FEATURES,DEC_0_CONV_RELU_0_N,DEC_0_CONV_RELU_0_K,DEC_0_CONV_RELU_0_INPUT_FEATURES,d_dec_0_conv_relu_0_w,d_dec_0_concatenate,d_dec_0_conv_relu_0);
@@ -246,7 +246,7 @@ int main(){
     //----------------------------------------------------------------------------
 
     //-----------------------------DECODER 1--------------------------------------
-    upsampling<<<dimGrid_dec_1_up, dimBlock>>>(DEC_1_UP_CONV_RELU_INPUT_FEATURES, DEC_1_UP_CONV_RELU_N, DEC_0_CONV_RELU_1_OUTPUT_FEATURES, d_dec_1_upsample, d_dec_0_conv_relu_1);
+    upsampling<<<dimGrid_dec_1_up, dimBlock,sizeof(datatype) * DEC_0_CONV_RELU_1_N * DEC_0_CONV_RELU_1_OUTPUT_FEATURES>>>(DEC_1_UP_CONV_RELU_INPUT_FEATURES, DEC_1_UP_CONV_RELU_N, DEC_0_CONV_RELU_1_OUTPUT_FEATURES, d_dec_1_upsample, d_dec_0_conv_relu_1);
     conv_relu<<<dimGrid_dec_1_up_conv, dimBlock>>>(DEC_1_UP_CONV_RELU_OUTPUT_FEATURES,DEC_1_UP_CONV_RELU_N,DEC_1_UP_CONV_RELU_K,DEC_1_UP_CONV_RELU_INPUT_FEATURES,d_dec_1_up_conv_relu_w,d_dec_1_upsample,d_dec_1_up_conv_relu);
     concatenation<<<dimGrid_dec_1_conc, dimBlock>>>(DEC_1_UP_CONV_RELU_OUTPUT_FEATURES,DEC_1_UP_CONV_RELU_N, d_dec_1_concatenate, d_enc_2_conv_relu_1,d_dec_1_up_conv_relu);
     conv_relu<<<dimGrid_dec_10, dimBlock>>>(DEC_1_CONV_RELU_0_OUTPUT_FEATURES,DEC_1_CONV_RELU_0_N,DEC_1_CONV_RELU_0_K,DEC_1_CONV_RELU_0_INPUT_FEATURES,d_dec_1_conv_relu_0_w,d_dec_1_concatenate,d_dec_1_conv_relu_0);
@@ -255,7 +255,7 @@ int main(){
     //----------------------------------------------------------------------------
 
     //-----------------------------DECODER 2--------------------------------------
-    upsampling<<<dimGrid_dec_2_up, dimBlock>>>(DEC_2_UP_CONV_RELU_INPUT_FEATURES, DEC_2_UP_CONV_RELU_N, DEC_1_CONV_RELU_1_OUTPUT_FEATURES, d_dec_2_upsample, d_dec_1_conv_relu_1);
+    upsampling<<<dimGrid_dec_2_up, dimBlock,sizeof(datatype) * DEC_1_CONV_RELU_1_N * DEC_1_CONV_RELU_1_OUTPUT_FEATURES>>>(DEC_2_UP_CONV_RELU_INPUT_FEATURES, DEC_2_UP_CONV_RELU_N, DEC_1_CONV_RELU_1_OUTPUT_FEATURES, d_dec_2_upsample, d_dec_1_conv_relu_1);
     conv_relu<<<dimGrid_dec_2_up_conv, dimBlock>>>(DEC_2_UP_CONV_RELU_OUTPUT_FEATURES,DEC_2_UP_CONV_RELU_N,DEC_2_UP_CONV_RELU_K,DEC_2_UP_CONV_RELU_INPUT_FEATURES,d_dec_2_up_conv_relu_w,d_dec_2_upsample,d_dec_2_up_conv_relu);
     concatenation<<<dimGrid_dec_2_conc, dimBlock>>>(DEC_2_UP_CONV_RELU_OUTPUT_FEATURES,DEC_2_UP_CONV_RELU_N, d_dec_2_concatenate, d_enc_1_conv_relu_1,d_dec_2_up_conv_relu);
     conv_relu<<<dimGrid_dec_20, dimBlock>>>(DEC_2_CONV_RELU_0_OUTPUT_FEATURES,DEC_2_CONV_RELU_0_N,DEC_2_CONV_RELU_0_K,DEC_2_CONV_RELU_0_INPUT_FEATURES,d_dec_2_conv_relu_0_w,d_dec_2_concatenate,d_dec_2_conv_relu_0);
@@ -264,7 +264,7 @@ int main(){
     //----------------------------------------------------------------------------
 
     //-----------------------------DECODER 3--------------------------------------
-    upsampling<<<dimGrid_dec_3_up, dimBlock>>>(DEC_3_UP_CONV_RELU_INPUT_FEATURES, DEC_3_UP_CONV_RELU_N, DEC_2_CONV_RELU_1_OUTPUT_FEATURES, d_dec_3_upsample, d_dec_2_conv_relu_1);
+    upsampling<<<dimGrid_dec_3_up, dimBlock,sizeof(datatype) * DEC_2_CONV_RELU_1_N * DEC_2_CONV_RELU_1_OUTPUT_FEATURES>>>(DEC_3_UP_CONV_RELU_INPUT_FEATURES, DEC_3_UP_CONV_RELU_N, DEC_2_CONV_RELU_1_OUTPUT_FEATURES, d_dec_3_upsample, d_dec_2_conv_relu_1);
     conv_relu<<<dimGrid_dec_3_up_conv, dimBlock>>>(DEC_3_UP_CONV_RELU_OUTPUT_FEATURES,DEC_3_UP_CONV_RELU_N,DEC_3_UP_CONV_RELU_K,DEC_3_UP_CONV_RELU_INPUT_FEATURES,d_dec_3_up_conv_relu_w,d_dec_3_upsample,d_dec_3_up_conv_relu);
     concatenation<<<dimGrid_dec_3_conc, dimBlock>>>(DEC_3_UP_CONV_RELU_OUTPUT_FEATURES,DEC_3_UP_CONV_RELU_N, d_dec_3_concatenate, d_enc_0_conv_relu_1,d_dec_3_up_conv_relu);
     conv_relu<<<dimGrid_dec_30, dimBlock>>>(DEC_3_CONV_RELU_0_OUTPUT_FEATURES,DEC_3_CONV_RELU_0_N,DEC_3_CONV_RELU_0_K,DEC_3_CONV_RELU_0_INPUT_FEATURES,d_dec_3_conv_relu_0_w,d_dec_3_concatenate,d_dec_3_conv_relu_0);
@@ -388,7 +388,7 @@ int main(){
   cudaFree(d_y);
   //checkCudaError(__LINE__);
 
-  cudaFree(y);
+  free(y);
 
   fclose(pythonOutput);
   return 0;
