@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
     clock_t time = clock();
 
     for(int i=0; i<TEST_SAMPLES_BATCH;i++){
-         Segmenter((test_data+i*TEST_SAMPLES_BATCH),
+         Segmenter((test_data+i*N_FEATURES*N),
                enc_0_conv_relu_0_w,enc_0_conv_relu_1_w,enc_1_conv_relu_0_w,
                enc_1_conv_relu_1_w,enc_2_conv_relu_0_w,enc_2_conv_relu_1_w,
                enc_3_conv_relu_0_w,enc_3_conv_relu_1_w,central_conv_relu_0_w,

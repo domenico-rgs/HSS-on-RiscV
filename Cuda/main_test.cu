@@ -201,9 +201,9 @@ int main(){
 
   clock_t time2 = clock();
   
-  for(int i=0; i<1;i++){ //TEST_SAMPLES_BATCH
+  for(int i=0; i<TEST_SAMPLES_BATCH;i++){ //TEST_SAMPLES_BATCH
     //-----------------------------ENCODER 0--------------------------------------
-    conv_relu<<<dimGrid_enc00, dimBlock>>>(ENC_0_CONV_RELU_0_OUTPUT_FEATURES,ENC_0_CONV_RELU_0_N,ENC_0_CONV_RELU_0_K,ENC_0_CONV_RELU_0_INPUT_FEATURES,d_enc_0_conv_relu_0_w,(d_x+i*TEST_SAMPLES_BATCH),d_enc_0_conv_relu_0);
+    conv_relu<<<dimGrid_enc00, dimBlock>>>(ENC_0_CONV_RELU_0_OUTPUT_FEATURES,ENC_0_CONV_RELU_0_N,ENC_0_CONV_RELU_0_K,ENC_0_CONV_RELU_0_INPUT_FEATURES,d_enc_0_conv_relu_0_w,(d_x+i*N_FEATURES*N),d_enc_0_conv_relu_0);
     conv_relu<<<dimGrid_enc01, dimBlock>>>(ENC_0_CONV_RELU_1_OUTPUT_FEATURES,ENC_0_CONV_RELU_1_N,ENC_0_CONV_RELU_1_K,ENC_0_CONV_RELU_1_INPUT_FEATURES,d_enc_0_conv_relu_1_w,d_enc_0_conv_relu_0,d_enc_0_conv_relu_1);
     maxpooling<<<dimGrid_max01, dimBlock,sizeof(datatype) * 2*ENC_0_CONV_RELU_1_N * ENC_0_CONV_RELU_1_OUTPUT_FEATURES>>>(ENC_0_CONV_RELU_1_OUTPUT_FEATURES, ENC_0_CONV_RELU_1_N, d_enc_0_maxpool, d_enc_0_conv_relu_1);
     //checkCudaError(__LINE__);
