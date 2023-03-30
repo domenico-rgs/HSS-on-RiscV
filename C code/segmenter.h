@@ -23,7 +23,7 @@
 
 //#include <valgrind/callgrind.h>
 
-#define DOUBLE
+#define FLOAT
 
 #ifdef DOUBLE
     typedef double datatype;
@@ -36,7 +36,7 @@
 ------------------------------------------------------------------------------*/
 
 #define TEST_SAMPLES_BATCH 250 //Number of samples in the test file, limited by the maximum allocable C++ array size
-#define TEST_FILES 170 //Number of test files
+#define TEST_FILES 169 //Number of test files - 222
 #define TOTAL_SAMPLES 42360
 
 /*------------------------------------------------------------------------------

@@ -11,7 +11,12 @@ void Softmax(datatype x[N_STATES], datatype y[N_STATES]) {
   datatype expsum = 0;
 
   for (int i = 0; i < N_STATES; i++) {
+    #ifdef FLOAT
+    expx[i] = expf(x[i]);
+    #endif
+    #ifdef DOUBLE
     expx[i] = exp(x[i]);
+    #endif 
     expsum += expx[i];
   }
 
