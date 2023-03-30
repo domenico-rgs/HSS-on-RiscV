@@ -13,7 +13,12 @@ __global__ void Softmax(datatype *x, datatype *y) {
   datatype expsum = 0;
 
   for (int i = 0; i < N_STATES; i++) {
+    #ifdef FLOAT
+    expx[i] = expf((x+index*N_STATES)[i]);
+    #endif
+    #ifdef DOUBLE
     expx[i] = exp((x+index*N_STATES)[i]);
+    #endif 
     expsum += expx[i];
   }
 
@@ -93,21 +98,6 @@ __global__ void conv_relu_last_layer(int conv_relu_output_features, int conv_rel
 	int i = blockIdx.x*blockDim.x+threadIdx.x;
   int k = blockIdx.y*blockDim.y+threadIdx.y;
 
-  //WEIGHTS TO SHARED MEM
-  /*extern __shared__ float s_weights[];
-
-  //FIRST LOAD
-  for (int j = 0; j < conv_relu_input_features; j++) { 
-    s_weights[threadIdx.y*THREADS*THREADS+threadIdx.x*THREADS+j]=d_weights[k*conv_relu_k*conv_relu_input_features+i*conv_relu_input_features+j]; //i too big
-  } 
-  //SECOND LOAD
-  if(i<conv_relu_k*conv_relu_input_features*conv_relu_output_features-K*THREADS){
-    for (int j = 0; j < conv_relu_input_features; j++) { 
-      //s_weights[threadIdx.y*THREADS*THREADS+(threadIdx.x+K-1)*THREADS+j]=d_weights[k*conv_relu_k*conv_relu_input_features+(i+K-1)*conv_relu_input_features+j];
-    } 
-  }
-  __syncthreads();*/
-
   if((k<conv_relu_output_features)&&(i<conv_relu_n)){
     datatype acc = 0;
     int l_min, l_max;
@@ -118,7 +108,6 @@ __global__ void conv_relu_last_layer(int conv_relu_output_features, int conv_rel
 
     for (int l = l_min; l < l_max; l++) {
       for (int j = 0; j < conv_relu_input_features; j++) {
-        //acc += d_input[l*conv_relu_input_features+j] * s_weights[threadIdx.y*THREADS*THREADS+((l-i)%(blockIdx.x*blockDim.x)+conv_relu_k/2)*THREADS+j];
         acc += d_input[l*conv_relu_input_features+j] * d_weights[k*conv_relu_k*conv_relu_input_features+(l-i+conv_relu_k/2)*conv_relu_input_features+j]; // Multiply the input and the weight
       }
     }
@@ -139,7 +128,6 @@ __global__ void maxpooling(int enc_conv_relu_output_features, int enc_conv_relu_
   __syncthreads();
 
   if((k<enc_conv_relu_output_features)&&(i<enc_conv_relu_n / 2)){
-    //d_maxpool_output[i*enc_conv_relu_output_features+k] = d_input_from_conv_rel[(2 * i)*enc_conv_relu_output_features+k] > d_input_from_conv_rel[(2 * i + 1)*enc_conv_relu_output_features+k] ? d_input_from_conv_rel[(2 * i)*enc_conv_relu_output_features+k] : d_input_from_conv_rel[(2 * i + 1)*enc_conv_relu_output_features+k]; //max
     d_maxpool_output[i*enc_conv_relu_output_features+k] = s_data[threadIdx.y*THREADS+threadIdx.x] > s_data[(threadIdx.y+THREADS*THREADS-1)*THREADS+threadIdx.x] ? s_data[threadIdx.y*THREADS+threadIdx.x] : s_data[(threadIdx.y+THREADS*THREADS-1)*THREADS+threadIdx.x]; //max    
   }
 }
@@ -153,8 +141,6 @@ __global__ void upsampling(int dec_up_conv_relu_input_features, int dec_up_conv_
   __syncthreads();
 
   if((k<dec_up_conv_relu_input_features)&&(i<(dec_up_conv_relu_n / 2))){
-    //d_dec_upsample[(2 * i)*dec_up_conv_relu_input_features+k] = d_conv_relu_input[i*dim_conv_relu_input+k];
-    //d_dec_upsample[(2 * i + 1)*dec_up_conv_relu_input_features+k] = d_conv_relu_input[i*dim_conv_relu_input+k];
     d_dec_upsample[(2 * i)*dec_up_conv_relu_input_features+k] = s_data[threadIdx.x*THREADS+threadIdx.y];
     d_dec_upsample[(2 * i + 1)*dec_up_conv_relu_input_features+k] = s_data[threadIdx.x*THREADS+threadIdx.y];
   }
