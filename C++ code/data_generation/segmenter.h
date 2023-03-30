@@ -35,7 +35,7 @@
 //     #include <cmath> //If float type is used
 // #endif
 
-#define DOUBLE
+#define FLOAT
 
 #ifdef DOUBLE
     typedef double datatype;
@@ -52,7 +52,7 @@
 ------------------------------------------------------------------------------*/
 
 #define TEST_SAMPLES_BATCH 250 //Number of samples in the test file, limited by the maximum allocable C++ array size
-#define TEST_FILES 222 //Number of test files
+#define TEST_FILES 169 //Number of test files
 #define TOTAL_SAMPLES 55293
 
 /*------------------------------------------------------------------------------

@@ -172,3 +172,6 @@ dmypy.json
 valgrind*
 callgrind*
 cachegrind*
+
+*.npy
+*.bin

@@ -38,10 +38,14 @@ int main() {
     // string model_path = "C:/Users/aralmeida/OneDrive - Universidad de Las Palmas de Gran Canaria/Doctorado/codigo/PCG-Segmentation-Implementation/";
     string model_path = "/home/domenico/Desktop/Unipv/Magistrale/Thesis/PCG-CNN/parameters/";
     char subdirectory[256];
+
+    FILE *myfile; 
+    myfile = fopen("test_data.bin", "wb");
+
       
     // Iterate over the test files
-    // for(int l=0; l<TEST_FILES; l++){
-    for(int l=0; l<1; l++){
+    for(int l=0; l<TEST_FILES; l++){
+    //for(int l=0; l<1; l++){
 
         //-----------------------READING THE INPUT----------------------------------
 
@@ -52,30 +56,31 @@ int main() {
         printf("Loading new input data (%d/%d)\n", l+1, TEST_FILES);
 
         // C header file declaration and filling 
-        ofstream myfile; 
-        myfile.open("test_data.h");
-        myfile << "//#include <iostream>\n\n#include \"segmenter.h\"\n\ndatatype test_data[N_FEATURES*N*TEST_SAMPLES_BATCH]  = {";
+        //ofstream myfile;
+        //myfile.open("test_data.h");
+        //myfile << "//#include <iostream>\n\n#include \"segmenter.h\"\n\ndatatype test_data[N_FEATURES*N*1]  = {";
 
         // Reshape it and fill C header file with the test data
         for(int k=0; k<TEST_SAMPLES_BATCH; k++){
             for(int j=0; j<N; j++){
                 for(int i=0; i<N_FEATURES; i++){
                     test_data[k][j][i] = test_data_tmp[i+j*N_FEATURES+k*N*N_FEATURES];
-
                 // Skip the last comma when filling the C header file
-                if (i == N_FEATURES-1 && j == N-1 && k == TEST_SAMPLES_BATCH-1) {
+                /*if (i == N_FEATURES-1 && j == N-1 && k == TEST_SAMPLES_BATCH-1) {
                     myfile << std::fixed << std::setprecision(PRECISION) << test_data[k][j][i]<< "};\n\n";
+
                 } else {
                     myfile << std::fixed << std::setprecision(PRECISION) << test_data[k][j][i] << ", ";
                     }
-                }
+                }*/
             }
-
         }
         // Close C header file
-        myfile.close();
+        //myfile.close();
+        }
+    fwrite(test_data , sizeof(datatype), TEST_SAMPLES_BATCH*N*N_FEATURES, myfile);
     }
-
+    fclose(myfile);
     return 0;
 }
 
