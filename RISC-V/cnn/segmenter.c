@@ -44,51 +44,14 @@ void Segmenter(datatype x[N*N_FEATURES],
                datatype final_conv_w[FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES*FINAL_CONV_OUTPUT_FEATURES],
                datatype y[N][N_STATES]){
 
-  // Initialize the feature maps
-  datatype enc_0_conv_relu_0[ENC_0_CONV_RELU_0_N][ENC_0_CONV_RELU_0_OUTPUT_FEATURES];
+  // Arrays for feature maps
+  datatype array_1[1024];
+  datatype array_2[1024];
+  
   datatype enc_0_conv_relu_1[ENC_0_CONV_RELU_1_N][ENC_0_CONV_RELU_1_OUTPUT_FEATURES];
-  datatype enc_0_maxpool[ENC_0_CONV_RELU_1_N/2][ENC_0_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype enc_1_conv_relu_0[ENC_1_CONV_RELU_0_N][ENC_1_CONV_RELU_0_OUTPUT_FEATURES];
   datatype enc_1_conv_relu_1[ENC_1_CONV_RELU_1_N][ENC_1_CONV_RELU_1_OUTPUT_FEATURES];
-  datatype enc_1_maxpool[ENC_1_CONV_RELU_1_N/2][ENC_1_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype enc_2_conv_relu_0[ENC_2_CONV_RELU_0_N][ENC_2_CONV_RELU_0_OUTPUT_FEATURES];
   datatype enc_2_conv_relu_1[ENC_2_CONV_RELU_1_N][ENC_2_CONV_RELU_1_OUTPUT_FEATURES];
-  datatype enc_2_maxpool[ENC_2_CONV_RELU_1_N/2][ENC_2_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype enc_3_conv_relu_0[ENC_3_CONV_RELU_0_N][ENC_3_CONV_RELU_0_OUTPUT_FEATURES];
   datatype enc_3_conv_relu_1[ENC_3_CONV_RELU_1_N][ENC_3_CONV_RELU_1_OUTPUT_FEATURES];
-  datatype enc_3_maxpool[ENC_3_CONV_RELU_1_N/2][ENC_3_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype central_conv_relu_0[CENTRAL_CONV_RELU_0_N][CENTRAL_CONV_RELU_0_OUTPUT_FEATURES];
-  datatype central_conv_relu_1[CENTRAL_CONV_RELU_1_N][CENTRAL_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype dec_0_upsample[DEC_0_UP_CONV_RELU_N][DEC_0_UP_CONV_RELU_INPUT_FEATURES];
-  datatype dec_0_up_conv_relu[DEC_0_UP_CONV_RELU_N][DEC_0_UP_CONV_RELU_OUTPUT_FEATURES];
-  datatype dec_0_concatenate[DEC_0_UP_CONV_RELU_N][DEC_0_UP_CONV_RELU_OUTPUT_FEATURES*2];
-  datatype dec_0_conv_relu_0[DEC_0_CONV_RELU_0_N][DEC_0_CONV_RELU_0_OUTPUT_FEATURES];
-  datatype dec_0_conv_relu_1[DEC_0_CONV_RELU_1_N][DEC_0_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype dec_1_upsample[DEC_1_UP_CONV_RELU_N][DEC_1_UP_CONV_RELU_INPUT_FEATURES];
-  datatype dec_1_up_conv_relu[DEC_1_UP_CONV_RELU_N][DEC_1_UP_CONV_RELU_OUTPUT_FEATURES];
-  datatype dec_1_concatenate[DEC_1_UP_CONV_RELU_N][DEC_1_UP_CONV_RELU_OUTPUT_FEATURES*2];
-  datatype dec_1_conv_relu_0[DEC_1_CONV_RELU_0_N][DEC_1_CONV_RELU_0_OUTPUT_FEATURES];
-  datatype dec_1_conv_relu_1[DEC_1_CONV_RELU_1_N][DEC_1_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype dec_2_upsample[DEC_2_UP_CONV_RELU_N][DEC_2_UP_CONV_RELU_INPUT_FEATURES];
-  datatype dec_2_up_conv_relu[DEC_2_UP_CONV_RELU_N][DEC_2_UP_CONV_RELU_OUTPUT_FEATURES];
-  datatype dec_2_concatenate[DEC_2_UP_CONV_RELU_N][DEC_2_UP_CONV_RELU_OUTPUT_FEATURES*2];
-  datatype dec_2_conv_relu_0[DEC_2_CONV_RELU_0_N][DEC_2_CONV_RELU_0_OUTPUT_FEATURES];
-  datatype dec_2_conv_relu_1[DEC_2_CONV_RELU_1_N][DEC_2_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype dec_3_upsample[DEC_3_UP_CONV_RELU_N][DEC_3_UP_CONV_RELU_INPUT_FEATURES];
-  datatype dec_3_up_conv_relu[DEC_3_UP_CONV_RELU_N][DEC_3_UP_CONV_RELU_OUTPUT_FEATURES];
-  datatype dec_3_concatenate[DEC_3_UP_CONV_RELU_N][DEC_3_UP_CONV_RELU_OUTPUT_FEATURES*2];
-  datatype dec_3_conv_relu_0[DEC_3_CONV_RELU_0_N][DEC_3_CONV_RELU_0_OUTPUT_FEATURES];
-  datatype dec_3_conv_relu_1[DEC_3_CONV_RELU_1_N][DEC_3_CONV_RELU_1_OUTPUT_FEATURES];
-
-  datatype final_conv[FINAL_CONV_N][FINAL_CONV_OUTPUT_FEATURES]={{0}};
 
   datatype acc; // The accumulator
 
@@ -115,7 +78,7 @@ void Segmenter(datatype x[N*N_FEATURES],
         }
       }
 
-      enc_0_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
                
@@ -131,7 +94,7 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_0_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_0_conv_relu_0[l][j]*enc_0_conv_relu_1_w[k*ENC_0_CONV_RELU_1_K*ENC_0_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_0_CONV_RELU_1_K/2)*ENC_0_CONV_RELU_1_INPUT_FEATURES+j]; // Multiply the input and the weight
+          acc += array_1[l*ENC_0_CONV_RELU_0_OUTPUT_FEATURES+j]*enc_0_conv_relu_1_w[k*ENC_0_CONV_RELU_1_K*ENC_0_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_0_CONV_RELU_1_K/2)*ENC_0_CONV_RELU_1_INPUT_FEATURES+j]; // Multiply the input and the weight
         }
       }
 
@@ -142,7 +105,7 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------enc_0_maxpool----------------------------------
   for(int i=0; i<ENC_0_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<ENC_0_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      enc_0_maxpool[i][k] = max(enc_0_conv_relu_1[2*i][k], enc_0_conv_relu_1[2*i+1][k]);
+      array_1[i*ENC_0_CONV_RELU_1_OUTPUT_FEATURES+k] = max(enc_0_conv_relu_1[2*i][k], enc_0_conv_relu_1[2*i+1][k]);
     }
   }
   //----------------------------------------------------------------------------
@@ -159,11 +122,11 @@ void Segmenter(datatype x[N*N_FEATURES],
       
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_1_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_0_maxpool[l][j]*enc_1_conv_relu_0_w[k*ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_1_CONV_RELU_0_K/2)*ENC_1_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*ENC_0_CONV_RELU_1_OUTPUT_FEATURES+j]*enc_1_conv_relu_0_w[k*ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_1_CONV_RELU_0_K/2)*ENC_1_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      enc_1_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*ENC_1_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -178,7 +141,7 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_1_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_1_conv_relu_0[l][j]*enc_1_conv_relu_1_w[k*ENC_1_CONV_RELU_1_K*ENC_1_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_1_CONV_RELU_1_K/2)*ENC_1_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*ENC_1_CONV_RELU_0_OUTPUT_FEATURES+j]*enc_1_conv_relu_1_w[k*ENC_1_CONV_RELU_1_K*ENC_1_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_1_CONV_RELU_1_K/2)*ENC_1_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -189,7 +152,7 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------enc_1_maxpool----------------------------------
   for(int i=0; i<ENC_1_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<ENC_1_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      enc_1_maxpool[i][k] = max(enc_1_conv_relu_1[2*i][k], enc_1_conv_relu_1[2*i+1][k]);
+      array_2[i*ENC_1_CONV_RELU_1_OUTPUT_FEATURES+k] = max(enc_1_conv_relu_1[2*i][k], enc_1_conv_relu_1[2*i+1][k]);
     }
   }
   //----------------------------------------------------------------------------
@@ -206,11 +169,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_2_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_1_maxpool[l][j]*enc_2_conv_relu_0_w[k*ENC_2_CONV_RELU_0_K*ENC_2_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_2_CONV_RELU_0_K/2)*ENC_2_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*ENC_1_CONV_RELU_1_OUTPUT_FEATURES+j]*enc_2_conv_relu_0_w[k*ENC_2_CONV_RELU_0_K*ENC_2_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_2_CONV_RELU_0_K/2)*ENC_2_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      enc_2_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*ENC_2_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -225,7 +188,7 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_2_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_2_conv_relu_0[l][j]*enc_2_conv_relu_1_w[k*ENC_2_CONV_RELU_1_K*ENC_2_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_2_CONV_RELU_1_K/2)*ENC_2_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*ENC_2_CONV_RELU_0_OUTPUT_FEATURES+j]*enc_2_conv_relu_1_w[k*ENC_2_CONV_RELU_1_K*ENC_2_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_2_CONV_RELU_1_K/2)*ENC_2_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -236,7 +199,7 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------enc_2_maxpool----------------------------------
   for(int i=0; i<ENC_2_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<ENC_2_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      enc_2_maxpool[i][k] = max(enc_2_conv_relu_1[2*i][k], enc_2_conv_relu_1[2*i+1][k]);
+      array_1[i*ENC_2_CONV_RELU_1_OUTPUT_FEATURES+k] = max(enc_2_conv_relu_1[2*i][k], enc_2_conv_relu_1[2*i+1][k]);
     }
   }
   //----------------------------------------------------------------------------
@@ -253,11 +216,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_3_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_2_maxpool[l][j]*enc_3_conv_relu_0_w[k*ENC_3_CONV_RELU_0_K*ENC_3_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_3_CONV_RELU_0_K/2)*ENC_3_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*ENC_2_CONV_RELU_1_OUTPUT_FEATURES+j]*enc_3_conv_relu_0_w[k*ENC_3_CONV_RELU_0_K*ENC_3_CONV_RELU_0_INPUT_FEATURES+(l-i+ENC_3_CONV_RELU_0_K/2)*ENC_3_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      enc_3_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*ENC_3_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -272,7 +235,7 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<ENC_3_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += enc_3_conv_relu_0[l][j]*enc_3_conv_relu_1_w[k*ENC_3_CONV_RELU_1_K*ENC_3_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_3_CONV_RELU_1_K/2)*ENC_3_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*ENC_3_CONV_RELU_0_OUTPUT_FEATURES+j]*enc_3_conv_relu_1_w[k*ENC_3_CONV_RELU_1_K*ENC_3_CONV_RELU_1_INPUT_FEATURES+(l-i+ENC_3_CONV_RELU_1_K/2)*ENC_3_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
@@ -283,7 +246,7 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------enc_3_maxpool----------------------------------
   for(int i=0; i<ENC_3_CONV_RELU_1_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<ENC_3_CONV_RELU_1_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      enc_3_maxpool[i][k] = max(enc_3_conv_relu_1[2*i][k], enc_3_conv_relu_1[2*i+1][k]);
+      array_2[i*ENC_3_CONV_RELU_1_OUTPUT_FEATURES+k] = max(enc_3_conv_relu_1[2*i][k], enc_3_conv_relu_1[2*i+1][k]);
     }
   }
   //----------------------------------------------------------------------------
@@ -302,10 +265,10 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<CENTRAL_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += enc_3_maxpool[l][j]*central_conv_relu_0_w[k*CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES+(l-i+CENTRAL_CONV_RELU_0_K/2)*CENTRAL_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*ENC_3_CONV_RELU_1_OUTPUT_FEATURES+j]*central_conv_relu_0_w[k*CENTRAL_CONV_RELU_0_K*CENTRAL_CONV_RELU_0_INPUT_FEATURES+(l-i+CENTRAL_CONV_RELU_0_K/2)*CENTRAL_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
-      central_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -320,11 +283,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<CENTRAL_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += central_conv_relu_0[l][j]*central_conv_relu_1_w[k*CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES+(l-i+CENTRAL_CONV_RELU_1_K/2)*CENTRAL_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+j]*central_conv_relu_1_w[k*CENTRAL_CONV_RELU_1_K*CENTRAL_CONV_RELU_1_INPUT_FEATURES+(l-i+CENTRAL_CONV_RELU_1_K/2)*CENTRAL_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      central_conv_relu_1[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
   //----------------------------------------------------------------------------
@@ -333,8 +296,10 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------dec_0_upsample---------------------------------
   for(int i=0; i<DEC_0_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_0_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_0_upsample[2*i][k] = central_conv_relu_1[i][k];
-      dec_0_upsample[2*i+1][k] = central_conv_relu_1[i][k];
+      //array_1[(2*i)*DEC_0_UP_CONV_RELU_INPUT_FEATURES+k] = array_2[i*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES+k];
+      //array_1[(2*i+1)*DEC_0_UP_CONV_RELU_INPUT_FEATURES+k] = array_2[i*CENTRAL_CONV_RELU_1_OUTPUT_FEATURES+k];
+      array_1[(2*i)*DEC_0_UP_CONV_RELU_INPUT_FEATURES+k] = array_2[i*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+k];
+      array_1[(2*i+1)*DEC_0_UP_CONV_RELU_INPUT_FEATURES+k] = array_2[i*CENTRAL_CONV_RELU_0_OUTPUT_FEATURES+k];
     }
   }
 
@@ -349,18 +314,18 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_0_upsample[l][j]*dec_0_up_conv_relu_w[k*DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_0_UP_CONV_RELU_K/2)*DEC_0_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*DEC_0_UP_CONV_RELU_INPUT_FEATURES+j]*dec_0_up_conv_relu_w[k*DEC_0_UP_CONV_RELU_K*DEC_0_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_0_UP_CONV_RELU_K/2)*DEC_0_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
-      dec_0_up_conv_relu[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
   //--------------------------dec_0_concatenate---------------------------------
   for(int i=0; i<DEC_0_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_0_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_0_concatenate[i][k] = enc_3_conv_relu_1[i][k];
-      dec_0_concatenate[i][k+DEC_0_UP_CONV_RELU_OUTPUT_FEATURES] = dec_0_up_conv_relu[i][k];
+      array_1[i*(DEC_0_UP_CONV_RELU_OUTPUT_FEATURES*2)+k] = enc_3_conv_relu_1[i][k];
+      array_1[i*(DEC_0_UP_CONV_RELU_OUTPUT_FEATURES*2)+(k+DEC_0_UP_CONV_RELU_OUTPUT_FEATURES)] = array_2[i*DEC_0_UP_CONV_RELU_OUTPUT_FEATURES+k];
     }
   }
 
@@ -375,10 +340,10 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_0_concatenate[l][j]*dec_0_conv_relu_0_w[k*DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_0_CONV_RELU_0_K/2)*DEC_0_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*(DEC_0_UP_CONV_RELU_OUTPUT_FEATURES*2)+j]*dec_0_conv_relu_0_w[k*DEC_0_CONV_RELU_0_K*DEC_0_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_0_CONV_RELU_0_K/2)*DEC_0_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
-      dec_0_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -393,11 +358,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_0_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_0_conv_relu_0[l][j]*dec_0_conv_relu_1_w[k*DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_0_CONV_RELU_1_K/2)*DEC_0_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+j]*dec_0_conv_relu_1_w[k*DEC_0_CONV_RELU_1_K*DEC_0_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_0_CONV_RELU_1_K/2)*DEC_0_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_0_conv_relu_1[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*DEC_0_CONV_RELU_1_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
   //----------------------------------------------------------------------------
@@ -406,8 +371,8 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------dec_1_upsample---------------------------------
   for(int i=0; i<DEC_1_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_1_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_1_upsample[2*i][k] = dec_0_conv_relu_1[i][k];
-      dec_1_upsample[2*i+1][k] = dec_0_conv_relu_1[i][k];
+      array_2[(2*i)*DEC_1_UP_CONV_RELU_INPUT_FEATURES+k] = array_1[i*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+k];
+      array_2[(2*i+1)*DEC_1_UP_CONV_RELU_INPUT_FEATURES+k] = array_1[i*DEC_0_CONV_RELU_0_OUTPUT_FEATURES+k];
     }
   }
 
@@ -422,19 +387,19 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_1_upsample[l][j]*dec_1_up_conv_relu_w[k*DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_1_UP_CONV_RELU_K/2)*DEC_1_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*DEC_1_UP_CONV_RELU_INPUT_FEATURES+j]*dec_1_up_conv_relu_w[k*DEC_1_UP_CONV_RELU_K*DEC_1_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_1_UP_CONV_RELU_K/2)*DEC_1_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_1_up_conv_relu[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
   //--------------------------dec_1_concatenate---------------------------------
   for(int i=0; i<DEC_1_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_1_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_1_concatenate[i][k] = enc_2_conv_relu_1[i][k];
-      dec_1_concatenate[i][k+DEC_1_UP_CONV_RELU_OUTPUT_FEATURES] = dec_1_up_conv_relu[i][k];
+      array_2[i*(DEC_1_UP_CONV_RELU_OUTPUT_FEATURES*2)+k] = enc_2_conv_relu_1[i][k];
+      array_2[i*(DEC_1_UP_CONV_RELU_OUTPUT_FEATURES*2)+(k+DEC_1_UP_CONV_RELU_OUTPUT_FEATURES)] = array_1[i*DEC_1_UP_CONV_RELU_OUTPUT_FEATURES+k];
     }
   }
 
@@ -449,11 +414,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_1_concatenate[l][j]*dec_1_conv_relu_0_w[k*DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_1_CONV_RELU_0_K/2)*DEC_1_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*(DEC_1_UP_CONV_RELU_OUTPUT_FEATURES*2)+j]*dec_1_conv_relu_0_w[k*DEC_1_CONV_RELU_0_K*DEC_1_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_1_CONV_RELU_0_K/2)*DEC_1_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_1_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*DEC_1_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -468,11 +433,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_1_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_1_conv_relu_0[l][j]*dec_1_conv_relu_1_w[k*DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_1_CONV_RELU_1_K/2)*DEC_1_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*DEC_1_CONV_RELU_0_OUTPUT_FEATURES+j]*dec_1_conv_relu_1_w[k*DEC_1_CONV_RELU_1_K*DEC_1_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_1_CONV_RELU_1_K/2)*DEC_1_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_1_conv_relu_1[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*DEC_1_CONV_RELU_1_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
   //----------------------------------------------------------------------------
@@ -481,8 +446,8 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------dec_2_upsample---------------------------------
   for(int i=0; i<DEC_2_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_2_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_2_upsample[2*i][k] = dec_1_conv_relu_1[i][k];
-      dec_2_upsample[2*i+1][k] = dec_1_conv_relu_1[i][k];
+      array_1[(2*i)*DEC_2_UP_CONV_RELU_INPUT_FEATURES+k] = array_2[i*DEC_1_CONV_RELU_1_OUTPUT_FEATURES+k];
+      array_1[(2*i+1)*DEC_2_UP_CONV_RELU_INPUT_FEATURES+k] = array_2[i*DEC_1_CONV_RELU_1_OUTPUT_FEATURES+k];
     }
   }
 
@@ -497,19 +462,19 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_2_upsample[l][j]*dec_2_up_conv_relu_w[k*DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_2_UP_CONV_RELU_K/2)*DEC_2_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*DEC_2_UP_CONV_RELU_INPUT_FEATURES+j]*dec_2_up_conv_relu_w[k*DEC_2_UP_CONV_RELU_K*DEC_2_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_2_UP_CONV_RELU_K/2)*DEC_2_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_2_up_conv_relu[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
   //--------------------------dec_2_concatenate---------------------------------
   for(int i=0; i<DEC_2_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_2_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_2_concatenate[i][k] = enc_1_conv_relu_1[i][k];
-      dec_2_concatenate[i][k+DEC_2_UP_CONV_RELU_OUTPUT_FEATURES] = dec_2_up_conv_relu[i][k];
+      array_1[i*(DEC_2_UP_CONV_RELU_OUTPUT_FEATURES*2)+k] = enc_1_conv_relu_1[i][k];
+      array_1[i*(DEC_2_UP_CONV_RELU_OUTPUT_FEATURES*2)+(k+DEC_2_UP_CONV_RELU_OUTPUT_FEATURES)] = array_2[i*DEC_2_UP_CONV_RELU_OUTPUT_FEATURES+k];
     }
   }
 
@@ -524,11 +489,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_2_concatenate[l][j]*dec_2_conv_relu_0_w[k*DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_2_CONV_RELU_0_K/2)*DEC_2_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*(DEC_2_UP_CONV_RELU_OUTPUT_FEATURES*2)+j]*dec_2_conv_relu_0_w[k*DEC_2_CONV_RELU_0_K*DEC_2_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_2_CONV_RELU_0_K/2)*DEC_2_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_2_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*DEC_2_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -543,11 +508,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_2_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_2_conv_relu_0[l][j]*dec_2_conv_relu_1_w[k*DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_2_CONV_RELU_1_K/2)*DEC_2_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*DEC_2_CONV_RELU_0_OUTPUT_FEATURES+j]*dec_2_conv_relu_1_w[k*DEC_2_CONV_RELU_1_K*DEC_2_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_2_CONV_RELU_1_K/2)*DEC_2_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_2_conv_relu_1[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*DEC_2_CONV_RELU_1_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
   //----------------------------------------------------------------------------
@@ -556,8 +521,8 @@ void Segmenter(datatype x[N*N_FEATURES],
   //-----------------------------dec_3_upsample---------------------------------
   for(int i=0; i<DEC_3_UP_CONV_RELU_N/2; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_3_UP_CONV_RELU_INPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_3_upsample[2*i][k] = dec_2_conv_relu_1[i][k];
-      dec_3_upsample[2*i+1][k] = dec_2_conv_relu_1[i][k];
+      array_2[(2*i)*DEC_3_UP_CONV_RELU_INPUT_FEATURES+k] = array_1[i*DEC_2_CONV_RELU_1_OUTPUT_FEATURES+k];
+      array_2[(2*i+1)*DEC_3_UP_CONV_RELU_INPUT_FEATURES+k] = array_1[i*DEC_2_CONV_RELU_1_OUTPUT_FEATURES+k];
     }
   }
 
@@ -572,19 +537,19 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_UP_CONV_RELU_INPUT_FEATURES; j++){
-          acc += dec_3_upsample[l][j]*dec_3_up_conv_relu_w[k*DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_3_UP_CONV_RELU_K/2)*DEC_3_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*DEC_3_UP_CONV_RELU_INPUT_FEATURES+j]*dec_3_up_conv_relu_w[k*DEC_3_UP_CONV_RELU_K*DEC_3_UP_CONV_RELU_INPUT_FEATURES+(l-i+DEC_3_UP_CONV_RELU_K/2)*DEC_3_UP_CONV_RELU_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_3_up_conv_relu[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
   //--------------------------dec_3_concatenate---------------------------------
   for(int i=0; i<DEC_3_UP_CONV_RELU_N; i++){  // Iterate over the input matrix
     for(int k=0; k<DEC_3_UP_CONV_RELU_OUTPUT_FEATURES; k++){  // Iterate over the number of filters
-      dec_3_concatenate[i][k] = enc_0_conv_relu_1[i][k];
-      dec_3_concatenate[i][k+DEC_3_UP_CONV_RELU_OUTPUT_FEATURES] = dec_3_up_conv_relu[i][k];
+      array_2[i*(DEC_3_UP_CONV_RELU_OUTPUT_FEATURES*2)+k] = enc_0_conv_relu_1[i][k];
+      array_2[i*(DEC_3_UP_CONV_RELU_OUTPUT_FEATURES*2)+(k+DEC_3_UP_CONV_RELU_OUTPUT_FEATURES)] = array_1[i*DEC_3_UP_CONV_RELU_OUTPUT_FEATURES+k];
     }
   }
 
@@ -599,11 +564,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += dec_3_concatenate[l][j]*dec_3_conv_relu_0_w[k*DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_3_CONV_RELU_0_K/2)*DEC_3_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*(DEC_3_UP_CONV_RELU_OUTPUT_FEATURES*2)+j]*dec_3_conv_relu_0_w[k*DEC_3_CONV_RELU_0_K*DEC_3_CONV_RELU_0_INPUT_FEATURES+(l-i+DEC_3_CONV_RELU_0_K/2)*DEC_3_CONV_RELU_0_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_3_conv_relu_0[i][k] = ReLU(acc); // Save the accumulator value
+      array_1[i*DEC_3_CONV_RELU_0_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
 
@@ -618,11 +583,11 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<DEC_3_CONV_RELU_1_INPUT_FEATURES; j++){
-          acc += dec_3_conv_relu_0[l][j]*dec_3_conv_relu_1_w[k*DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_3_CONV_RELU_1_K/2)*DEC_3_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_1[l*DEC_3_CONV_RELU_0_OUTPUT_FEATURES+j]*dec_3_conv_relu_1_w[k*DEC_3_CONV_RELU_1_K*DEC_3_CONV_RELU_1_INPUT_FEATURES+(l-i+DEC_3_CONV_RELU_1_K/2)*DEC_3_CONV_RELU_1_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      dec_3_conv_relu_1[i][k] = ReLU(acc); // Save the accumulator value
+      array_2[i*DEC_3_CONV_RELU_1_OUTPUT_FEATURES+k] = ReLU(acc); // Save the accumulator value
     }  
   }
   //----------------------------------------------------------------------------
@@ -638,19 +603,18 @@ void Segmenter(datatype x[N*N_FEATURES],
 
       for(int l=l_min; l<l_max; l++){
         for(int j=0; j<FINAL_CONV_INPUT_FEATURES; j++){
-          acc += dec_3_conv_relu_1[l][j]*final_conv_w[k*FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES+(l-i+FINAL_CONV_K/2)*FINAL_CONV_INPUT_FEATURES+j];  // Multiply the input and the weight
+          acc += array_2[l*DEC_3_CONV_RELU_1_OUTPUT_FEATURES+j]*final_conv_w[k*FINAL_CONV_K*FINAL_CONV_INPUT_FEATURES+(l-i+FINAL_CONV_K/2)*FINAL_CONV_INPUT_FEATURES+j];  // Multiply the input and the weight
         }
       }
 
-      final_conv[i][k] = acc; // Save the accumulator value
+      array_1[i*FINAL_CONV_OUTPUT_FEATURES+k] = acc; // Save the accumulator value
     }  
   }
 
   //----------------------------softmax-----------------------------------------
   for(int i=0; i<FINAL_CONV_N; i++){  // Iterate over the input matrix
-    Softmax(final_conv[i], y[i]);
+    Softmax((array_1+i*N_STATES), y[i]);
   }
   //----------------------------------------------------------------------------
-
   //CALLGRIND_STOP_INSTRUMENTATION;
 }
