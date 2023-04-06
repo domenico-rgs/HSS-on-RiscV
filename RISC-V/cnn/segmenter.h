@@ -19,16 +19,20 @@
 
 #include <math.h> 
 #include <stdio.h>
+#include <stdint.h>
 
 //#include <valgrind/callgrind.h>
 
-#define FLOAT
+#define FP16INT
 
 #ifdef DOUBLE
     typedef double datatype;
 #endif
 #ifdef FLOAT
     typedef float datatype;
+#endif
+#ifdef FP16INT
+    typedef int16_t datatype;
 #endif
 /*------------------------------------------------------------------------------
 -------------------------------TESTING METHOD PARAMETERS------------------------
@@ -168,6 +172,7 @@
 #define FINAL_CONV_N N //Number of frames in the time dimension of the final_conv layer
 
 #define EPSILON 1e-8
+#define FXP 14
 
 
 void Segmenter(datatype x[N*N_FEATURES],

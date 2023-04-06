@@ -30,4 +30,4 @@ Rectified Linear Unit implementation.
 })
 
 void Argmax(datatype x[N_STATES], datatype y[N_STATES]);
-void Softmax(datatype x[N_STATES], datatype y[N_STATES]);
+void Softmax(datatype x[N_STATES], float y[N_STATES]);

@@ -1,22 +1,22 @@
 #include "functions.h"
 
 /*
-Softmax implementation
+Softmax implementation - CAN'T BE USE IF WE NOT USE F EXTENSION IN RISC-V
   Args:
     x - Input array to perform softmax
     y - Array to save the softmax resultant values
 */
-void Softmax(datatype x[N_STATES], datatype y[N_STATES]) {
-  datatype expx[N_STATES];
-  datatype expsum = 0;
+void Softmax(datatype x[N_STATES], float y[N_STATES]) {
+  float expx[N_STATES];
+  float expsum = 0;
 
   for (int i = 0; i < N_STATES; i++) {
-    #ifdef FLOAT
-    expx[i] = expf(x[i]);
-    #endif
-    #ifdef DOUBLE
-    expx[i] = exp(x[i]);
-    #endif 
+    //#ifdef FLOAT
+    expx[i] = expf((int32_t)x[i]/((float)(1<<10)));
+    //#endif
+    //#ifdef DOUBLE
+    //expx[i] = exp(x[i]);
+    //#endif 
     expsum += expx[i];
   }
 
@@ -37,7 +37,7 @@ Argmax implementation
     y - Array to save the argmax resultant values
 */
 void Argmax(datatype x[N_STATES], datatype y[N_STATES]) {
-  datatype maxvalue = __FLT_MIN__;
+  datatype maxvalue = INT16_MIN;
   int maxindex = 0;
 
   for (int i = 0; i < N_STATES; i++) {
@@ -49,7 +49,7 @@ void Argmax(datatype x[N_STATES], datatype y[N_STATES]) {
 
   for (int i = 0; i < N_STATES; i++) {
     if (i == maxindex) {
-      y[i] = 1;
+      y[i] = 1; //no need for quantization, we only need to know if it's 1 or 0 (read as it is)
     } else {
       y[i] = 0;
     }
