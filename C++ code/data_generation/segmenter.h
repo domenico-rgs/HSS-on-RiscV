@@ -19,23 +19,19 @@
 -------------------------------DEFINING DATA TYPE-------------------------------
 ------------------------------------------------------------------------------*/
 
-// #define FIXED // FLOAT or FIXED
-//#define FLOAT // FLOAT or FIXED
+#define FP16INT
 
 /*------------------------------------------------------------------------------
 -------------------------------DEPENDENCIES-------------------------------------
 ------------------------------------------------------------------------------*/
+#include <algorithm>
+#include <math.h>
 
-#include <algorithm> //To use max() and min() (for 'same' padding method)
-// // // #ifdef FIXED
-// // //     #include "ap_fixed.h" //Fixed type support
-// // //     #include "hls_math.h" //If fixed type is used
-// // // #endif
-// #ifdef FLOAT
-//     #include <cmath> //If float type is used
-// #endif
-
-#define FLOAT
+#ifdef DOUBLE
+    typedef double arraytype;
+#else
+    typedef float arraytype;
+#endif
 
 #ifdef DOUBLE
     typedef double datatype;
@@ -44,8 +40,31 @@
     typedef float datatype;
 #endif
 
-#define PRECISION 18
+#ifdef FP16INT
+    typedef int16_t datatype;
+	#define FXP 16
 
+int16_t quantize(float a, int fxp){
+	int32_t maxVal = ((1 << (FXP-1)) - 1);
+	int32_t value = roundf(a * (1 << fxp)); //mapping + rounding
+	//int32_t value = a * (1 << fxp); //mapping without rounding
+
+	//clipping
+	if(value > maxVal){
+		return (int16_t)maxVal;
+	}else if(value < -maxVal-1){
+		return (int16_t)(-maxVal-1);
+	}else{
+		return (int16_t)value;
+	}
+}
+
+float dequantize(int32_t val, int fxp){
+	return val/((float)(1<<fxp));
+}
+#else
+	#define PRECISION 18
+#endif
 
 /*------------------------------------------------------------------------------
 -------------------------------TESTING METHOD PARAMETERS------------------------
@@ -182,46 +201,3 @@
 #define FINAL_CONV_INPUT_FEATURES BASE_FILTER_SIZE //Number of input features of the final_conv layer
 #define FINAL_CONV_OUTPUT_FEATURES N_STATES //Number of output features of the final_conv layer
 #define FINAL_CONV_N N //Number of frames in the time dimension of the final_conv layer
-
-/*------------------------------------------------------------------------------
------------------------------NEURAL NETWORK DATATYPES---------------------------
-------------------------------------------------------------------------------*/
-// #ifdef FIXED
-//     typedef ap_fixed<16,8,AP_RND,AP_SAT> apfixed;
-//     typedef int apint;
-//     typedef ap_uint<18> apuint;
-// #endif
-// #ifdef FLOAT
-//     typedef float apfixed;
-//     typedef int apint;
-//     typedef int apuint;
-// #endif
-
-
-// using namespace std;
-
-// void Segmenter(float x[N][N_FEATURES],
-//                float enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K][ENC_0_CONV_RELU_0_INPUT_FEATURES][ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
-//                float enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_K][ENC_0_CONV_RELU_1_INPUT_FEATURES][ENC_0_CONV_RELU_1_OUTPUT_FEATURES],
-//                float enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_K][ENC_1_CONV_RELU_0_INPUT_FEATURES][ENC_1_CONV_RELU_0_OUTPUT_FEATURES],
-//                float enc_1_conv_relu_1_w[ENC_1_CONV_RELU_1_K][ENC_1_CONV_RELU_1_INPUT_FEATURES][ENC_1_CONV_RELU_1_OUTPUT_FEATURES],
-//                float enc_2_conv_relu_0_w[ENC_2_CONV_RELU_0_K][ENC_2_CONV_RELU_0_INPUT_FEATURES][ENC_2_CONV_RELU_0_OUTPUT_FEATURES],
-//                float enc_2_conv_relu_1_w[ENC_2_CONV_RELU_1_K][ENC_2_CONV_RELU_1_INPUT_FEATURES][ENC_2_CONV_RELU_1_OUTPUT_FEATURES],
-//                float enc_3_conv_relu_0_w[ENC_3_CONV_RELU_0_K][ENC_3_CONV_RELU_0_INPUT_FEATURES][ENC_3_CONV_RELU_0_OUTPUT_FEATURES],
-//                float enc_3_conv_relu_1_w[ENC_3_CONV_RELU_1_K][ENC_3_CONV_RELU_1_INPUT_FEATURES][ENC_3_CONV_RELU_1_OUTPUT_FEATURES],
-//                float central_conv_relu_0_w[CENTRAL_CONV_RELU_0_K][CENTRAL_CONV_RELU_0_INPUT_FEATURES][CENTRAL_CONV_RELU_0_OUTPUT_FEATURES],
-//                float central_conv_relu_1_w[CENTRAL_CONV_RELU_1_K][CENTRAL_CONV_RELU_1_INPUT_FEATURES][CENTRAL_CONV_RELU_1_OUTPUT_FEATURES],
-//                float dec_0_up_conv_relu_w[DEC_0_UP_CONV_RELU_K][DEC_0_UP_CONV_RELU_INPUT_FEATURES][DEC_0_UP_CONV_RELU_OUTPUT_FEATURES],
-//                float dec_0_conv_relu_0_w[DEC_0_CONV_RELU_0_K][DEC_0_CONV_RELU_0_INPUT_FEATURES][DEC_0_CONV_RELU_0_OUTPUT_FEATURES],
-//                float dec_0_conv_relu_1_w[DEC_0_CONV_RELU_1_K][DEC_0_CONV_RELU_1_INPUT_FEATURES][DEC_0_CONV_RELU_1_OUTPUT_FEATURES],
-//                float dec_1_up_conv_relu_w[DEC_1_UP_CONV_RELU_K][DEC_1_UP_CONV_RELU_INPUT_FEATURES][DEC_1_UP_CONV_RELU_OUTPUT_FEATURES],
-//                float dec_1_conv_relu_0_w[DEC_1_CONV_RELU_0_K][DEC_1_CONV_RELU_0_INPUT_FEATURES][DEC_1_CONV_RELU_0_OUTPUT_FEATURES],
-//                float dec_1_conv_relu_1_w[DEC_1_CONV_RELU_1_K][DEC_1_CONV_RELU_1_INPUT_FEATURES][DEC_1_CONV_RELU_1_OUTPUT_FEATURES],
-//                float dec_2_up_conv_relu_w[DEC_2_UP_CONV_RELU_K][DEC_2_UP_CONV_RELU_INPUT_FEATURES][DEC_2_UP_CONV_RELU_OUTPUT_FEATURES],
-//                float dec_2_conv_relu_0_w[DEC_2_CONV_RELU_0_K][DEC_2_CONV_RELU_0_INPUT_FEATURES][DEC_2_CONV_RELU_0_OUTPUT_FEATURES],
-//                float dec_2_conv_relu_1_w[DEC_2_CONV_RELU_1_K][DEC_2_CONV_RELU_1_INPUT_FEATURES][DEC_2_CONV_RELU_1_OUTPUT_FEATURES],
-//                float dec_3_up_conv_relu_w[DEC_3_UP_CONV_RELU_K][DEC_3_UP_CONV_RELU_INPUT_FEATURES][DEC_3_UP_CONV_RELU_OUTPUT_FEATURES],
-//                float dec_3_conv_relu_0_w[DEC_3_CONV_RELU_0_K][DEC_3_CONV_RELU_0_INPUT_FEATURES][DEC_3_CONV_RELU_0_OUTPUT_FEATURES],
-//                float dec_3_conv_relu_1_w[DEC_3_CONV_RELU_1_K][DEC_3_CONV_RELU_1_INPUT_FEATURES][DEC_3_CONV_RELU_1_OUTPUT_FEATURES],
-//                float final_conv_w[FINAL_CONV_K][FINAL_CONV_INPUT_FEATURES][FINAL_CONV_OUTPUT_FEATURES],
-//                float y[N][N_STATES]);

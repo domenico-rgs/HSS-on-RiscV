@@ -30,7 +30,7 @@ using namespace std;
 #define MAX_NDARRAY_DIM 4 //Maximum dimensions in a NDARRAY
 
 
-datatype TextStringToDouble(string words, int nbytes) {
+arraytype TextStringToDouble(string words, int nbytes) {
   /* Takes a string containing binary data and returns the value
   associated to its representation, that could be either Float32
   (float) or Float64 (double).
@@ -72,7 +72,7 @@ datatype TextStringToDouble(string words, int nbytes) {
   }
 }
 
-void GetFlatArrFromNpy(string npypath, datatype ndarray[MAX_NDARRAY_SIZE], int shape[MAX_NDARRAY_DIM]){
+void GetFlatArrFromNpy(string npypath, arraytype ndarray[MAX_NDARRAY_SIZE], int shape[MAX_NDARRAY_DIM]){
   /* Takes the path to a npy file containing a Numpy's n dimensional
   array of with np.single or np.double datatypes and fills ndarray with
   the flattened version the array and shape with the original shape.

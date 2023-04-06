@@ -23,19 +23,16 @@
 #include "segmenter.h"
 #include "npy_reading.h"
 
-// #ifdef FLOAT
-//     #include "segmenter.cpp"
-// #endif
+#ifdef FP16INT
+    #define FXP_VALUE 14
+#endif
 
 using namespace std;
 
-int main()
-{
-
+int main(){
     setvbuf(stdout, NULL, _IONBF, 0);
 
     printf("Program started\n");
-    // cout << "Program started" << endl;
 
     // Root path of the model
     string model_path = "/home/domenico/Desktop/Unipv/Magistrale/Thesis/PCG-CNN/parameters/";
@@ -44,113 +41,110 @@ int main()
     //------------------------INITIALIZE ARRAYS---------------------------------
 
     // Initialize model parameters variables
-
-    datatype enc_0_conv_relu_0_tmp[ENC_0_CONV_RELU_0_K * ENC_0_CONV_RELU_0_INPUT_FEATURES * ENC_0_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype enc_0_conv_relu_0_tmp[ENC_0_CONV_RELU_0_K * ENC_0_CONV_RELU_0_INPUT_FEATURES * ENC_0_CONV_RELU_0_OUTPUT_FEATURES];
     int enc_0_conv_relu_0_shape[4];
-    datatype enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_OUTPUT_FEATURES][ENC_0_CONV_RELU_0_K][ENC_0_CONV_RELU_0_INPUT_FEATURES];
+    arraytype enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_OUTPUT_FEATURES][ENC_0_CONV_RELU_0_K][ENC_0_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype enc_0_conv_relu_1_tmp[ENC_0_CONV_RELU_1_K * ENC_0_CONV_RELU_1_INPUT_FEATURES * ENC_0_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype enc_0_conv_relu_1_tmp[ENC_0_CONV_RELU_1_K * ENC_0_CONV_RELU_1_INPUT_FEATURES * ENC_0_CONV_RELU_1_OUTPUT_FEATURES];
     int enc_0_conv_relu_1_shape[4];
-    datatype enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_OUTPUT_FEATURES][ENC_0_CONV_RELU_1_K][ENC_0_CONV_RELU_1_INPUT_FEATURES];
+    arraytype enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_OUTPUT_FEATURES][ENC_0_CONV_RELU_1_K][ENC_0_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype enc_1_conv_relu_0_tmp[ENC_1_CONV_RELU_0_K * ENC_1_CONV_RELU_0_INPUT_FEATURES * ENC_1_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype enc_1_conv_relu_0_tmp[ENC_1_CONV_RELU_0_K * ENC_1_CONV_RELU_0_INPUT_FEATURES * ENC_1_CONV_RELU_0_OUTPUT_FEATURES];
     int enc_1_conv_relu_0_shape[4];
-    datatype enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_OUTPUT_FEATURES][ENC_1_CONV_RELU_0_K][ENC_1_CONV_RELU_0_INPUT_FEATURES];
+    arraytype enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_OUTPUT_FEATURES][ENC_1_CONV_RELU_0_K][ENC_1_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype enc_1_conv_relu_1_tmp[ENC_1_CONV_RELU_1_K * ENC_1_CONV_RELU_1_INPUT_FEATURES * ENC_1_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype enc_1_conv_relu_1_tmp[ENC_1_CONV_RELU_1_K * ENC_1_CONV_RELU_1_INPUT_FEATURES * ENC_1_CONV_RELU_1_OUTPUT_FEATURES];
     int enc_1_conv_relu_1_shape[4];
-    datatype enc_1_conv_relu_1_w[ENC_1_CONV_RELU_1_OUTPUT_FEATURES][ENC_1_CONV_RELU_1_K][ENC_1_CONV_RELU_1_INPUT_FEATURES];
+    arraytype enc_1_conv_relu_1_w[ENC_1_CONV_RELU_1_OUTPUT_FEATURES][ENC_1_CONV_RELU_1_K][ENC_1_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype enc_2_conv_relu_0_tmp[ENC_2_CONV_RELU_0_K * ENC_2_CONV_RELU_0_INPUT_FEATURES * ENC_2_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype enc_2_conv_relu_0_tmp[ENC_2_CONV_RELU_0_K * ENC_2_CONV_RELU_0_INPUT_FEATURES * ENC_2_CONV_RELU_0_OUTPUT_FEATURES];
     int enc_2_conv_relu_0_shape[4];
-    datatype enc_2_conv_relu_0_w[ENC_2_CONV_RELU_0_OUTPUT_FEATURES][ENC_2_CONV_RELU_0_K][ENC_2_CONV_RELU_0_INPUT_FEATURES];
+    arraytype enc_2_conv_relu_0_w[ENC_2_CONV_RELU_0_OUTPUT_FEATURES][ENC_2_CONV_RELU_0_K][ENC_2_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype enc_2_conv_relu_1_tmp[ENC_2_CONV_RELU_1_K * ENC_2_CONV_RELU_1_INPUT_FEATURES * ENC_2_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype enc_2_conv_relu_1_tmp[ENC_2_CONV_RELU_1_K * ENC_2_CONV_RELU_1_INPUT_FEATURES * ENC_2_CONV_RELU_1_OUTPUT_FEATURES];
     int enc_2_conv_relu_1_shape[4];
-    datatype enc_2_conv_relu_1_w[ENC_2_CONV_RELU_1_OUTPUT_FEATURES][ENC_2_CONV_RELU_1_K][ENC_2_CONV_RELU_1_INPUT_FEATURES];
+    arraytype enc_2_conv_relu_1_w[ENC_2_CONV_RELU_1_OUTPUT_FEATURES][ENC_2_CONV_RELU_1_K][ENC_2_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype enc_3_conv_relu_0_tmp[ENC_3_CONV_RELU_0_K * ENC_3_CONV_RELU_0_INPUT_FEATURES * ENC_3_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype enc_3_conv_relu_0_tmp[ENC_3_CONV_RELU_0_K * ENC_3_CONV_RELU_0_INPUT_FEATURES * ENC_3_CONV_RELU_0_OUTPUT_FEATURES];
     int enc_3_conv_relu_0_shape[4];
-    datatype enc_3_conv_relu_0_w[ENC_3_CONV_RELU_0_OUTPUT_FEATURES][ENC_3_CONV_RELU_0_K][ENC_3_CONV_RELU_0_INPUT_FEATURES];
+    arraytype enc_3_conv_relu_0_w[ENC_3_CONV_RELU_0_OUTPUT_FEATURES][ENC_3_CONV_RELU_0_K][ENC_3_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype enc_3_conv_relu_1_tmp[ENC_3_CONV_RELU_1_K * ENC_3_CONV_RELU_1_INPUT_FEATURES * ENC_3_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype enc_3_conv_relu_1_tmp[ENC_3_CONV_RELU_1_K * ENC_3_CONV_RELU_1_INPUT_FEATURES * ENC_3_CONV_RELU_1_OUTPUT_FEATURES];
     int enc_3_conv_relu_1_shape[4];
-    datatype enc_3_conv_relu_1_w[ENC_3_CONV_RELU_1_OUTPUT_FEATURES][ENC_3_CONV_RELU_1_K][ENC_3_CONV_RELU_1_INPUT_FEATURES];
+    arraytype enc_3_conv_relu_1_w[ENC_3_CONV_RELU_1_OUTPUT_FEATURES][ENC_3_CONV_RELU_1_K][ENC_3_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype central_conv_relu_0_tmp[CENTRAL_CONV_RELU_0_K * CENTRAL_CONV_RELU_0_INPUT_FEATURES * CENTRAL_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype central_conv_relu_0_tmp[CENTRAL_CONV_RELU_0_K * CENTRAL_CONV_RELU_0_INPUT_FEATURES * CENTRAL_CONV_RELU_0_OUTPUT_FEATURES];
     int central_conv_relu_0_shape[4];
-    datatype central_conv_relu_0_w[CENTRAL_CONV_RELU_0_OUTPUT_FEATURES][CENTRAL_CONV_RELU_0_K][CENTRAL_CONV_RELU_0_INPUT_FEATURES];
+    arraytype central_conv_relu_0_w[CENTRAL_CONV_RELU_0_OUTPUT_FEATURES][CENTRAL_CONV_RELU_0_K][CENTRAL_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype central_conv_relu_1_tmp[CENTRAL_CONV_RELU_1_K * CENTRAL_CONV_RELU_1_INPUT_FEATURES * CENTRAL_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype central_conv_relu_1_tmp[CENTRAL_CONV_RELU_1_K * CENTRAL_CONV_RELU_1_INPUT_FEATURES * CENTRAL_CONV_RELU_1_OUTPUT_FEATURES];
     int central_conv_relu_1_shape[4];
-    datatype central_conv_relu_1_w[CENTRAL_CONV_RELU_1_OUTPUT_FEATURES][CENTRAL_CONV_RELU_1_K][CENTRAL_CONV_RELU_1_INPUT_FEATURES];
+    arraytype central_conv_relu_1_w[CENTRAL_CONV_RELU_1_OUTPUT_FEATURES][CENTRAL_CONV_RELU_1_K][CENTRAL_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype dec_0_up_conv_relu_tmp[DEC_0_UP_CONV_RELU_K * DEC_0_UP_CONV_RELU_INPUT_FEATURES * DEC_0_UP_CONV_RELU_OUTPUT_FEATURES];
+    arraytype dec_0_up_conv_relu_tmp[DEC_0_UP_CONV_RELU_K * DEC_0_UP_CONV_RELU_INPUT_FEATURES * DEC_0_UP_CONV_RELU_OUTPUT_FEATURES];
     int dec_0_up_conv_relu_shape[4];
-    datatype dec_0_up_conv_relu_w[DEC_0_UP_CONV_RELU_OUTPUT_FEATURES][DEC_0_UP_CONV_RELU_K][DEC_0_UP_CONV_RELU_INPUT_FEATURES];
+    arraytype dec_0_up_conv_relu_w[DEC_0_UP_CONV_RELU_OUTPUT_FEATURES][DEC_0_UP_CONV_RELU_K][DEC_0_UP_CONV_RELU_INPUT_FEATURES];
 
-    datatype dec_0_conv_relu_0_tmp[DEC_0_CONV_RELU_0_K * DEC_0_CONV_RELU_0_INPUT_FEATURES * DEC_0_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype dec_0_conv_relu_0_tmp[DEC_0_CONV_RELU_0_K * DEC_0_CONV_RELU_0_INPUT_FEATURES * DEC_0_CONV_RELU_0_OUTPUT_FEATURES];
     int dec_0_conv_relu_0_shape[4];
-    datatype dec_0_conv_relu_0_w[DEC_0_CONV_RELU_0_OUTPUT_FEATURES][DEC_0_CONV_RELU_0_K][DEC_0_CONV_RELU_0_INPUT_FEATURES];
+    arraytype dec_0_conv_relu_0_w[DEC_0_CONV_RELU_0_OUTPUT_FEATURES][DEC_0_CONV_RELU_0_K][DEC_0_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype dec_0_conv_relu_1_tmp[DEC_0_CONV_RELU_1_K * DEC_0_CONV_RELU_1_INPUT_FEATURES * DEC_0_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype dec_0_conv_relu_1_tmp[DEC_0_CONV_RELU_1_K * DEC_0_CONV_RELU_1_INPUT_FEATURES * DEC_0_CONV_RELU_1_OUTPUT_FEATURES];
     int dec_0_conv_relu_1_shape[4];
-    datatype dec_0_conv_relu_1_w[DEC_0_CONV_RELU_1_OUTPUT_FEATURES][DEC_0_CONV_RELU_1_K][DEC_0_CONV_RELU_1_INPUT_FEATURES];
+    arraytype dec_0_conv_relu_1_w[DEC_0_CONV_RELU_1_OUTPUT_FEATURES][DEC_0_CONV_RELU_1_K][DEC_0_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype dec_1_up_conv_relu_tmp[DEC_1_UP_CONV_RELU_K * DEC_1_UP_CONV_RELU_INPUT_FEATURES * DEC_1_UP_CONV_RELU_OUTPUT_FEATURES];
+    arraytype dec_1_up_conv_relu_tmp[DEC_1_UP_CONV_RELU_K * DEC_1_UP_CONV_RELU_INPUT_FEATURES * DEC_1_UP_CONV_RELU_OUTPUT_FEATURES];
     int dec_1_up_conv_relu_shape[4];
-    datatype dec_1_up_conv_relu_w[DEC_1_UP_CONV_RELU_OUTPUT_FEATURES][DEC_1_UP_CONV_RELU_K][DEC_1_UP_CONV_RELU_INPUT_FEATURES];
+    arraytype dec_1_up_conv_relu_w[DEC_1_UP_CONV_RELU_OUTPUT_FEATURES][DEC_1_UP_CONV_RELU_K][DEC_1_UP_CONV_RELU_INPUT_FEATURES];
 
-    datatype dec_1_conv_relu_0_tmp[DEC_1_CONV_RELU_0_K * DEC_1_CONV_RELU_0_INPUT_FEATURES * DEC_1_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype dec_1_conv_relu_0_tmp[DEC_1_CONV_RELU_0_K * DEC_1_CONV_RELU_0_INPUT_FEATURES * DEC_1_CONV_RELU_0_OUTPUT_FEATURES];
     int dec_1_conv_relu_0_shape[4];
-    datatype dec_1_conv_relu_0_w[DEC_1_CONV_RELU_0_OUTPUT_FEATURES][DEC_1_CONV_RELU_0_K][DEC_1_CONV_RELU_0_INPUT_FEATURES];
+    arraytype dec_1_conv_relu_0_w[DEC_1_CONV_RELU_0_OUTPUT_FEATURES][DEC_1_CONV_RELU_0_K][DEC_1_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype dec_1_conv_relu_1_tmp[DEC_1_CONV_RELU_1_K * DEC_1_CONV_RELU_1_INPUT_FEATURES * DEC_1_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype dec_1_conv_relu_1_tmp[DEC_1_CONV_RELU_1_K * DEC_1_CONV_RELU_1_INPUT_FEATURES * DEC_1_CONV_RELU_1_OUTPUT_FEATURES];
     int dec_1_conv_relu_1_shape[4];
-    datatype dec_1_conv_relu_1_w[DEC_1_CONV_RELU_1_OUTPUT_FEATURES][DEC_1_CONV_RELU_1_K][DEC_1_CONV_RELU_1_INPUT_FEATURES];
+    arraytype dec_1_conv_relu_1_w[DEC_1_CONV_RELU_1_OUTPUT_FEATURES][DEC_1_CONV_RELU_1_K][DEC_1_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype dec_2_up_conv_relu_tmp[DEC_2_UP_CONV_RELU_K * DEC_2_UP_CONV_RELU_INPUT_FEATURES * DEC_2_UP_CONV_RELU_OUTPUT_FEATURES];
+    arraytype dec_2_up_conv_relu_tmp[DEC_2_UP_CONV_RELU_K * DEC_2_UP_CONV_RELU_INPUT_FEATURES * DEC_2_UP_CONV_RELU_OUTPUT_FEATURES];
     int dec_2_up_conv_relu_shape[4];
-    datatype dec_2_up_conv_relu_w[DEC_2_UP_CONV_RELU_OUTPUT_FEATURES][DEC_2_UP_CONV_RELU_K][DEC_2_UP_CONV_RELU_INPUT_FEATURES];
+    arraytype dec_2_up_conv_relu_w[DEC_2_UP_CONV_RELU_OUTPUT_FEATURES][DEC_2_UP_CONV_RELU_K][DEC_2_UP_CONV_RELU_INPUT_FEATURES];
 
-    datatype dec_2_conv_relu_0_tmp[DEC_2_CONV_RELU_0_K * DEC_2_CONV_RELU_0_INPUT_FEATURES * DEC_2_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype dec_2_conv_relu_0_tmp[DEC_2_CONV_RELU_0_K * DEC_2_CONV_RELU_0_INPUT_FEATURES * DEC_2_CONV_RELU_0_OUTPUT_FEATURES];
     int dec_2_conv_relu_0_shape[4];
-    datatype dec_2_conv_relu_0_w[DEC_2_CONV_RELU_0_OUTPUT_FEATURES][DEC_2_CONV_RELU_0_K][DEC_2_CONV_RELU_0_INPUT_FEATURES];
+    arraytype dec_2_conv_relu_0_w[DEC_2_CONV_RELU_0_OUTPUT_FEATURES][DEC_2_CONV_RELU_0_K][DEC_2_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype dec_2_conv_relu_1_tmp[DEC_2_CONV_RELU_1_K * DEC_2_CONV_RELU_1_INPUT_FEATURES * DEC_2_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype dec_2_conv_relu_1_tmp[DEC_2_CONV_RELU_1_K * DEC_2_CONV_RELU_1_INPUT_FEATURES * DEC_2_CONV_RELU_1_OUTPUT_FEATURES];
     int dec_2_conv_relu_1_shape[4];
-    datatype dec_2_conv_relu_1_w[DEC_2_CONV_RELU_1_OUTPUT_FEATURES][DEC_2_CONV_RELU_1_K][DEC_2_CONV_RELU_1_INPUT_FEATURES];
+    arraytype dec_2_conv_relu_1_w[DEC_2_CONV_RELU_1_OUTPUT_FEATURES][DEC_2_CONV_RELU_1_K][DEC_2_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype dec_3_up_conv_relu_tmp[DEC_3_UP_CONV_RELU_K * DEC_3_UP_CONV_RELU_INPUT_FEATURES * DEC_3_UP_CONV_RELU_OUTPUT_FEATURES];
+    arraytype dec_3_up_conv_relu_tmp[DEC_3_UP_CONV_RELU_K * DEC_3_UP_CONV_RELU_INPUT_FEATURES * DEC_3_UP_CONV_RELU_OUTPUT_FEATURES];
     int dec_3_up_conv_relu_shape[4];
-    datatype dec_3_up_conv_relu_w[DEC_3_UP_CONV_RELU_OUTPUT_FEATURES][DEC_3_UP_CONV_RELU_K][DEC_3_UP_CONV_RELU_INPUT_FEATURES];
+    arraytype dec_3_up_conv_relu_w[DEC_3_UP_CONV_RELU_OUTPUT_FEATURES][DEC_3_UP_CONV_RELU_K][DEC_3_UP_CONV_RELU_INPUT_FEATURES];
 
-    datatype dec_3_conv_relu_0_tmp[DEC_3_CONV_RELU_0_K * DEC_3_CONV_RELU_0_INPUT_FEATURES * DEC_3_CONV_RELU_0_OUTPUT_FEATURES];
+    arraytype dec_3_conv_relu_0_tmp[DEC_3_CONV_RELU_0_K * DEC_3_CONV_RELU_0_INPUT_FEATURES * DEC_3_CONV_RELU_0_OUTPUT_FEATURES];
     int dec_3_conv_relu_0_shape[4];
-    datatype dec_3_conv_relu_0_w[DEC_3_CONV_RELU_0_OUTPUT_FEATURES][DEC_3_CONV_RELU_0_K][DEC_3_CONV_RELU_0_INPUT_FEATURES];
+    arraytype dec_3_conv_relu_0_w[DEC_3_CONV_RELU_0_OUTPUT_FEATURES][DEC_3_CONV_RELU_0_K][DEC_3_CONV_RELU_0_INPUT_FEATURES];
 
-    datatype dec_3_conv_relu_1_tmp[DEC_3_CONV_RELU_1_K * DEC_3_CONV_RELU_1_INPUT_FEATURES * DEC_3_CONV_RELU_1_OUTPUT_FEATURES];
+    arraytype dec_3_conv_relu_1_tmp[DEC_3_CONV_RELU_1_K * DEC_3_CONV_RELU_1_INPUT_FEATURES * DEC_3_CONV_RELU_1_OUTPUT_FEATURES];
     int dec_3_conv_relu_1_shape[4];
-    datatype dec_3_conv_relu_1_w[DEC_3_CONV_RELU_1_OUTPUT_FEATURES][DEC_3_CONV_RELU_1_K][DEC_3_CONV_RELU_1_INPUT_FEATURES];
+    arraytype dec_3_conv_relu_1_w[DEC_3_CONV_RELU_1_OUTPUT_FEATURES][DEC_3_CONV_RELU_1_K][DEC_3_CONV_RELU_1_INPUT_FEATURES];
 
-    datatype final_conv_tmp[FINAL_CONV_K * FINAL_CONV_INPUT_FEATURES * FINAL_CONV_OUTPUT_FEATURES];
+    arraytype final_conv_tmp[FINAL_CONV_K * FINAL_CONV_INPUT_FEATURES * FINAL_CONV_OUTPUT_FEATURES];
     int final_conv_shape[4];
-    datatype final_conv_w[FINAL_CONV_OUTPUT_FEATURES][FINAL_CONV_K][FINAL_CONV_INPUT_FEATURES];
+    arraytype final_conv_w[FINAL_CONV_OUTPUT_FEATURES][FINAL_CONV_K][FINAL_CONV_INPUT_FEATURES];
 
     // Initialize the array to read the input
-    datatype x_tmp[TEST_SAMPLES_BATCH * N * N_FEATURES];
-    int x_shape[4];
-    datatype x[TEST_SAMPLES_BATCH][N][N_FEATURES];
+    //arraytype x_tmp[TEST_SAMPLES_BATCH * N * N_FEATURES];
+    //int x_shape[4];
+    //arraytype x[TEST_SAMPLES_BATCH][N][N_FEATURES];
 
     // Initialize the array to read the output
-    datatype y[N][N_STATES];
+    //arraytype y[N][N_STATES];
 
     //------------------READING THE MODEL PARAMETERS----------------------------
 
     sprintf(subdirectory, "enc_0_conv_relu_0.npy");
     GetFlatArrFromNpy(model_path + subdirectory, enc_0_conv_relu_0_tmp, enc_0_conv_relu_0_shape);
-
-    printf("\nAbrimos fichero\n");
 
     // Open  C header file to be filled by CNN weights
     ofstream myfile;
@@ -171,11 +165,20 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_0_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == ENC_0_CONV_RELU_0_INPUT_FEATURES - 1 && k == ENC_0_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_0_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_0_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
+
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_0_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_0_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -202,11 +205,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_0_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == ENC_0_CONV_RELU_1_INPUT_FEATURES - 1 && k == ENC_0_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_0_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n"; 
+                    #else 
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_0_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_0_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_0_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -233,11 +244,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_1_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == ENC_1_CONV_RELU_0_INPUT_FEATURES - 1 && k == ENC_1_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_1_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n"; 
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_1_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_1_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";   
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_1_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -264,11 +283,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_1_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == ENC_1_CONV_RELU_1_INPUT_FEATURES - 1 && k == ENC_1_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_1_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n"; 
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_1_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_1_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_1_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -295,11 +322,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_2_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == ENC_2_CONV_RELU_0_INPUT_FEATURES - 1 && k == ENC_2_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_2_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_2_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_2_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_2_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -326,11 +361,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_2_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == ENC_2_CONV_RELU_1_INPUT_FEATURES - 1 && k == ENC_2_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_2_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_2_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_2_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_2_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -357,11 +400,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_3_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == ENC_3_CONV_RELU_0_INPUT_FEATURES - 1 && k == ENC_3_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_3_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_3_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif 
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_3_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_3_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -388,11 +439,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == ENC_3_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == ENC_3_CONV_RELU_1_INPUT_FEATURES - 1 && k == ENC_3_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_3_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n"; 
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_3_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(enc_3_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << enc_3_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -419,11 +478,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == CENTRAL_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == CENTRAL_CONV_RELU_0_INPUT_FEATURES - 1 && k == CENTRAL_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(central_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << central_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(central_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << central_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -450,11 +517,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == CENTRAL_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == CENTRAL_CONV_RELU_1_INPUT_FEATURES - 1 && k == CENTRAL_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(central_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << central_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif 
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(central_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << central_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -481,11 +556,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_0_UP_CONV_RELU_OUTPUT_FEATURES - 1 && j == DEC_0_UP_CONV_RELU_INPUT_FEATURES - 1 && k == DEC_0_UP_CONV_RELU_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_0_up_conv_relu_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_0_up_conv_relu_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_0_up_conv_relu_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_0_up_conv_relu_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -512,11 +595,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_0_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == DEC_0_CONV_RELU_0_INPUT_FEATURES - 1 && k == DEC_0_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_0_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_0_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_0_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_0_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -543,11 +634,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_0_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == DEC_0_CONV_RELU_1_INPUT_FEATURES - 1 && k == DEC_0_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_0_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_0_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_0_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_0_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -574,11 +673,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_1_UP_CONV_RELU_OUTPUT_FEATURES - 1 && j == DEC_1_UP_CONV_RELU_INPUT_FEATURES - 1 && k == DEC_1_UP_CONV_RELU_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_1_up_conv_relu_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_1_up_conv_relu_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_1_up_conv_relu_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_1_up_conv_relu_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -605,11 +712,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_1_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == DEC_1_CONV_RELU_0_INPUT_FEATURES - 1 && k == DEC_1_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_1_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_1_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_1_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_1_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -636,11 +751,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_1_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == DEC_1_CONV_RELU_1_INPUT_FEATURES - 1 && k == DEC_1_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_1_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_1_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_1_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_1_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -667,11 +790,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_2_UP_CONV_RELU_OUTPUT_FEATURES - 1 && j == DEC_2_UP_CONV_RELU_INPUT_FEATURES - 1 && k == DEC_2_UP_CONV_RELU_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_2_up_conv_relu_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_2_up_conv_relu_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_2_up_conv_relu_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_2_up_conv_relu_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -698,11 +829,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_2_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == DEC_2_CONV_RELU_0_INPUT_FEATURES - 1 && k == DEC_2_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_2_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_2_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_2_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_2_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -729,11 +868,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_2_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == DEC_2_CONV_RELU_1_INPUT_FEATURES - 1 && k == DEC_2_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_2_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_2_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_2_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_2_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -760,11 +907,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_3_UP_CONV_RELU_OUTPUT_FEATURES - 1 && j == DEC_3_UP_CONV_RELU_INPUT_FEATURES - 1 && k == DEC_3_UP_CONV_RELU_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_3_up_conv_relu_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_3_up_conv_relu_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_3_up_conv_relu_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_3_up_conv_relu_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -791,11 +946,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_3_CONV_RELU_0_OUTPUT_FEATURES - 1 && j == DEC_3_CONV_RELU_0_INPUT_FEATURES - 1 && k == DEC_3_CONV_RELU_0_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_3_conv_relu_0_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_3_conv_relu_0_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_3_conv_relu_0_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_3_conv_relu_0_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -822,11 +985,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == DEC_3_CONV_RELU_1_OUTPUT_FEATURES - 1 && j == DEC_3_CONV_RELU_1_INPUT_FEATURES - 1 && k == DEC_3_CONV_RELU_1_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_3_conv_relu_1_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_3_conv_relu_1_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(dec_3_conv_relu_1_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << dec_3_conv_relu_1_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
@@ -853,11 +1024,19 @@ int main()
                 // Skip the last comma when filling the C header file
                 if (i == FINAL_CONV_OUTPUT_FEATURES - 1 && j == FINAL_CONV_INPUT_FEATURES - 1 && k == FINAL_CONV_K - 1)
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(final_conv_w[i][k][j],FXP_VALUE) << "};\n\n";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << final_conv_w[i][k][j] << "};\n\n";
+                    #endif
                 }
                 else
                 {
+                    #ifdef FP16INT
+                    myfile << quantize(final_conv_w[i][k][j],FXP_VALUE) << ", ";
+                    #else
                     myfile << std::fixed << std::setprecision(PRECISION) << final_conv_w[i][k][j] << ", ";
+                    #endif
                 }
             }
         }
