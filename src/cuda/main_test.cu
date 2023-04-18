@@ -1,18 +1,17 @@
 #include "functions.cuh"
 #include "segmenter.cuh"
 #include <time.h>
-//#include "test_data.cuh"
 #include "weights.cuh"
 
 int main(int argc, char *argv[]){
-  /*FILE *pythonOutput;
+  /*FILE *output;
 
-  if((pythonOutput = fopen("python_result.txt","r"))==NULL){
+  if((output = fopen("cuda_res.txt","w"))==NULL){
       printf("Failed opening files\n");
       return 1;
-  }
+  }*/
 
-  datatype value;*/
+  //datatype value;
   FILE* f0;
 
   if((f0 = fopen("test_data.bin", "rb"))==NULL){
@@ -51,8 +50,8 @@ int main(int argc, char *argv[]){
   datatype *d_final_conv;
 
   //Weights and feature maps allocation/initialization
-  cudaMalloc((void**)&d_x, sizeof(datatype) * N*N_FEATURES); //*TEST_SAMPLES_BATCH
-  cudaMemcpyAsync(d_x, test_data, N*N_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice); //*TEST_SAMPLES_BATCH
+  cudaMalloc((void**)&d_x, sizeof(datatype) * N*N_FEATURES);
+  cudaMemcpyAsync(d_x, test_data, N*N_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
   cudaMalloc((void**)&d_enc_0_conv_relu_0, sizeof(datatype) * ENC_0_CONV_RELU_0_N * ENC_0_CONV_RELU_0_OUTPUT_FEATURES);
   cudaMalloc((void**)&d_enc_0_conv_relu_0_w, sizeof(datatype) * ENC_0_CONV_RELU_0_K * ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES);
@@ -211,11 +210,11 @@ int main(int argc, char *argv[]){
   //checkCudaError(__LINE__);
 
   clock_t time2 = clock();
-
+  
+  int byte_read;
   int i=0;
   
-  //for(int i=0; i<TEST_SAMPLES_BATCH;i++){ //TEST_SAMPLES_BATCH
-  while(fread(test_data, sizeof(datatype), N_FEATURES*N, f0) == N_FEATURES*N){  
+  do{  
     //-----------------------------ENCODER 0--------------------------------------
     conv_relu<<<dimGrid_enc00, dimBlock>>>(ENC_0_CONV_RELU_0_OUTPUT_FEATURES,ENC_0_CONV_RELU_0_N,ENC_0_CONV_RELU_0_K,ENC_0_CONV_RELU_0_INPUT_FEATURES,d_enc_0_conv_relu_0_w,d_x,d_enc_0_conv_relu_0);
     conv_relu<<<dimGrid_enc01, dimBlock>>>(ENC_0_CONV_RELU_1_OUTPUT_FEATURES,ENC_0_CONV_RELU_1_N,ENC_0_CONV_RELU_1_K,ENC_0_CONV_RELU_1_INPUT_FEATURES,d_enc_0_conv_relu_1_w,d_enc_0_conv_relu_0,d_enc_0_conv_relu_1);
@@ -223,7 +222,8 @@ int main(int argc, char *argv[]){
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------
     
-    cudaMemcpyAsync(d_x, test_data, N*N_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice); //*TEST_SAMPLES_BATCH
+    byte_read=fread(test_data, sizeof(datatype), N_FEATURES*N, f0);
+    cudaMemcpyAsync(d_x, test_data, N*N_FEATURES * sizeof(datatype), cudaMemcpyHostToDevice);
 
     //-----------------------------ENCODER 1--------------------------------------
     conv_relu<<<dimGrid_enc10, dimBlock>>>(ENC_1_CONV_RELU_0_OUTPUT_FEATURES,ENC_1_CONV_RELU_0_N,ENC_1_CONV_RELU_0_K,ENC_1_CONV_RELU_0_INPUT_FEATURES,d_enc_1_conv_relu_0_w,d_enc_0_maxpool,d_enc_1_conv_relu_0);
@@ -294,13 +294,25 @@ int main(int argc, char *argv[]){
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------
 
-      if(i%25000==0 || i%12500==0 || i%6250==0 || i%250==0 ){ //print elapsed time at each 100 patients and also at patient 1, 25 and 50
-        cudaDeviceSynchronize();
-        printf("Processed %d samples - time: %.5f seconds\n", i+1, ((double)clock()-time1) / CLOCKS_PER_SEC);
+    if(i%7500==0){ //print elapsed time at each 30 patients
+    	cudaDeviceSynchronize();
+	    printf("Processed %d samples - time: %.5f seconds\n", (i+1)/250, ((double)clock()-time1) / CLOCKS_PER_SEC);
+    }
+
+    
+    //VALIDATION
+    /*cudaMemcpy(y, d_y, N*N_STATES * sizeof(datatype), cudaMemcpyDeviceToHost);
+    cudaDeviceSynchronize();
+
+    for(int j=0; j<N; j++){
+      for(int k=0; k<N_STATES; k++){
+        fprintf(output,"%.10f ", y[j*N_STATES+k]);
       }
+      fprintf(output,"\n");
+    }*/
         
-        i++;
-  }
+    i++;
+  }while(byte_read== N_FEATURES*N);
   cudaDeviceSynchronize();
   
   time2 = clock()-time2;
@@ -314,21 +326,10 @@ int main(int argc, char *argv[]){
   printf("Elapsed computation time: %.5f seconds\n", ((double)time2) / CLOCKS_PER_SEC);
   printf("\nTotale elapsed time: %.5f seconds\n\n", ((double)(time1)) / CLOCKS_PER_SEC);
 
-  //cudaProfilerStop();
+  cudaProfilerStop();
 
-  //VALIDATION
-  /*for(int j=0; j<N; j++){
-      for(int k=0; k<N_STATES; k++){
-          #ifdef FLOAT
-          fscanf(pythonOutput,"%f",&value); 
-          #endif
-          #ifdef DOUBLE
-          fscanf(pythonOutput,"%lf",&value); 
-          #endif 
-          
-          printf("ROW: %d COL: %d - %.18f %.18f - abs_err:  %.18f \n",j,k,y[j*N_STATES+k],value, abs(y[j*N_STATES+k]-value));
-      }
-  }*/
+  //fclose(output);
+  fclose(f0);
 
   cudaFree(d_enc_0_conv_relu_0);
   cudaFree(d_enc_0_conv_relu_1);
@@ -413,9 +414,6 @@ int main(int argc, char *argv[]){
 
   free(y);
   free(test_data);
-
-  //fclose(pythonOutput);
-  fclose(f0);
 
   return 0;
 }
