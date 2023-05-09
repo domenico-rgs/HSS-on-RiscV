@@ -1,0 +1,106 @@
+C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\target-windows-x64>nsys profile C:\Users\dragusa\Desktop\PCG-CNN\Cuda\a.exe
+Collecting data...
+
+The target application returned non-zero exit code -1073740940
+Processing events...
+Saving temporary "C:\Users\DRAGUS~1\AppData\Local\Temp\nsys-report-b07b-f4d4-519d-4c1d.qdstrm" file to disk...
+
+Creating final output files...
+Report file moved to "C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\target-windows-x64\report13.nsys-rep"
+
+
+C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\target-windows-x64>nsys stats report13.nsys-rep
+Generating SQLite file report13.sqlite from report13.nsys-rep
+Exporting 5592866 events: [================================================100%]
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\nvtx_sum.py]...
+SKIPPED: report13.sqlite does not contain NV Tools Extension (NVTX) data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\osrt_sum.py]...
+SKIPPED: report13.sqlite does not contain OS Runtime trace data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\cuda_api_sum.py]...
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)   Min (ns)  Max (ns)   StdDev (ns)           Name
+ --------  ---------------  ---------  ----------  ----------  --------  ---------  -----------  ----------------------
+     92,0       7014024553    1513126      4635,0      1610,0      1402   14015304     154783,0  cudaLaunchKernel
+      5,0        397096821      84087      4722,0      1738,0      1122   11390020     156411,0  cudaMemcpyAsync
+      1,0        118692653          2  59346326,0  59346326,0      2906  118689747   83924270,0  cudaMallocHost
+      1,0         85517336          7  12216762,0  15177245,0    197328   20888333    8499613,0  cudaDeviceSynchronize
+      0,0           172988         60      2883,0      1192,0       963      82839      10542,0  cudaMalloc
+      0,0             8845          1      8845,0      8845,0      8845       8845          0,0  cudaMemsetAsync
+      0,0             2039          1      2039,0      2039,0      2039       2039          0,0  cuModuleGetLoadingMode
+      0,0              226          1       226,0       226,0       226        226          0,0  cuDeviceGetLuid
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\cuda_gpu_kern_sum.py]...
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                 Name                          
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  -------------------------------------------------------------------
+     78,0       4251324074     924689    4597,0    3936,0      1855     22176       2270,0  conv_relu(int, int, int, int, float *, float *, float *)     
+      6,0        332542096     168124    1978,0    1952,0      1441     14689        472,0  concatenation(int, int, float *, float *, float *)           
+      6,0        323192698     168127    1922,0    1888,0      1695     14689        497,0  maxpooling(int, int, float *, float *)                       
+      5,0        313739493     168124    1866,0    1824,0      1568     14976        458,0  upsampling(int, int, int, float *, float *)                  
+      2,0        106069700      42031    2523,0    2496,0      2335     15104        525,0  conv_relu_last_layer(int, int, int, int, float *, float *, float *)
+      1,0         86016013      42031    2046,0    2016,0      1855     14592        503,0  Softmax(float *, float *)                                    
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\cuda_gpu_mem_time_sum.py]...
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)      Operation
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  ------------------
+     62,0         47769422  42056    1135,0     992,0       768     14241        462,0  [CUDA memcpy HtoD]
+     37,0         28185378  42031     670,0     512,0       479     13888        317,0  [CUDA memcpy DtoH]
+      0,0              800      1     800,0     800,0       800       800          0,0  [CUDA memset]
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\cuda_gpu_mem_size_sum.py]...
+
+ ** CUDA GPU MemOps Summary (by Size) (cuda_gpu_mem_size_sum):
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)      Operation
+ ----------  -----  --------  --------  --------  --------  -----------  ------------------
+ 43,761      42056  0,001     0,001     0,000     0,197     0,001        [CUDA memcpy HtoD]
+ 43,040      42031  0,001     0,001     0,001     0,001     0,000        [CUDA memcpy DtoH]
+ 0,001           1  0,001     0,001     0,001     0,001     0,000        [CUDA memset]
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\openmp_sum.py]...
+SKIPPED: report13.sqlite does not contain OpenMP event data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\opengl_khr_range_sum.py]...
+SKIPPED: report13.sqlite does not contain KHR Extension (KHR_DEBUG) data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\opengl_khr_gpu_range_sum.py]...
+SKIPPED: report13.sqlite does not contain GPU KHR Extension (KHR_DEBUG) data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\vulkan_marker_sum.py]...
+SKIPPED: report13.sqlite does not contain Vulkan Debug Extension (Vulkan Debug Util) data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\vulkan_gpu_marker_sum.py]...
+SKIPPED: report13.sqlite does not contain GPU Vulkan Debug Extension (GPU Vulkan Debug markers) data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\dx11_pix_sum.py]...
+SKIPPED: report13.sqlite does not contain DX11 CPU debug markers.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\dx12_gpu_marker_sum.py]...
+SKIPPED: report13.sqlite does not contain DX12 GPU debug markers.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\dx12_pix_sum.py]...
+SKIPPED: report13.sqlite does not contain DX12 CPU debug markers.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\wddm_queue_sum.py]...
+SKIPPED: report13.sqlite does not contain WDDM context data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\um_sum.py]...
+SKIPPED: report13.sqlite does not contain CUDA Unified Memory CPU page faults data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\um_total_sum.py]...
+SKIPPED: report13.sqlite does not contain CUDA Unified Memory CPU page faults data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\um_cpu_page_faults_sum.py]...
+SKIPPED: report13.sqlite does not contain CUDA Unified Memory CPU page faults data.
+
+Processing [report13.sqlite] with [C:\Program Files\NVIDIA Corporation\Nsight Systems 2023.2.1\host-windows-x64\reports\openacc_sum.py]...
+SKIPPED: report13.sqlite does not contain OpenACC event data.

@@ -231,7 +231,11 @@ int main(int argc, char *argv[]){
     maxpooling<<<dimGrid_max11, dimBlock,sizeof(datatype) * 2* ENC_1_CONV_RELU_1_N * ENC_1_CONV_RELU_1_OUTPUT_FEATURES>>>(ENC_1_CONV_RELU_1_OUTPUT_FEATURES, ENC_1_CONV_RELU_1_N, d_enc_1_maxpool, d_enc_1_conv_relu_1);
     //checkCudaError(__LINE__);
     //----------------------------------------------------------------------------
-
+    
+    if(i>0){
+      cudaMemcpyAsync(y, d_y, N*N_STATES * sizeof(datatype), cudaMemcpyDeviceToHost);
+    }
+    
     //-----------------------------ENCODER 2--------------------------------------
     conv_relu<<<dimGrid_enc20, dimBlock>>>(ENC_2_CONV_RELU_0_OUTPUT_FEATURES,ENC_2_CONV_RELU_0_N,ENC_2_CONV_RELU_0_K,ENC_2_CONV_RELU_0_INPUT_FEATURES,d_enc_2_conv_relu_0_w,d_enc_1_maxpool,d_enc_2_conv_relu_0);
     conv_relu<<<dimGrid_enc21, dimBlock>>>(ENC_2_CONV_RELU_1_OUTPUT_FEATURES,ENC_2_CONV_RELU_1_N,ENC_2_CONV_RELU_1_K,ENC_2_CONV_RELU_1_INPUT_FEATURES,d_enc_2_conv_relu_1_w,d_enc_2_conv_relu_0,d_enc_2_conv_relu_1);
@@ -326,7 +330,6 @@ int main(int argc, char *argv[]){
   printf("Elapsed computation time: %.5f seconds\n", ((double)time2) / CLOCKS_PER_SEC);
   printf("\nTotale elapsed time: %.5f seconds\n\n", ((double)(time1)) / CLOCKS_PER_SEC);
 
-  cudaProfilerStop();
 
   //fclose(output);
   fclose(f0);
