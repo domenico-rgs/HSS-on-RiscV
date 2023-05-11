@@ -1,11 +1,9 @@
 #include "functions.h"
 #include "segmenter.h"
-#include <airisc.h>
 #include <ee_printf.h>
 #include <inttypes.h>
 
 //Data for tests
-//#include "test_data.h"
 #include "weights.h"
 
 #define CLOCK_HZ   (32000000)
@@ -16,13 +14,14 @@ int main(int argc, char *argv[]){
     gpio0->EN   = -1; // all configured as outputs
     gpio0->DATA =  0; // all LEDs off
 
-    datatype y[N][N_STATES];
-    datatype test_data[N_FEATURES*N];
-    int i = 0;
-    
-    timer_set_time(timer0, 0);
+    int16_t y[N][N_STATES];
+    int16_t test_data[N_FEATURES*N];
+    int i = 0; //total samples processed since turned on
+        
+    while(1){
+        uart_readData(uart0,(uint8_t*)test_data,sizeof(int16_t)*N_FEATURES*N); //it waits if no data are available
+        timer_set_time(timer0, 0);
 
-    while(fread(test_data, sizeof(datatype), N_FEATURES*N, stdin) == N_FEATURES*N){ //stdin mapped to uart0
         Segmenter(test_data,
             enc_0_conv_relu_0_w,enc_0_conv_relu_1_w,enc_1_conv_relu_0_w,
             enc_1_conv_relu_1_w,enc_2_conv_relu_0_w,enc_2_conv_relu_1_w,
@@ -34,15 +33,17 @@ int main(int argc, char *argv[]){
             dec_3_conv_relu_1_w,final_conv_w,y
         );
 
-        if(i%7500==0){ //print elapsed time at each 100 patients and also at patient 1, 25 and 50
-            ee_printf("Processed %d samples - time: %" PRIu64 "seconds\r\n", i+1, timer_get_time(timer0)); //to be converted manually in decimal value by dividing it by CLOCK_HZ
-        }
+        //if(i%7500==0){ //print elapsed time at each 100 patients and also at patient 1, 25 and 50
+        ee_printf("Processed %d samples - %d clock cycles\r\n", ++i, timer_get_time(timer0)); //to be converted manually in decimal value dividing it by CLOCK_HZ
+        //}
         
-        i++;
-    }
-    
-	ee_printf("\nTotal elapsed computation time (%d samples): %" PRIu64 "seconds\r\n", i, timer_get_time(timer0));
-    gpio0->DATA =  0b11111111; // all LEDs on
+        //uart_writeData(uart0,(uint8_t*)y,sizeof(int16_t)*N_FEATURES*N); //it waits if no data are available
 
-    return 0;
+        for (int wait=0; wait<(3200000/32); wait++) { //wait 0.1s before sending signal for the next sample, set 0.5 in case data writing by producer
+            asm volatile("nop");
+        }
+
+        gpio0->DATA = i & 0xff; //turn on the LEDs to show that the sample has been processed
+        uart_writeByte(uart0,0x01); //once finished ask to the producer (peripheral - uart) to send the next sample        
+    }
 }

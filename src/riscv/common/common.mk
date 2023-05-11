@@ -23,7 +23,7 @@ APP_INC ?= -I .
 ASM_INC ?= -I .
 
 # Optimization
-EFFORT ?= -Os
+EFFORT ?= -O3 #-Os
 
 # Compiler toolchain
 RISCV_PREFIX ?= riscv32-unknown-elf-
@@ -85,7 +85,7 @@ READELF = $(RISCV_PREFIX)readelf
 SIZE    = $(RISCV_PREFIX)size
 
 # GCC flags
-CC_OPTS = -march=$(MARCH) -mabi=$(MABI) $(EFFORT) -Wall -ffunction-sections -fdata-sections -nostartfiles -Wl,--gc-sections -lm -lc -lgcc -lc -g
+CC_OPTS = -march=$(MARCH) -mabi=$(MABI) $(EFFORT) -Wall -ffunction-sections -fdata-sections -nostartfiles -Wl,--gc-sections -lm -lc -lgcc
 
 
 # -----------------------------------------------------------------------------

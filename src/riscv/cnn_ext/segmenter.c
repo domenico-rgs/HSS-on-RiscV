@@ -18,7 +18,7 @@
 #include "segmenter.h"
 #include "functions.h"
 
-void Segmenter(int16_t x[N*N_FEATURES],
+void Segmenter(int16_t x[N_FEATURES*N],
                int16_t enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
                int16_t enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_K*ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES],
                int16_t enc_1_conv_relu_0_w[ENC_1_CONV_RELU_0_K*ENC_1_CONV_RELU_0_INPUT_FEATURES*ENC_1_CONV_RELU_0_OUTPUT_FEATURES],
@@ -54,11 +54,12 @@ void Segmenter(int16_t x[N*N_FEATURES],
   int16_t enc_2_conv_relu_1[ENC_2_CONV_RELU_1_N][ENC_2_CONV_RELU_1_OUTPUT_FEATURES];
   int16_t enc_3_conv_relu_1[ENC_3_CONV_RELU_1_N][ENC_3_CONV_RELU_1_OUTPUT_FEATURES];
 
+  uint64_t var64;
   int16_t approx = 1<<((FXP-1)); //to be changed and adapted for each convolution layer in case of a different quantization format for each layer
 
   // The accumulator
   int32_t acc;
-  
+
   // Two auxiliary variables for the fitter's positions
   int l_min;
   int l_max;
@@ -73,8 +74,11 @@ void Segmenter(int16_t x[N*N_FEATURES],
       l_max = min(ENC_0_CONV_RELU_0_N, i + ENC_0_CONV_RELU_0_K/2 + 1);
       
       for(int l=l_min; l<l_max; l++){
-        for(int j=0; j<ENC_0_CONV_RELU_0_INPUT_FEATURES; j++){
-          acc += (x[l*ENC_0_CONV_RELU_0_INPUT_FEATURES+j]*enc_0_conv_relu_0_w[(k*ENC_0_CONV_RELU_0_K+(l-i+ENC_0_CONV_RELU_0_K/2))*ENC_0_CONV_RELU_0_INPUT_FEATURES+j] + approx)>>FXP;
+        for(int j=0; j<ENC_0_CONV_RELU_0_INPUT_FEATURES/2; j++){
+          var64 = __smul16(x[l*ENC_0_CONV_RELU_0_INPUT_FEATURES+2*j],enc_0_conv_relu_0_w[(k*ENC_0_CONV_RELU_0_K+(l-i+ENC_0_CONV_RELU_0_K/2))*ENC_0_CONV_RELU_0_INPUT_FEATURES+2*j]);
+          acc += ((int32_t)(var64 & 0xFFFFFFFF) + approx)>>FXP;
+          acc += ((int32_t)((var64 >> 32) & 0xFFFFFFFF) + approx)>>FXP; 
+          //acc += (x[l*ENC_0_CONV_RELU_0_INPUT_FEATURES+j]*enc_0_conv_relu_0_w[(k*ENC_0_CONV_RELU_0_K+(l-i+ENC_0_CONV_RELU_0_K/2))*ENC_0_CONV_RELU_0_INPUT_FEATURES+j] + approx)>>FXP;
         }
       }
       

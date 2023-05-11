@@ -162,7 +162,6 @@
 #define EPSILON 1e-8
 #define FXP 14
 
-
 void Segmenter(int16_t x[N_FEATURES*N],
                int16_t enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
                int16_t enc_0_conv_relu_1_w[ENC_0_CONV_RELU_1_K*ENC_0_CONV_RELU_1_INPUT_FEATURES*ENC_0_CONV_RELU_1_OUTPUT_FEATURES],
