@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
     uart_init(uart0, UART_DATA_BITS_8, UART_PARITY_EVEN, UART_STOP_BITS_1, UART_FLOW_CTRL_NONE, (uint32_t)(CLOCK_HZ/UART0_BAUD));
     gpio0->EN   = -1; // all configured as outputs
-    gpio0->DATA =  0; // all LEDs off
+    gpio0->DATA =  0xff; // all LEDs on
 
     int16_t y[N][N_STATES];
     int16_t test_data[N_FEATURES*N];
@@ -33,9 +33,7 @@ int main(int argc, char *argv[]){
             dec_3_conv_relu_1_w,final_conv_w,y
         );
 
-        //if(i%7500==0){ //print elapsed time at each 100 patients and also at patient 1, 25 and 50
         ee_printf("Processed %d samples - %d clock cycles\r\n", ++i, timer_get_time(timer0)); //to be converted manually in decimal value dividing it by CLOCK_HZ
-        //}
         
         //uart_writeData(uart0,(uint8_t*)y,sizeof(int16_t)*N_FEATURES*N); //it waits if no data are available
 

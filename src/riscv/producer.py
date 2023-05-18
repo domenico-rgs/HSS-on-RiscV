@@ -2,9 +2,10 @@ import serial
 import signal
 import sys
 
-ser = serial.Serial('/dev/ttyUSB1', 9600, bytesize=serial.EIGHTBITS, stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_EVEN, timeout=15) # specificare la porta seriale e il baudrate
+ser = serial.Serial('/dev/ttyUSB3', 9600, bytesize=serial.EIGHTBITS, stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_EVEN, timeout=15) # specificare la porta seriale e il baudrate
 batch_size = 512 # dimensione del batch in bytes
 #file = open("res_risc.bin", "wb")
+#i=0
 
 try:
     print("Streaming...")
@@ -20,6 +21,7 @@ try:
             #file.write(data)
             data = ser.readline().decode('utf-8') #legge stringa con tempo di esecuzione
             print(data,end='')
+            #i+=1
 
             signal = ser.read() # attendere un segnale dal consumatore
             while signal != b'\x01': # se il segnale non è valido, attendere fino a quando non si riceve il segnale corretto

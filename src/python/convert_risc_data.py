@@ -8,7 +8,7 @@ MATRIX_COLS = 4
 # Apri il file in lettura binaria
 with open("res_risc.bin", "rb") as file:
     # Apri il file in scrittura
-    with open("output.txt", "w") as output_file:
+    with open("output_risc.txt", "w") as output_file:
         # Leggi il file a blocchi da 512 byte
         while True:
             row = file.read(ROW_SIZE)
