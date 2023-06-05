@@ -1,7 +1,33 @@
 #include "functions.h"
 
 /*
-Softmax implementation - CAN'T BE USE IF WE NOT USE F EXTENSION IN RISC-V
+Argmax implementation
+  Args:
+    x - Input array to perform argmax
+    y - Array to save the argmax resultant values
+*/
+void Argmax(int16_t x[N_STATES], int16_t y[N_STATES]) {
+  int16_t maxvalue = INT16_MIN;
+  int maxindex = 0;
+
+  for (int i = 0; i < N_STATES; i++) {
+    if (x[i] > maxvalue) {
+      maxvalue = x[i];
+      maxindex = i;
+    }
+  }
+
+  for (int i = 0; i < N_STATES; i++) {
+    if (i == maxindex) {
+      y[i] = 1; //no need for quantization, we only need to know if it's 1 or 0 (read as it is)
+    } else {
+      y[i] = 0;
+    }
+  }
+}
+
+/*
+Softmax implementation - CAN'T BE USED IF F EXTENSION IN RISC-V IS NOT AVAILABLE
   Args:
     x - Input array to perform softmax
     y - Array to save the softmax resultant values
@@ -30,32 +56,6 @@ Softmax implementation - CAN'T BE USE IF WE NOT USE F EXTENSION IN RISC-V
   }
 }
 */
-
-/*
-Argmax implementation
-  Args:
-    x - Input array to perform argmax
-    y - Array to save the argmax resultant values
-*/
-void Argmax(int16_t x[N_STATES], int16_t y[N_STATES]) {
-  int16_t maxvalue = INT16_MIN;
-  int maxindex = 0;
-
-  for (int i = 0; i < N_STATES; i++) {
-    if (x[i] > maxvalue) {
-      maxvalue = x[i];
-      maxindex = i;
-    }
-  }
-
-  for (int i = 0; i < N_STATES; i++) {
-    if (i == maxindex) {
-      y[i] = 1; //no need for quantization, we only need to know if it's 1 or 0 (read as it is)
-    } else {
-      y[i] = 0;
-    }
-  }
-}
 
 void check_over(int32_t val, int layer){
     if(val>INT16_MAX || val<INT16_MIN){

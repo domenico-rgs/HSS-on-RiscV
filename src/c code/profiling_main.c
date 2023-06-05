@@ -1,4 +1,3 @@
-#include "functions.h"
 #include "segmenter.h"
 #include <time.h>
 
@@ -19,7 +18,6 @@ int main(int argc, char *argv[]){
     
     clock_t time = clock();
 
-    //for(int i=0; i<TEST_SAMPLES_BATCH;i++){
     while(fread(test_data, sizeof(datatype), N_FEATURES*N, f0) == N_FEATURES*N){
         Segmenter(test_data,
             enc_0_conv_relu_0_w,enc_0_conv_relu_1_w,enc_1_conv_relu_0_w,

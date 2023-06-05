@@ -1,37 +1,6 @@
 #include "functions.h"
 
 /*
-Softmax implementation - CAN'T BE USE IF WE NOT USE F EXTENSION IN RISC-V
-  Args:
-    x - Input array to perform softmax
-    y - Array to save the softmax resultant values
-*/
-/*void Softmax(float x[N_STATES], float y[N_STATES]) {
-  float expx[N_STATES];
-  float expsum = 0;
-
-  for (int i = 0; i < N_STATES; i++) {
-    //#ifdef FLOAT
-    expx[i] = expf((int32_t)x[i]/((float)(1<<10)));
-    //#endif
-    //#ifdef DOUBLE
-    //expx[i] = exp(x[i]);
-    //#endif 
-    expsum += expx[i];
-  }
-
-  // To prevent division by zero errors, add EPSILON if expsum is zero
-  if (expsum == 0) {
-    expsum = EPSILON;
-  }
-
-  for (int i = 0; i < N_STATES; i++) {
-    y[i] = expx[i] / expsum;
-  }
-}
-*/
-
-/*
 Argmax implementation
   Args:
     x - Input array to perform argmax
@@ -56,6 +25,37 @@ void Argmax(int16_t x[N_STATES], int16_t y[N_STATES]) {
     }
   }
 }
+
+/*
+Softmax implementation - CAN'T BE USED IF F EXTENSION IN RISC-V IS NOT AVAILABLE
+  Args:
+    x - Input array to perform softmax
+    y - Array to save the softmax resultant values
+*/
+/*void Softmax(float x[N_STATES], float y[N_STATES]) {
+  float expx[N_STATES];
+  float expsum = 0;
+
+  for (int i = 0; i < N_STATES; i++) {
+    //#ifdef FLOAT
+    expx[i] = expf((int32_t)x[i]/((float)(1<<10))); //dequantization before exp
+    //#endif
+    //#ifdef DOUBLE
+    //expx[i] = exp(x[i]);
+    //#endif 
+    expsum += expx[i];
+  }
+
+  // To prevent division by zero errors, add EPSILON if expsum is zero
+  if (expsum == 0) {
+    expsum = EPSILON;
+  }
+
+  for (int i = 0; i < N_STATES; i++) {
+    y[i] = expx[i] / expsum;
+  }
+}
+*/
 
 void check_over(int32_t val, int layer){
     if(val>INT16_MAX || val<INT16_MIN){

@@ -1,7 +1,5 @@
-#include "functions.h"
 #include "segmenter.h"
 #include <ee_printf.h>
-#include <inttypes.h>
 
 //Data for tests
 #include "weights.h"
@@ -11,8 +9,8 @@
 
 int main(int argc, char *argv[]){
     uart_init(uart0, UART_DATA_BITS_8, UART_PARITY_EVEN, UART_STOP_BITS_1, UART_FLOW_CTRL_NONE, (uint32_t)(CLOCK_HZ/UART0_BAUD));
-    gpio0->EN   = -1; // all configured as outputs
-    gpio0->DATA =  0xff; // all LEDs on
+    gpio0->EN   = -1; // all gpio ports configured as outputs
+    gpio0->DATA =  0xff; // all LEDs initially on
 
     int16_t y[N][N_STATES];
     int16_t test_data[N_FEATURES*N];
@@ -33,11 +31,11 @@ int main(int argc, char *argv[]){
             dec_3_conv_relu_1_w,final_conv_w,y
         );
 
-        ee_printf("Processed %d samples - %d clock cycles\r\n", ++i, timer_get_time(timer0)); //to be converted manually in decimal value dividing it by CLOCK_HZ
+        ee_printf("Processed %d samples - %d clock cycles\r\n", ++i, timer_get_time(timer0));
         
-        //uart_writeData(uart0,(uint8_t*)y,sizeof(int16_t)*N_FEATURES*N); //it waits if no data are available
+        //uart_writeData(uart0,(uint8_t*)y,sizeof(int16_t)*N_FEATURES*N); //to be used to obtain the results
 
-        for (int wait=0; wait<(3200000/32); wait++) { //wait 0.1s before sending signal for the next sample, set 0.5 in case data writing by producer
+        for (int wait=0; wait<(3200000/32); wait++) { //wait 0.1s before sending signal for the next sample, increase (e.g. to 0.5s) in case data writing by producer
             asm volatile("nop");
         }
 

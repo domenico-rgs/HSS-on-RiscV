@@ -1,34 +1,12 @@
-// Copyright (C) 2022 Daniel Enériz and Antonio Rodriguez-Almeida
-// 
-// This file is part of PCG Segmentation Model Implementation.
-// 
-// PCG Segmentation Model Implementation is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// PCG Segmentation Model Implementation is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with PCG Segmentation Model Implementation.  If not, see <http://www.gnu.org/licenses/>.
-
 /* -----------------------------DEPENDENCIES------------------------------------*/
-
 #include <math.h> 
 #include <stdio.h>
 #include <stdint.h>
 #include <airisc.h>
 
-/*------------------------------------------------------------------------------
--------------------------------TESTING METHOD PARAMETERS------------------------
-------------------------------------------------------------------------------*/
-
-#define TEST_SAMPLES_BATCH 250 //Number of samples in the test file, limited by the maximum allocable C++ array size
-#define TEST_FILES 169 //Number of test files
-#define TOTAL_SAMPLES 42360
+//Constants
+#define EPSILON 1e-8
+#define FXP 14
 
 /*------------------------------------------------------------------------------
 ---------------------NEURAL NETOWRK ARCHITECTURE PARAMETERS---------------------
@@ -158,10 +136,6 @@
 #define FINAL_CONV_INPUT_FEATURES BASE_FILTER_SIZE //Number of input features of the final_conv layer
 #define FINAL_CONV_OUTPUT_FEATURES N_STATES //Number of output features of the final_conv layer
 #define FINAL_CONV_N N //Number of frames in the time dimension of the final_conv layer
-
-#define EPSILON 1e-8
-#define FXP 14
-
 
 void Segmenter(int16_t x[N_FEATURES*N],
                int16_t enc_0_conv_relu_0_w[ENC_0_CONV_RELU_0_K*ENC_0_CONV_RELU_0_INPUT_FEATURES*ENC_0_CONV_RELU_0_OUTPUT_FEATURES],
