@@ -1,0 +1,29 @@
+domenico@phoenix:~/Desktop/test_net_Q$ gcc -Wall functions.c segmenter.c validation_main.c -lm -g
+domenico@phoenix:~/Desktop/test_net_Q$ valgrind --tool=callgrind --dump-instr=yes --simulate-cache=yes --collect-jumps=yes ./a.out >> callgrind_analysis.txt
+==7325== Callgrind, a call-graph generating cache profiler
+==7325== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==7325== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==7325== Command: ./a.out
+==7325== 
+--7325-- warning: L3 cache found, using its data for the LL simulation.
+==7325== For interactive control, run 'callgrind_control -h'.
+==7325== 
+==7325== Events    : Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+==7325== Collected : 11652064085 3550760530 745831670 1834 1439223 39174 1806 7185 715
+==7325== 
+==7325== I   refs:      11,652,064,085
+==7325== I1  misses:             1,834
+==7325== LLi misses:             1,806
+==7325== I1  miss rate:           0.00%
+==7325== LLi miss rate:           0.00%
+==7325== 
+==7325== D   refs:       4,296,592,200  (3,550,760,530 rd + 745,831,670 wr)
+==7325== D1  misses:         1,478,397  (    1,439,223 rd +      39,174 wr)
+==7325== LLd misses:             7,900  (        7,185 rd +         715 wr)
+==7325== D1  miss rate:            0.0% (          0.0%   +         0.0%  )
+==7325== LLd miss rate:            0.0% (          0.0%   +         0.0%  )
+==7325== 
+==7325== LL refs:            1,480,231  (    1,441,057 rd +      39,174 wr)
+==7325== LL misses:              9,706  (        8,991 rd +         715 wr)
+==7325== LL miss rate:             0.0% (          0.0%   +         0.0%  )
+

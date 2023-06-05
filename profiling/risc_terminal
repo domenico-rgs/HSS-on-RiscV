@@ -1,0 +1,25 @@
+domenico@phoenix:~/Desktop/Unipv/Magistrale/Thesis/HSS-on-RiscV/src/riscv$ python3 producer.py
+Streaming...
+Processed 1 samples - 338885540 clock cycles
+Processed 2 samples - 338883165 clock cycles
+Processed 3 samples - 338897836 clock cycles
+Processed 4 samples - 338889286 clock cycles
+Processed 5 samples - 338895286 clock cycles
+Processed 6 samples - 338893691 clock cycles
+Processed 7 samples - 338894834 clock cycles
+Processed 8 samples - 338896593 clock cycles
+Processed 9 samples - 338895578 clock cycles
+Processed 10 samples - 338890218 clock cycles
+
+domenico@phoenix:~/Desktop/Unipv/Magistrale/Thesis/HSS-on-RiscV/src/riscv$ python3 producer.py
+Streaming...
+Processed 1 samples - 28664726 clock cycles
+Processed 2 samples - 28664663 clock cycles
+Processed 3 samples - 28664618 clock cycles
+Processed 4 samples - 28664612 clock cycles
+Processed 5 samples - 28664432 clock cycles
+Processed 6 samples - 28664629 clock cycles
+Processed 7 samples - 28664652 clock cycles
+Processed 8 samples - 28664539 clock cycles
+Processed 9 samples - 28664600 clock cycles
+Processed 10 samples - 28664632 clock cycles
