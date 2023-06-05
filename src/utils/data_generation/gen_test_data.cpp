@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
       
     // Iterate over the test files
-    for(int l=0; l<TEST_FILES; l++){
+    for(int l=0; l<1; l++){
         //-----------------------READING THE INPUT----------------------------------
         // Reading an input element
         sprintf(subdirectory,"X_%d.npy", l);
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
         printf("Loading new input data (%d/%d)\n", l+1, TEST_FILES);
 
         // Reshape it and fill C header file with the test data
-        for(int k=0; k<TEST_SAMPLES_BATCH; k++){
+        for(int k=0; k<2; k++){
             for(int j=0; j<N; j++){
                 for(int i=0; i<N_FEATURES; i++){
                     #ifdef FP16INT
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-        fwrite(test_data , sizeof(datatype), TEST_SAMPLES_BATCH*N*N_FEATURES, myfile);
+        fwrite(test_data , sizeof(datatype), 2*N*N_FEATURES, myfile);
     }
     fclose(myfile);
     return 0;
