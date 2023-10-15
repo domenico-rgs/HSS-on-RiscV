@@ -60,3 +60,34 @@ void Argmax(datatype x[N_STATES], datatype y[N_STATES]) {
     }
   }
 }
+
+void Argmax_2(datatype x[N_STATES], int *y) {
+  #ifdef FLOAT
+  datatype maxvalue = __FLT_MIN__;
+  #endif
+  #ifdef DOUBLE
+  datatype maxvalue = __DBL_MIN__;
+  #endif  
+  int maxindex = 0;
+
+  for (int i = 0; i < N_STATES; i++) {
+    if (x[i] > maxvalue) {
+      maxvalue = x[i];
+      maxindex = i;
+    }
+  }
+
+  for (int i = 0; i < N_STATES; i++) {
+    if (i == maxindex) {
+      *y = i;
+    }
+  }
+}
+
+void sequentialMaxTM (int *s){
+	for(int i=1; i<64; i++){
+		if(s[i]!=(s[i-1]+1)%4){
+			s[i]=s[i-1];
+		}
+	}
+}

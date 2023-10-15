@@ -28,6 +28,8 @@ int main(int argc, char *argv[]){
             dec_1_conv_relu_1_w,dec_2_up_conv_relu_w,dec_2_conv_relu_0_w,
             dec_2_conv_relu_1_w,dec_3_up_conv_relu_w,dec_3_conv_relu_0_w,
             dec_3_conv_relu_1_w,final_conv_w,y);
+        
+        //sequentialMaxTM(y);
 
         if(i%7500==0){ //print elapsed time at each 30 patients
             printf("Processed %d samples - time: %.5f seconds\n", (i+1)/250, ((double)clock()-time) / CLOCKS_PER_SEC);

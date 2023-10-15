@@ -52,6 +52,8 @@ int main(int argc, char *argv[]){
         dec_1_conv_relu_1_w,dec_2_up_conv_relu_w,dec_2_conv_relu_0_w,
         dec_2_conv_relu_1_w,dec_3_up_conv_relu_w,dec_3_conv_relu_0_w,
         dec_3_conv_relu_1_w,final_conv_w,y);
+
+    //sequentialMaxTM (y);
     
     //Checking whether results from the network and the one from Python code are the same or not
     for(int j=0; j<N; j++){
