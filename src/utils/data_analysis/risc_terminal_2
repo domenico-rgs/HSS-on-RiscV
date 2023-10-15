@@ -1,0 +1,8 @@
+domenico@phoenix:~/Desktop/Unipv/Magistrale/Thesis/HSS-on-RiscV/src/riscv/cnn_ext$ make EFFORT=-O3 clean_all elf
+/opt/riscv/lib/gcc/riscv32-unknown-elf/12.2.0/../../../../riscv32-unknown-elf/bin/ld: warning: main.elf has a LOAD segment with RWX permissions
+Memory utilization:
+   text	   data	    bss	    dec	    hex	filename
+  25494	 361916	     60	 387470	  5e98e	main.elf
+
+
+

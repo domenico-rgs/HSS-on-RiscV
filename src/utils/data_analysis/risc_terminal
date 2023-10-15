@@ -1,0 +1,68 @@
+domenico@phoenix:~/Desktop/Unipv/Magistrale/Thesis/HSS-on-RiscV/src/riscv$ python3 producer.py
+Streaming...
+Processed 1 samples - 338885540 clock cycles
+Processed 2 samples - 338883165 clock cycles
+Processed 3 samples - 338897836 clock cycles
+Processed 4 samples - 338889286 clock cycles
+Processed 5 samples - 338895286 clock cycles
+Processed 6 samples - 338893691 clock cycles
+Processed 7 samples - 338894834 clock cycles
+Processed 8 samples - 338896593 clock cycles
+Processed 9 samples - 338895578 clock cycles
+Processed 10 samples - 338890218 clock cycles
+Processed 11 samples - 338891996 clock cycles
+Processed 12 samples - 338886497 clock cycles
+Processed 13 samples - 338878687 clock cycles
+Processed 14 samples - 338896331 clock cycles
+Processed 15 samples - 338890105 clock cycles
+Processed 16 samples - 338895946 clock cycles
+Processed 17 samples - 338889824 clock cycles
+Processed 18 samples - 338894869 clock cycles
+Processed 19 samples - 338893820 clock cycles
+Processed 20 samples - 338892540 clock cycles
+Processed 21 samples - 338887151 clock cycles
+Processed 22 samples - 338889287 clock cycles
+Processed 23 samples - 338871767 clock cycles
+Processed 24 samples - 338897875 clock cycles
+^C
+Program interrupted, closure in progress (waiting for last data)...
+
+Processed 25 samples - 338894315 clock cycles
+domenico@phoenix:~/Desktop/Unipv/Magistrale/Thesis/HSS-on-RiscV/src/riscv$ python3 producer.py
+Streaming...
+Processed 1 samples - 28664727 clock cycles
+Processed 3 samples - 28664664 clock cycles
+Processed 5 samples - 28664619 clock cycles
+Processed 7 samples - 28664613 clock cycles
+Processed 9 samples - 28664433 clock cycles
+Processed 11 samples - 28664630 clock cycles
+^C
+Program interrupted, closure in progress (waiting for last data)...
+
+Processed 13 samples - 28664653 clock cycles
+domenico@phoenix:~/Desktop/Unipv/Magistrale/Thesis/HSS-on-RiscV/src/riscv$ python3 producer.py
+Streaming...
+Processed 1 samples - 28664726 clock cycles
+Processed 2 samples - 28664663 clock cycles
+Processed 3 samples - 28664618 clock cycles
+Processed 4 samples - 28664612 clock cycles
+Processed 5 samples - 28664432 clock cycles
+Processed 6 samples - 28664629 clock cycles
+Processed 7 samples - 28664652 clock cycles
+Processed 8 samples - 28664539 clock cycles
+Processed 9 samples - 28664600 clock cycles
+Processed 10 samples - 28664632 clock cycles
+Processed 11 samples - 28664734 clock cycles
+Processed 12 samples - 28664695 clock cycles
+Processed 13 samples - 28664661 clock cycles
+Processed 14 samples - 28664577 clock cycles
+Processed 15 samples - 28664679 clock cycles
+Processed 16 samples - 28664488 clock cycles
+Processed 17 samples - 28664642 clock cycles
+Processed 18 samples - 28664671 clock cycles
+Processed 19 samples - 28664570 clock cycles
+^C
+Program interrupted, closure in progress (waiting for last data)...
+
+les - 28664682 clock cycles
+domenico@phoenix:~/Desktop/Unipv/Magistrale/Thesis/HSS-on-RiscV/src/riscv$ 
