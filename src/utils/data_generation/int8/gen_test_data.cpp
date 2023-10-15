@@ -20,8 +20,8 @@
 #include "segmenter.h"
 #include "npy_reading.h"
 
-#ifdef FP16INT
-    #define FXP_VALUE 10
+#ifdef FPXINT
+    #define FXP_VALUE 3 //10
 #endif
 
 int main(int argc, char *argv[]) {
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     datatype test_data[TEST_SAMPLES_BATCH][N][N_FEATURES];
 
     //Root path of the model
-    string model_path = "../../../data/test_data/";
+    string model_path = "../../../../data/test_data/";
     char subdirectory[256];
 
     FILE *myfile; 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
         for(int k=0; k<TEST_SAMPLES_BATCH; k++){
             for(int j=0; j<N; j++){
                 for(int i=0; i<N_FEATURES; i++){
-                    #ifdef FP16INT
+                    #ifdef FPXINT
                         test_data[k][j][i] = quantize(test_data_tmp[i+j*N_FEATURES+k*N*N_FEATURES],FXP_VALUE);
                     #else
                         test_data[k][j][i] = test_data_tmp[i+j*N_FEATURES+k*N*N_FEATURES];
