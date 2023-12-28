@@ -39,23 +39,23 @@ module log #(parameter N_STAGE = 2) (
     end
   end
 
-  always @(posedge CLK or posedge RST) begin
-    if (RST) begin
+  always @(posedge CLK) begin
+    if (RST) begin //!!it requires at least one clock cycle after the end of a RESET to stabilize the output
         for(i=0; i<N_STAGE; i = i+1) begin
             pipe_power_reg[i] <= 32'h0;
             pipeline_output[i] <= 32'h0;
         end
 
     end else begin
-        pipe_power_reg[0] = (data * data); //used to compute data^power
-        pipeline_output[0] = data - (pipe_power_reg[0] / coeff[0]);
+        pipe_power_reg[0] <= (data * data); //used to compute data**power
+        pipeline_output[0] <= data - (pipe_power_reg[0] / coeff[0]);
         
         for(i=1; i<N_STAGE; i=i+1) begin
-            pipe_power_reg[i] = ((pipe_power_reg[i-1] >> 10) * data); //right shift used to rescale to 5.10 representation
-            pipeline_output[i] = pipeline_output[i-1] + (pipe_power_reg[i] / coeff[i]);
+            pipe_power_reg[i] <= ((pipe_power_reg[i-1] >> 10) * data); //right shift used to rescale to 5.10 representation
+            pipeline_output[i] <= pipeline_output[i-1] + (pipe_power_reg[i] / coeff[i]);
         end
     end
   end
   
-  assign output_data = pipeline_output[i];
+  assign output_data = pipeline_output[N_STAGE-1];
 endmodule

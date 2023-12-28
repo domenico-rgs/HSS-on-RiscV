@@ -27,7 +27,7 @@ module Butterworth_LP(
   output wire signed [15:0] out
 );
 
-  reg signed [15:0] x_past, y_past;
+  reg signed [15:0] x_past;
   reg signed [31:0] y_out; //32 bits to avoid overflow in the following
   reg signed [15:0] coeff[0:2];
 
@@ -36,21 +36,18 @@ module Butterworth_LP(
     $readmemh("butter_coeff.hex",coeff);
     
     x_past <= 16'h0;
-    y_past <= 16'h0;
-    y_out <= 16'h0;
+    y_out <= 32'h0;
   end
 
-  always @(posedge CLK or posedge RST) begin
+  always @(posedge CLK) begin
     if (RST) begin
       x_past <= 16'h0;
-      y_past <= 16'h0;
-      y_out <= 16'h0;
+      y_out <= 32'h0;
       
     end else begin
-      y_out = (coeff[0] * data + coeff[1] * x_past + coeff[2] * y_past) >> 10;
-      
-      x_past = data;
-      y_past = y_out;
+      y_out <= (coeff[0] * data + coeff[1] * x_past + coeff[2] * y_out) >> 14;
+
+      x_past <= data;
     end
   end
 

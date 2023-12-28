@@ -28,11 +28,11 @@ module convolution2 #(parameter MODE = 0, parameter W_WIDTH = 20) //0 = low pass
     output reg write_enable
     );
     
-  reg signed [31:0] pipeline_reg[0:W_WIDTH-1]; //31:0
-  reg signed [15:0] buffer[0:W_WIDTH-1];
+  reg signed [31:0] partial_sum[0:W_WIDTH-1]; //31:0
+  reg signed [15:0] buffer[0:W_WIDTH-1]; //buffer[19] seams unused because coeff[19] for hi-pass is 0, check fixed point representation
   reg signed [15:0] coeff[0:W_WIDTH-1];
   reg [4:0] sample_index;
-  reg [2:0] clock_count;
+  reg [4:0] current_stage;
   reg parity;
   integer i;
   
@@ -41,7 +41,7 @@ module convolution2 #(parameter MODE = 0, parameter W_WIDTH = 20) //0 = low pass
     parity <= 1'b1;
     sample_index <= 5'b0;
     write_enable <= 1'b0;
-    clock_count <= 3'b0;
+    current_stage <= 5'b0;
     
     if (MODE) begin
         $readmemh("lo_d_coeff.hex",coeff);
@@ -51,21 +51,21 @@ module convolution2 #(parameter MODE = 0, parameter W_WIDTH = 20) //0 = low pass
     
     for(i = 0; i<W_WIDTH; i=i+1) begin
         buffer[i] <= 16'h0;
-        pipeline_reg[i] <= 16'h0;
+        partial_sum[i] <= 16'h0;
     end
   end
     
-  always @(posedge CLK or posedge RST) begin
+  always @(posedge CLK) begin        
     if (RST) begin
-        for(i = 0; i<W_WIDTH; i=i+1) begin
-            buffer[i] <= 16'h0;
-            pipeline_reg[i] <= 16'h0;
-        end
-        
+        write_enable <= 0;
+        current_stage <= 5'b0;     
         parity <= 1'b1;
         sample_index <= 5'b0;
-        write_enable <= 1'b0;
-        clock_count <= 3'b0;
+        
+        for(i = 0; i<W_WIDTH; i=i+1) begin
+            buffer[i] <= 16'h0;
+            partial_sum[i] <= 16'h0;
+        end
   
     end else if (in_parity) begin
         // At each clock the buffer is filled with the new data so a 20 samples window is obtained for convolution
@@ -73,46 +73,24 @@ module convolution2 #(parameter MODE = 0, parameter W_WIDTH = 20) //0 = low pass
             buffer[i] <= buffer[i-1];
         end
         buffer[0]<=input_data;
-    
-        //Stage 0
-        for(i = 0; i<W_WIDTH; i=i+1) begin
-            pipeline_reg[i] = (buffer[i] * coeff[i]) >> 14;
-        end
-
-        //Stage 1
-        for(i = 0; i<W_WIDTH/2; i=i+1) begin
-            pipeline_reg[2*i] = pipeline_reg[2*i] + pipeline_reg[2*i+1];
-        end
-
-        //Stage 2
-        for(i = 0; i<W_WIDTH/4; i=i+1) begin
-            pipeline_reg[4*i] = pipeline_reg[4*i] + pipeline_reg[4*i+2];
-        end
-
-        //Stage 3
-        pipeline_reg[0] = pipeline_reg[0] + pipeline_reg[4];
-        pipeline_reg[8] = pipeline_reg[8] + pipeline_reg[12] + pipeline_reg[16];
         
-        //Stage 4
-        pipeline_reg[0] = pipeline_reg[0] + pipeline_reg[8];
+        partial_sum[0] <= buffer[0] * coeff[0];
+        for (i = 1; i < W_WIDTH; i = i + 1) begin
+            partial_sum[i] <= partial_sum[i-1] + buffer[i] * coeff[i]; //multiplications require a lot of dsp blocks
+        end
         
-        if(sample_index % 2 == 0) begin
-            parity = 1'b1;
+        parity <= sample_index % 2 == 0 ? 1 : 0;
+        
+        if(current_stage>=W_WIDTH-1) begin
+            write_enable <= parity ? 0 : 1;
         end else begin
-            parity = 1'b0;
+            current_stage <= current_stage + 1; //avoid writing zeros in memory at the beginning
         end
         
-        if(clock_count >= 6) begin
-            write_enable = (MODE == 1 && parity);
-        end else begin
-            write_enable = 0;
-        end
-        
-        clock_count = clock_count + 1;
-        sample_index = sample_index + 1;
+        sample_index <= sample_index + 1;
     end
   end
   
   assign out_parity = parity;
-  assign output_data = pipeline_reg[0];
+  assign output_data = partial_sum[W_WIDTH-1];
 endmodule
