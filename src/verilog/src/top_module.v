@@ -26,7 +26,7 @@ module TopModule(
     
     wire busy_out;
     wire eoc_out;
-    wire ready, parity ,we[0:1];
+    wire ready,we[0:1];
     
     reg [6:0] write_address_homo=0, write_address_wave=0;
 
@@ -59,12 +59,11 @@ module TopModule(
         .write_enable(we[0])
     );
     
-    db_wavelet #(.N_LEVEL(3), .WIDTH(20)) wave (
+    db_wavelet #(.N_LEVEL(3)) wave (
         .RST(nRESET),
         .CLK(CLK),
         .input_data(data),
         .output_abs_data(res_wave),
-        .out_parity(parity),
         .write_enable(we[1])
     );
     

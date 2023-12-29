@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 12/28/2023 03:19:46 PM
+// Create Date: 12/29/2023 05:28:19 PM
 // Design Name: 
-// Module Name: tb_convolution
+// Module Name: tb_fullWavelet
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,13 +19,13 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module tb_convolution(
+module tb_fullWavelet(
     );
     
     reg CLK, RST;
     reg [31:0] data_in=32'h0f7635a5f; //16'hac30; //data in input
     wire [31:0] out;
-    wire parity, write_enable;
+    wire write_enable;
     
     //Clock generation
     initial begin
@@ -34,33 +34,31 @@ module tb_convolution(
     end
     
     //Convolution module to be tested
-    convolution2 #(.MODE(1)) uut (
-        .CLK(CLK),
+    db_wavelet #(.N_LEVEL(3)) wave (
         .RST(RST),
-        .in_parity(1'b1),
+        .CLK(CLK),
         .input_data(data_in),
-        .output_data(out),
-        .parity(parity)
+        .output_abs_data(out),
+        .write_enable(write_enable)
     );
 
     // Reset and pipeline test
     initial begin
         RST = 0;
-        #10 data_in = 0;
+        //#10 data_in = 0;
         //#10 data_in = 32'h200;
         //#10 data_in= 32'h4a0;
-        #15 RST = 1;
-        #15 RST = 0;
+        //#15 RST = 1;
+        //#15 RST = 0;
         //#30 data_in = 0;
-        #10 data_in = 16'h200;
-        #10 data_in = 0;
+        //#10 data_in = 16'h200;
+        //#10 data_in = 0;
         //#10 data_in = 16'h4a0;
         //#10 data_in = 16'h6b0;
         //#10 data_in = 16'h8c0;
         //#35 RST = 1;
                 
         $monitor("Time=%0t, Data=%h", $time, out);
-
         #500 $finish;
     end
 endmodule

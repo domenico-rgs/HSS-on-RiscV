@@ -20,59 +20,52 @@
 // Try to optimize with: https://en.wikipedia.org/wiki/Lifting_scheme
 //////////////////////////////////////////////////////////////////////////////////
 
-module db_wavelet #(parameter N_LEVEL = 3, parameter WIDTH=20)(
+module db_wavelet #(parameter N_LEVEL = 3)(
     input CLK, RST,
-    input wire signed [15:0] input_data,
-    output wire signed [15:0] output_abs_data,
-    output out_parity, write_enable
+    input wire signed [31:0] input_data,
+    output reg signed [31:0] output_abs_data,
+    output write_enable
     );
     
-    wire signed [15:0] w_level [0:N_LEVEL-1];
-    wire parity [0:N_LEVEL-1];
-    reg [15:0] abs_value;
+    wire signed [31:0] w_level [0:N_LEVEL-1];
+    wire parity [0:N_LEVEL-2];
     
     generate genvar i;
-        convolution2 #(.MODE(0), .W_WIDTH(WIDTH)) wL0 (
+        convolution2 #(.MODE(0)) wL0 (
             .CLK(CLK),
             .RST(RST),
             .in_parity(1'b1),
             .input_data(input_data),
             .output_data(w_level[0]),
-            .out_parity(parity[0]),
-            .write_enable()
+            .parity(parity[0])
         );
         
         for(i=1; i<N_LEVEL-1; i=i+1) begin : conv_block
-            convolution2 #(.MODE(0), .W_WIDTH(WIDTH)) wL(
+            convolution2 #(.MODE(0)) wL(
                 .CLK(CLK),
                 .RST(RST),
                 .in_parity(parity[i-1]),
                 .input_data(w_level[i-1]),
                 .output_data(w_level[i]),
-                .out_parity(parity[i]),
-                .write_enable()
+                .parity(parity[i])
             );
         end
         
-        convolution2 #(.MODE(1), .W_WIDTH(WIDTH)) wLlast (
+        convolution2 #(.MODE(1)) wLlast (
             .CLK(CLK),
             .RST(RST),
             .input_data(w_level[N_LEVEL-2]),
             .in_parity(parity[N_LEVEL-2]),
             .output_data(w_level[N_LEVEL-1]),
-            .out_parity(parity[N_LEVEL-1]),
-            .write_enable(write_enable)
+            .parity(write_enable)
         );
     endgenerate
     
     always @ (w_level[N_LEVEL-1]) begin
         if (w_level[N_LEVEL-1] < 0) begin
-            abs_value <= -w_level[N_LEVEL-1];
+            output_abs_data <= -w_level[N_LEVEL-1];
         end else begin
-            abs_value <= w_level[N_LEVEL-1];
+            output_abs_data <= w_level[N_LEVEL-1];
         end
     end
-    
-    assign out_parity = parity[N_LEVEL-1];
-    assign output_abs_data = abs_value; 
 endmodule
