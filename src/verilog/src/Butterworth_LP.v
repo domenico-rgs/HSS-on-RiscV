@@ -33,7 +33,7 @@ module Butterworth_LP(
 
   //!! Check whether coeff is initilized after synthesis
   initial begin
-    $readmemh("butter_coeff.hex",coeff);
+    $readmemh("../data_file/butter_coeff.hex",coeff);
     
     x_past <= 16'h0;
     y_out <= 32'h0;

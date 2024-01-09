@@ -33,7 +33,7 @@ module exp #(parameter N_STAGE = 3)(
   
   //!! Check whether coeff is initilized after synthesis
   initial begin
-    $readmemh("exp_coeff.hex",coeff);
+    $readmemh("../data_file/exp_coeff.hex",coeff);
     
     for(i=0; i<N_STAGE; i = i+1) begin
         pipe_power_reg[i] <= 32'h0;

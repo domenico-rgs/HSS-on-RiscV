@@ -49,9 +49,9 @@ module convolution2 #(parameter MODE = 0) //0 = low pass filter
     current_stage <= 3'b0;
     
     if (MODE) begin
-        $readmemh("hi_d_coeff.hex",coeff);
+        $readmemh("../data_file/hi_d_coeff.hex",coeff);
     end else begin
-        $readmemh("lo_d_coeff.hex",coeff);
+        $readmemh("../data_file/lo_d_coeff.hex",coeff);
     end
     
     for(i = 0; i<WIDTH; i=i+1) begin
