@@ -16,14 +16,14 @@
 // Revision:
 // Revision 0.01 - File Created
 // Additional Comments:
-// 
+// Tested using 16bit fixed point representation ad 12 bit for the decimal part, 1 for the sign and 3 for the integer part
 //////////////////////////////////////////////////////////////////////////////////
 
 module tb_log(
     );
     
     reg CLK, RST;
-    reg [15:0] data_in=16'h200; //data in input
+    reg [15:0] data_in=16'd4096; //data in input, (data-1) per ln(data) -> in this case the input is 2 (1+1)
     wire [15:0] out;
     
     //Clock generation
@@ -43,14 +43,14 @@ module tb_log(
     // Reset and pipeline test
     initial begin
         RST = 0;
-        #15 RST = 1;
-        #15 RST = 0;
-        #15 data_in = 0;
-        #5 data_in = 16'h200;
-        #5 data_in = 16'h400;
-        #5 data_in = 16'h600;
-        #5 data_in = 16'h800;
-        #35 RST = 1;
+        //#15 RST = 1;
+        //#15 RST = 0;
+        //#15 data_in = 0;
+        //#5 data_in = 16'h200;
+        //#5 data_in = 16'h400;
+        //#5 data_in = 16'h600;
+        //#5 data_in = 16'h800;
+        //#35 RST = 1;
                 
         $monitor("Time=%0t, Data=%h", $time, out);
 

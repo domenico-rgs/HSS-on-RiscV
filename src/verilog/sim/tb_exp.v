@@ -16,14 +16,14 @@
 // Revision:
 // Revision 0.01 - File Created
 // Additional Comments:
-// 
+// Tested using 16bit fixed point representation ad 12 bit for the decimal part, 1 for the sign and 3 for the integer part
 //////////////////////////////////////////////////////////////////////////////////
 
 module tb_exp(
     );
     
     reg CLK, RST;
-    reg [15:0] data_in = 16'h200;
+    reg [15:0] data_in = 16'd4915; //1.2
     wire write_enable;
     wire [15:0] out;
     
@@ -32,7 +32,7 @@ module tb_exp(
         forever #5 CLK = ~CLK;
     end
     
-    exp #(.N_STAGE(3)) uut (
+    exp #(.N_STAGE(2)) uut (
         .CLK(CLK),
         .RST(RST),
         .data(data_in),
@@ -43,18 +43,18 @@ module tb_exp(
     // Reset and pipeline test
     initial begin
         RST = 0;
-        #15 RST = 1;
-        #15 RST = 0;
-        #15 data_in = 0;
-        #5 data_in = 16'h200;
+        //#15 RST = 1;
+        //#15 RST = 0;
+        #15 data_in = 16'd2048; //0.5
+        /*#5 data_in = 16'h200;
         #5 data_in = 16'h400;
         #5 data_in = 16'h600;
         #5 data_in = 16'h800;
         #35 RST = 1;
-        #10 RST = 0;
+        #10 RST = 0;*/
         
         $monitor("Time=%0t, Data=%h, WE=%h", $time, out, write_enable);
 
-        #50 $finish;
+        #100 $finish;
     end
 endmodule

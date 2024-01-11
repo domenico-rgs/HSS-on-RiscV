@@ -17,6 +17,8 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`include "homo_config.vh"
+
 module homomorphic(
     input CLK, nRESET,
     input wire signed [15:0] input_data,
@@ -35,21 +37,21 @@ module homomorphic(
         end
     end
         
-    log #(.N_STAGE(2)) Tlog (
+    log #(.N_STAGE(`LOG_N_STAGES)) Tlog (
         .RST(nRESET),
         .CLK(CLK),
-        .data(abs_value),
+        .data(abs_value-`ONE), //-1 to compute ln(x), h1000 is 1 in the current fixed-point format, adapt according to needs
         .output_data(butter_wire_in)
     );
     
-    Butterworth_LP butter (
+    butterworth_LP butter (
         .CLK(CLK),
         .RST(nRESET),
         .data(butter_wire_in),
         .out(butter_wire_out)
     );
     
-    exp #(.N_STAGE(3)) Texp (
+    exp #(.N_STAGE(`EXP_N_STAGES)) Texp (
         .RST(nRESET),
         .CLK(CLK),
         .data(butter_wire_out),
