@@ -20,21 +20,21 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
+`include "butterworth.vh"
 
-module Butterworth_LP(
+module butterworth_LP(
   input CLK, RST,
-  input wire signed [15:0] data,
-  output wire signed [15:0] out
+  input wire signed [31:0] data,
+  output wire signed [31:0] output_data
 );
 
-  reg signed [15:0] x_past;
-  reg signed [31:0] y_out; //32 bits to avoid overflow in the following
-  reg signed [15:0] coeff[0:2];
-
-  //!! Check whether coeff is initilized after synthesis
+  reg signed [31:0] x_past;
+  reg signed [31:0] y_out, y_past;
+  reg signed [31:0] coeff[0:`N_COEFF-1];
+  
   initial begin
-    $readmemh("../data_file/butter_coeff.hex",coeff);
-    
+    $readmemh(`COEFF_FILE,coeff);
+    y_past <= 0;
     x_past <= 16'h0;
     y_out <= 32'h0;
   end
@@ -43,13 +43,12 @@ module Butterworth_LP(
     if (RST) begin
       x_past <= 16'h0;
       y_out <= 32'h0;
-      
-    end else begin
-      y_out <= (coeff[0] * data + coeff[1] * x_past + coeff[2] * y_out) >> 14;
 
+    end else begin
       x_past <= data;
+      y_out <= (coeff[0] * data + coeff[1] * x_past + coeff[2] * y_out) >>> `DECIMAL_BITS;
     end
   end
-
-  assign out = y_out;
+  
+  assign output_data = y_out;
 endmodule
