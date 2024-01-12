@@ -5,6 +5,6 @@
 // Version          : 1.0
 // Abstract         : Constants and parameters for the Butterworth Low-pass filter
 
-`define COEFF_FILE "data_file/butter_coeff.hex"
+`define COEFF_FILE "mem_files/butter_coeff.mem"
 `define DECIMAL_BITS 12
 `define N_COEFF 3

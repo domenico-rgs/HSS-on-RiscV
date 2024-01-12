@@ -5,6 +5,6 @@
 // Version          : 1.0
 // Abstract         : Constants and parameters for the Log Module
 
-`define COEFF_FILE "data_file/log_coeff.hex"
+`define COEFF_FILE "mem_files/log_coeff.mem"
 `define PIPE_NREG 3
 `define DECIMAL_BITS 12

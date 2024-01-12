@@ -5,7 +5,7 @@
 // Version          : 1.0
 // Abstract         : Constants and parameters for the Exp Module
 
-`define COEFF_FILE "data_file/exp_coeff.hex"
+`define COEFF_FILE "mem_files/exp_coeff.mem"
 `define PIPE_NREG 3
 `define ONE 16'd4096
 `define DECIMAL_BITS 12
