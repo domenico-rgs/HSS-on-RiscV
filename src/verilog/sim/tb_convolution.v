@@ -23,7 +23,7 @@ module tb_convolution(
     );
     
     reg CLK, RST;
-    reg [31:0] data_in=32'h0f7635a5f; //16'hac30; //data in input
+    reg [31:0] data_in=32'h0f7635a5f; //data in input
     wire [31:0] out;
     wire parity, write_enable;
     
@@ -34,7 +34,7 @@ module tb_convolution(
     end
     
     //Convolution module to be tested
-    convolution2 #(.MODE(1)) uut (
+    convolution #(.MODE(0)) uut (
         .CLK(CLK),
         .RST(RST),
         .in_parity(1'b1),
@@ -46,14 +46,18 @@ module tb_convolution(
     // Reset and pipeline test
     initial begin
         RST = 0;
-        #10 data_in = 0;
+        //#10 data_in = 16'd3894;
+        //#10 data_in = 16'd2998;
+        //#10 data_in = 16'd2452;
+        //#10 data_in = 16'd639;
+        //#10 data_in = 16'd0;
         //#10 data_in = 32'h200;
         //#10 data_in= 32'h4a0;
-        #15 RST = 1;
-        #15 RST = 0;
+        //#15 RST = 1;
+        //#15 RST = 0;
         //#30 data_in = 0;
-        #10 data_in = 16'h200;
-        #10 data_in = 0;
+        //#10 data_in = 16'h200;
+        //#10 data_in = 0;
         //#10 data_in = 16'h4a0;
         //#10 data_in = 16'h6b0;
         //#10 data_in = 16'h8c0;

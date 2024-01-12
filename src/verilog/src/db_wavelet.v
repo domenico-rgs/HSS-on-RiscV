@@ -12,6 +12,8 @@
 // Description: 
 // Implementation of a DB10 with a decomposition level 3 (can be adapted through the N_LEVEL parameter). 
 // At the end, the absolute value is computed to extract the envelogram.
+// TESTED WITH Q2.29 FIXED POINT REPRESENTATION FOR BOTH COEFFICIENTS AND SAMPLES
+// Validated using Matlab dwt with dwtmode('zpd')
 //
 // Revision:
 // Revision 0.01 - File Created
@@ -31,7 +33,7 @@ module db_wavelet #(parameter N_LEVEL = 3)(
     wire parity [0:N_LEVEL-2];
     
     generate genvar i;
-        convolution2 #(.MODE(0)) wL0 (
+        convolution #(.MODE(0)) wL0 (
             .CLK(CLK),
             .RST(RST),
             .in_parity(1'b1),
@@ -41,7 +43,7 @@ module db_wavelet #(parameter N_LEVEL = 3)(
         );
         
         for(i=1; i<N_LEVEL-1; i=i+1) begin : conv_block
-            convolution2 #(.MODE(0)) wL(
+            convolution #(.MODE(0)) wL(
                 .CLK(CLK),
                 .RST(RST),
                 .in_parity(parity[i-1]),
@@ -51,7 +53,7 @@ module db_wavelet #(parameter N_LEVEL = 3)(
             );
         end
         
-        convolution2 #(.MODE(1)) wLlast (
+        convolution #(.MODE(1)) wLlast (
             .CLK(CLK),
             .RST(RST),
             .input_data(w_level[N_LEVEL-2]),

@@ -23,7 +23,7 @@ module tb_fullWavelet(
     );
     
     reg CLK, RST;
-    reg [31:0] data_in=32'h0f7635a5f; //16'hac30; //data in input
+    reg [31:0] data_in=32'd268435456; //16'hac30; //data in input
     wire [31:0] out;
     wire write_enable;
     
@@ -45,7 +45,7 @@ module tb_fullWavelet(
     // Reset and pipeline test
     initial begin
         RST = 0;
-        //#10 data_in = 0;
+        #10 data_in = 0;
         //#10 data_in = 32'h200;
         //#10 data_in= 32'h4a0;
         //#15 RST = 1;
@@ -59,6 +59,6 @@ module tb_fullWavelet(
         //#35 RST = 1;
                 
         $monitor("Time=%0t, Data=%h", $time, out);
-        #500 $finish;
+        #2000 $finish;
     end
 endmodule

@@ -11,10 +11,11 @@
 //
 // Description: 
 // Implementation of the digital circuit for extracting the homomorphic envelogram from a phonocardiogram as explained here: https://iopscience.iop.org/article/10.1088/0967-3334/31/4/004
+// TESTED WITH Q3.12 FIXED POINT REPRESENTATION FOR BOTH COEFFICIENTS AND SAMPLES
+// The coefficients are the same as the output from matlab, the implementation follow the direct form II
 //
 // Revision:
 // Revision 0.01 - File Created
-// 
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "homo_config.vh"

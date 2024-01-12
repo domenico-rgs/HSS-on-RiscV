@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_fullWavelet_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_fullWavelet" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="592.360 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,036.186 ns"></ZoomEndTime>
+      <Cursor1Time time="1,000.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="150"></NameColumnWidth>
+      <ValueColumnWidth column_width="217"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="45" />
+   <wvobject fp_name="/tb_fullWavelet/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/RST" type="logic">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/out" type="array">
+      <obj_property name="ElementShortName">out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/write_enable" type="logic">
+      <obj_property name="ElementShortName">write_enable</obj_property>
+      <obj_property name="ObjectShortName">write_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/in_parity" type="logic">
+      <obj_property name="ElementShortName">in_parity</obj_property>
+      <obj_property name="ObjectShortName">in_parity</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/input_data" type="array">
+      <obj_property name="ElementShortName">input_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">input_data[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/output_data" type="array">
+      <obj_property name="ElementShortName">output_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">output_data[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#0000FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/parity" type="logic">
+      <obj_property name="ElementShortName">parity</obj_property>
+      <obj_property name="ObjectShortName">parity</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/pipeline_reg_stage0" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage0[0:19][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage0[0:19][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/pipeline_reg_stage1" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage1[0:9][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage1[0:9][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/pipeline_reg_stage2" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage2[0:4][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage2[0:4][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/pipeline_reg_stage3" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage3[0:1][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage3[0:1][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/pipeline_reg_stage4" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage4[63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage4[63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/buffer" type="array">
+      <obj_property name="ElementShortName">buffer[0:19][31:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[0:19][31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/coeff" type="array">
+      <obj_property name="ElementShortName">coeff[0:19][31:0]</obj_property>
+      <obj_property name="ObjectShortName">coeff[0:19][31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/sample_index" type="array">
+      <obj_property name="ElementShortName">sample_index[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sample_index[4:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wL0/current_stage" type="array">
+      <obj_property name="ElementShortName">current_stage[2:0]</obj_property>
+      <obj_property name="ObjectShortName">current_stage[2:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FFFF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /input_data" type="array">
+      <obj_property name="ElementShortName">input_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">input_data[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /output_data" type="array">
+      <obj_property name="ElementShortName">output_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">output_data[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /parity" type="logic">
+      <obj_property name="ElementShortName">parity</obj_property>
+      <obj_property name="ObjectShortName">parity</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /in_parity" type="logic">
+      <obj_property name="ElementShortName">in_parity</obj_property>
+      <obj_property name="ObjectShortName">in_parity</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /pipeline_reg_stage0" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage0[0:19][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage0[0:19][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /pipeline_reg_stage1" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage1[0:9][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage1[0:9][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /pipeline_reg_stage2" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage2[0:4][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage2[0:4][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /pipeline_reg_stage3" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage3[0:1][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage3[0:1][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /pipeline_reg_stage4" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage4[63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage4[63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /buffer" type="array">
+      <obj_property name="ElementShortName">buffer[0:19][31:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[0:19][31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /coeff" type="array">
+      <obj_property name="ElementShortName">coeff[0:19][31:0]</obj_property>
+      <obj_property name="ObjectShortName">coeff[0:19][31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /sample_index" type="array">
+      <obj_property name="ElementShortName">sample_index[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sample_index[4:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/\conv_block[1].wL /current_stage" type="array">
+      <obj_property name="ElementShortName">current_stage[2:0]</obj_property>
+      <obj_property name="ObjectShortName">current_stage[2:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFD700</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/in_parity" type="logic">
+      <obj_property name="ElementShortName">in_parity</obj_property>
+      <obj_property name="ObjectShortName">in_parity</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/input_data" type="array">
+      <obj_property name="ElementShortName">input_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">input_data[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/output_data" type="array">
+      <obj_property name="ElementShortName">output_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">output_data[31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FF00FF</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/parity" type="logic">
+      <obj_property name="ElementShortName">parity</obj_property>
+      <obj_property name="ObjectShortName">parity</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/pipeline_reg_stage0" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage0[0:19][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage0[0:19][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/pipeline_reg_stage1" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage1[0:9][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage1[0:9][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/pipeline_reg_stage2" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage2[0:4][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage2[0:4][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/pipeline_reg_stage3" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage3[0:1][63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage3[0:1][63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/pipeline_reg_stage4" type="array">
+      <obj_property name="ElementShortName">pipeline_reg_stage4[63:0]</obj_property>
+      <obj_property name="ObjectShortName">pipeline_reg_stage4[63:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/buffer" type="array">
+      <obj_property name="ElementShortName">buffer[0:19][31:0]</obj_property>
+      <obj_property name="ObjectShortName">buffer[0:19][31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/coeff" type="array">
+      <obj_property name="ElementShortName">coeff[0:19][31:0]</obj_property>
+      <obj_property name="ObjectShortName">coeff[0:19][31:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/sample_index" type="array">
+      <obj_property name="ElementShortName">sample_index[4:0]</obj_property>
+      <obj_property name="ObjectShortName">sample_index[4:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fullWavelet/wave/wLlast/current_stage" type="array">
+      <obj_property name="ElementShortName">current_stage[2:0]</obj_property>
+      <obj_property name="ObjectShortName">current_stage[2:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+</wave_config>
