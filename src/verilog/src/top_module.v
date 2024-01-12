@@ -52,7 +52,7 @@ module TopModule(
     );
    
     homomorphic homo (
-        .nRESET(nRESET),
+        .RST(nRESET),
         .CLK(CLK),
         .input_data(data),
         .output_data(res_homo),

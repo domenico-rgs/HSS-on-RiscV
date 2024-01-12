@@ -35,13 +35,13 @@ module butterworth_LP(
   initial begin
     $readmemh(`COEFF_FILE,coeff);
     y_past <= 0;
-    x_past <= 16'h0;
+    x_past <= 32'h0;
     y_out <= 32'h0;
   end
 
   always @(posedge CLK) begin
     if (RST) begin
-      x_past <= 16'h0;
+      x_past <= 32'h0;
       y_out <= 32'h0;
 
     end else begin

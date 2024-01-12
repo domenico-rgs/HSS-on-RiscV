@@ -22,13 +22,13 @@
 
 module exp #(parameter N_STAGE = 2)(
     input CLK, RST,
-    input wire signed [15:0] data,
-    output reg signed [15:0] output_data,
+    input wire signed [31:0] data,
+    output reg signed [31:0] output_data,
     output reg write_enable
     );
   
   reg signed [31:0] pipe_reg[0:N_STAGE-1][0:`PIPE_NREG-1];
-  reg signed [15:0] coeff[0:N_STAGE-1];
+  reg signed [31:0] coeff[0:N_STAGE-1];
   integer i, j;
   
   initial begin
@@ -40,7 +40,7 @@ module exp #(parameter N_STAGE = 2)(
         end
     end
     
-    output_data <= 16'h0;    
+    output_data <= 32'h0;    
     write_enable <= 1'b1; //probabily useless
   end
   
@@ -52,7 +52,7 @@ module exp #(parameter N_STAGE = 2)(
             end
         end
         
-        output_data <= 16'h0;
+        output_data <= 32'h0;
         write_enable <= 1'b1;
     end else begin
         //Stage 0
@@ -63,8 +63,8 @@ module exp #(parameter N_STAGE = 2)(
         //Following stages
         for(i=1; i<N_STAGE; i = i+1) begin
             pipe_reg[i][0] <= pipe_reg[i-1][0];
-            pipe_reg[i][1] <= ((pipe_reg[i-1][1] >> `DECIMAL_BITS) * pipe_reg[i-1][0]); //need to rescale otherwise it scales up at each stage
-            pipe_reg[i][2] <= pipe_reg[i-1][2] + (((pipe_reg[i-1][1] >> `DECIMAL_BITS) * pipe_reg[i-1][0]) / coeff[i]);
+            pipe_reg[i][1] <= ((pipe_reg[i-1][1] >>> `DECIMAL_BITS) * pipe_reg[i-1][0]); //need to rescale otherwise it scales up at each stage
+            pipe_reg[i][2] <= pipe_reg[i-1][2] + (((pipe_reg[i-1][1] >>> `DECIMAL_BITS) * pipe_reg[i-1][0]) / coeff[i]);
         end
         
         output_data <= pipe_reg[N_STAGE-1][2] + `ONE;

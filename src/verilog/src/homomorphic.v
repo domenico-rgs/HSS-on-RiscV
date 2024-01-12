@@ -20,25 +20,21 @@
 `include "homo_config.vh"
 
 module homomorphic(
-    input CLK, nRESET,
-    input wire signed [15:0] input_data,
-    output wire [15:0] output_data,
+    input CLK, RST,
+    input wire signed [31:0] input_data,
+    output wire [31:0] output_data,
     output write_enable
     );
     
-    reg [15:0] abs_value;    
-    wire [15:0] butter_wire_out, butter_wire_in;
+    reg signed [31:0] abs_value;    
+    wire [31:0] butter_wire_out, butter_wire_in;
     
-    always @ (input_data) begin
-        if (input_data < 0) begin
-            abs_value = -input_data;
-        end else begin
-            abs_value = input_data;
-        end
+    always @* begin
+        abs_value = (input_data < 0) ? -input_data : input_data;
     end
         
     log #(.N_STAGE(`LOG_N_STAGES)) Tlog (
-        .RST(nRESET),
+        .RST(RST),
         .CLK(CLK),
         .data(abs_value-`ONE), //-1 to compute ln(x), h1000 is 1 in the current fixed-point format, adapt according to needs
         .output_data(butter_wire_in)
@@ -46,13 +42,13 @@ module homomorphic(
     
     butterworth_LP butter (
         .CLK(CLK),
-        .RST(nRESET),
+        .RST(RST),
         .data(butter_wire_in),
-        .out(butter_wire_out)
+        .output_data(butter_wire_out)
     );
     
     exp #(.N_STAGE(`EXP_N_STAGES)) Texp (
-        .RST(nRESET),
+        .RST(RST),
         .CLK(CLK),
         .data(butter_wire_out),
         .output_data(output_data),
