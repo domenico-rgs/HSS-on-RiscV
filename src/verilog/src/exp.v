@@ -18,7 +18,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "exp_param.vh"
+`include "system_defines.vh"
 
 module exp #(parameter N_STAGE = 2)(
     input CLK, RST,
@@ -27,15 +27,17 @@ module exp #(parameter N_STAGE = 2)(
     output reg write_enable
     );
   
-  reg signed [31:0] pipe_reg[0:N_STAGE-1][0:`PIPE_NREG-1];
+  localparam PIPE_NREG = 3;
+  
+  reg signed [31:0] pipe_reg[0:N_STAGE-1][0:PIPE_NREG-1];
   reg signed [31:0] coeff[0:N_STAGE-1];
   integer i, j;
   
   initial begin
-    $readmemh(`COEFF_FILE,coeff);
+    $readmemh(`EXP_COEFF_FILE,coeff);
 
     for(j=0; j<N_STAGE; j=j+1) begin
-        for(i=0; i<`PIPE_NREG; i = i+1) begin
+        for(i=0; i<PIPE_NREG; i = i+1) begin
             pipe_reg[j][i] <= 32'h0;
         end
     end
@@ -47,7 +49,7 @@ module exp #(parameter N_STAGE = 2)(
   always @(posedge CLK) begin
     if (RST) begin
         for(j=0; j<N_STAGE; j=j+1) begin
-            for(i=0; i<`PIPE_NREG; i = i+1) begin
+            for(i=0; i<PIPE_NREG; i = i+1) begin
                 pipe_reg[j][i] <= 32'h0;
             end
         end
@@ -63,11 +65,11 @@ module exp #(parameter N_STAGE = 2)(
         //Following stages
         for(i=1; i<N_STAGE; i = i+1) begin
             pipe_reg[i][0] <= pipe_reg[i-1][0];
-            pipe_reg[i][1] <= ((pipe_reg[i-1][1] >>> `DECIMAL_BITS) * pipe_reg[i-1][0]); //need to rescale otherwise it scales up at each stage
-            pipe_reg[i][2] <= pipe_reg[i-1][2] + (((pipe_reg[i-1][1] >>> `DECIMAL_BITS) * pipe_reg[i-1][0]) / coeff[i]);
+            pipe_reg[i][1] <= ((pipe_reg[i-1][1] >>> `H_FXP_DECIMAL_BITS) * pipe_reg[i-1][0]); //need to rescale otherwise it scales up at each stage
+            pipe_reg[i][2] <= pipe_reg[i-1][2] + (((pipe_reg[i-1][1] >>> `H_FXP_DECIMAL_BITS) * pipe_reg[i-1][0]) / coeff[i]);
         end
         
-        output_data <= pipe_reg[N_STAGE-1][2] + `ONE;
+        output_data <= pipe_reg[N_STAGE-1][2] + `H_ONE;
     end
   end
 endmodule

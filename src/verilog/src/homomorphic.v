@@ -18,7 +18,7 @@
 // Revision 0.01 - File Created
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "homo_config.vh"
+`include "system_defines.vh"
 
 module homomorphic(
     input CLK, RST,
@@ -27,6 +27,8 @@ module homomorphic(
     output write_enable
     );
     
+    localparam N_STAGES = 2;
+    
     reg signed [31:0] abs_value;    
     wire [31:0] butter_wire_out, butter_wire_in;
     
@@ -34,10 +36,10 @@ module homomorphic(
         abs_value = (input_data < 0) ? -input_data : input_data;
     end
         
-    log #(.N_STAGE(`LOG_N_STAGES)) Tlog (
+    log #(.N_STAGE(N_STAGES)) Tlog (
         .RST(RST),
         .CLK(CLK),
-        .data(abs_value-`ONE), //-1 to compute ln(x), h1000 is 1 in the current fixed-point format, adapt according to needs
+        .data(abs_value-`H_ONE), //-1 to compute ln(x), h1000 is 1 in the current fixed-point format, adapt according to needs
         .output_data(butter_wire_in)
     );
     
@@ -48,7 +50,7 @@ module homomorphic(
         .output_data(butter_wire_out)
     );
     
-    exp #(.N_STAGE(`EXP_N_STAGES)) Texp (
+    exp #(.N_STAGE(N_STAGES)) Texp (
         .RST(RST),
         .CLK(CLK),
         .data(butter_wire_out),

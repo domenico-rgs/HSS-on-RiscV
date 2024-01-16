@@ -63,11 +63,7 @@ module db_wavelet #(parameter N_LEVEL = 3)(
         );
     endgenerate
     
-    always @ (w_level[N_LEVEL-1]) begin
-        if (w_level[N_LEVEL-1] < 0) begin
-            output_abs_data <= -w_level[N_LEVEL-1];
-        end else begin
-            output_abs_data <= w_level[N_LEVEL-1];
-        end
+    always @* begin
+        output_abs_data = (w_level[N_LEVEL-1] < 0) ? -w_level[N_LEVEL-1] : w_level[N_LEVEL-1];
     end
 endmodule

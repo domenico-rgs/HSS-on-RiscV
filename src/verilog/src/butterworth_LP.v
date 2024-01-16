@@ -20,20 +20,22 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "butterworth.vh"
+`include "system_defines.vh"
 
 module butterworth_LP(
   input CLK, RST,
   input wire signed [31:0] data,
   output wire signed [31:0] output_data
 );
-
+    
+  localparam N_COEFF = 3;
+  
   reg signed [31:0] x_past;
   reg signed [31:0] y_out, y_past;
-  reg signed [31:0] coeff[0:`N_COEFF-1];
+  reg signed [31:0] coeff[0:N_COEFF-1];
   
   initial begin
-    $readmemh(`COEFF_FILE,coeff);
+    $readmemh(`BUTTER_COEFF_FILE,coeff);
     y_past <= 0;
     x_past <= 32'h0;
     y_out <= 32'h0;
@@ -46,7 +48,7 @@ module butterworth_LP(
 
     end else begin
       x_past <= data;
-      y_out <= (coeff[0] * data + coeff[1] * x_past + coeff[2] * y_out) >>> `DECIMAL_BITS;
+      y_out <= (coeff[0] * data + coeff[1] * x_past + coeff[2] * y_out) >>> `H_FXP_DECIMAL_BITS;
     end
   end
   
