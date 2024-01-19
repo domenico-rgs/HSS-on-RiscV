@@ -23,47 +23,101 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module db_wavelet #(parameter N_LEVEL = 3)(
-    input CLK, RST,
-    input wire signed [31:0] input_data,
-    output reg signed [31:0] output_abs_data,
-    output write_enable
-    );
+    input aclk, aresetn,
+    input wire signed [31:0] s_axis_data_tdata,
+    output wire s_axis_data_tready,
+    input wire s_axis_data_tvalid,
+    output wire [31:0] m_axis_data_tdata,
+    output m_axis_data_tvalid
+);
     
-    wire signed [31:0] w_level [0:N_LEVEL-1];
-    wire parity [0:N_LEVEL-2];
+    reg signed [31:0] abs_data;
+    
+    wire signed [31:0] w_tdata[0:N_LEVEL];
+    wire w_validity[0:1];
+    wire w_ready[0:1];
+    
+    wire [0:7] config_tdata;
+    wire config_ready, config_valid;
     
     generate genvar i;
-        convolution #(.MODE(0)) wL0 (
-            .CLK(CLK),
-            .RST(RST),
-            .in_parity(1'b1),
-            .input_data(input_data),
-            .output_data(w_level[0]),
-            .parity(parity[0])
+        convolution #(.MODE(0)) w_conv_0 (
+            .aclk(aclk),
+            .aresetn(aresetn),
+            
+            .s_axis_data_tdata(s_axis_data_tdata),            
+            .s_axis_data_tvalid(s_axis_data_tvalid),
+            .s_axis_data_tready(s_axis_data_tready),
+            
+            .m_axis_data_tdata(w_tdata[0]),
+            .m_axis_data_tvalid(w_validity[0]),
+            .m_axis_data_tready(w_ready[0])
         );
         
         for(i=1; i<N_LEVEL-1; i=i+1) begin : conv_block
-            convolution #(.MODE(0)) wL(
-                .CLK(CLK),
-                .RST(RST),
-                .in_parity(parity[i-1]),
-                .input_data(w_level[i-1]),
-                .output_data(w_level[i]),
-                .parity(parity[i])
+            convolution #(.MODE(0)) w_conv(
+                .aclk(aclk),
+                .aresetn(aresetn),
+                
+                .s_axis_data_tdata(w_tdata[i-1]),
+                .s_axis_data_tvalid(w_validity[i-1]),
+                .s_axis_data_tready(w_ready[0]),
+                
+                .m_axis_data_tdata(w_tdata[i]),
+                .m_axis_data_tvalid(w_validity[i]),
+                .m_axis_data_tready(w_ready[1])
             );
         end
         
-        convolution #(.MODE(1)) wLlast (
-            .CLK(CLK),
-            .RST(RST),
-            .input_data(w_level[N_LEVEL-2]),
-            .in_parity(parity[N_LEVEL-2]),
-            .output_data(w_level[N_LEVEL-1]),
-            .parity(write_enable)
+        convolution #(.MODE(1)) w_conv_last (
+            .aclk(aclk),
+            .aresetn(aresetn),
+            
+            .s_axis_data_tdata(w_tdata[N_LEVEL-2]),
+            .s_axis_data_tvalid(w_validity[N_LEVEL-2]),
+            .s_axis_data_tready(w_ready[1]),
+            
+            .m_axis_data_tdata(w_tdata[N_LEVEL-1]),
+            .m_axis_data_tvalid(w_validity[N_LEVEL-1]),
+            .m_axis_data_tready(w_ready[2])
+        );
+    
+        always @* begin
+            abs_data = (w_tdata[N_LEVEL-1] < 0) ? -w_tdata[N_LEVEL-1] : w_tdata[N_LEVEL-1];
+        end
+            
+        incrementalNormalization #(.SQRT_STAGES(3), .WIDTH (32), .FXP_BITS(29), .HALF_VALUE(31'h10000000), .ONE_VALUE(31'h20000000)) waveNorm(
+            .aclk(aclk),
+            .aresetn(aresetn),
+            
+            .s_axis_data_tdata(abs_data),
+            .s_axis_data_tvalid(w_validity[N_LEVEL-1]),
+            .s_axis_data_tready(w_ready[2]),
+            
+            .m_axis_data_tdata(w_tdata[N_LEVEL]),
+            .m_axis_data_tready(w_ready[3]),
+            .m_axis_data_tvalid(w_validity[N_LEVEL]),
+            
+            .m_axis_config_tdata(config_tdata),
+            .m_axis_config_tready(config_ready),
+            .m_axis_config_tvalid(config_valid)
+        );
+        
+        poly_decimator_0 wave_downsampling(
+            .aresetn(aresetn),
+            .aclk(aclk),
+            
+            .s_axis_data_tdata(w_tdata[N_LEVEL]),
+            .s_axis_data_tready(w_ready[3]),
+            .s_axis_data_tvalid(w_validity[N_LEVEL]),
+            
+            
+            .s_axis_config_tdata(config_tdata),
+            .s_axis_config_tready(config_ready),
+            .s_axis_config_tvalid(config_valid),
+            
+            .m_axis_data_tdata(m_axis_data_tdata),
+            .m_axis_data_tvalid(m_axis_data_tvalid)
         );
     endgenerate
-    
-    always @* begin
-        output_abs_data = (w_level[N_LEVEL-1] < 0) ? -w_level[N_LEVEL-1] : w_level[N_LEVEL-1];
-    end
 endmodule

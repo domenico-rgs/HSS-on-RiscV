@@ -17,21 +17,22 @@
 module TopModule(
    input CLK,
    input nRESET,
-   input vauxn,
-   input vauxp
+   input uart_tx_in,
+   output uart_rx_out
 );
 
-    wire [15:0] data;
-    wire [15:0] res_homo, res_wave;
+    wire [31:0] xadc_tdata;
+    wire [31:0] hilb_s_tdata, homo_s_tdata, wave_s_tdata;
+    wire [31:0] hilb_m_tdata, homo_m_tdata, wave_m_tdata;
     
-    wire busy_out;
+    wire hilb_m_tvalid, homo_m_tvalid, wave_m_tvalid;
+    wire w_b_tready[0:2], w_b_tvalid[0:2];
+    
+    /* wire busy_out;
     wire eoc_out;
     wire ready,we[0:1];
     
-    reg [6:0] write_address_homo=0, write_address_wave=0;
-
-    
-    xadc_wiz_0 ADC (
+     xadc_wiz_0 ADC (
         .daddr_in(16'h10),
         .dclk_in(CLK), 
         .den_in(eoc_out), 
@@ -49,37 +50,114 @@ module TopModule(
         .channel_out(),
         .eos_out(),
         .drdy_out(ready)
+    ); */
+    
+    /*axi_uartlite_0 uart(
+        .s_axi_aclk(CLK),
+        .s_axi_aresetn(nRESET),
+        
+        .rx(uart_tx_in),
+        .tx(uart_rx_out)
+    );*/
+    
+    axis_data_fifo_0 hilb_buff_0(
+        .s_axis_aresetn(nRESET),
+        .s_axis_aclk(CLK),
+        
+        .s_axis_tdata(xadc_tdata),
+        .s_axis_tready(),
+        .s_axis_tvalid(),
+        
+        .m_axis_tdata(hilb_s_tdata),
+        .m_axis_tready(w_b_tready[0]),
+        .m_axis_tvalid(w_b_tvalid[0])
     );
-   
+
+    hilbert hilb (
+        .aresetn(nRESET),
+        .aclk(CLK),
+        
+        .s_axis_data_tdata(hilb_s_tdata),
+        .s_axis_data_tready(w_b_tready[0]),
+        .s_axis_data_tvalid(w_b_tvalid[0]),
+        
+        .m_axis_data_tdata(hilb_m_tdata),
+        .m_axis_data_tvalid(hilb_m_tvalid)
+    );
+    
+    axis_data_fifo_0 homo_buff_0(
+        .s_axis_aresetn(nRESET),
+        .s_axis_aclk(CLK),
+        
+        .s_axis_tdata(xadc_tdata),
+        .s_axis_tready(),
+        .s_axis_tvalid(),
+        
+        .m_axis_tdata(homo_s_tdata),
+        .m_axis_tready(w_b_tready[1]),
+        .m_axis_tvalid(w_b_tvalid[1])
+    );   
+
     homomorphic homo (
-        .RST(nRESET),
-        .CLK(CLK),
-        .input_data(data),
-        .output_data(res_homo),
-        .write_enable(we[0])
+        .aresetn(nRESET),
+        .aclk(CLK),
+
+        .s_axis_data_tdata(homo_s_tdata),
+        .s_axis_data_tready(w_b_tready[1]),
+        .s_axis_data_tvalid(w_b_tvalid[1]),
+        
+        .m_axis_data_tdata(homo_m_tdata),
+        .m_axis_data_tvalid(homo_m_tvalid)
+    );
+    
+    axis_data_fifo_0 wave_buff_0(
+        .s_axis_aresetn(nRESET),
+        .s_axis_aclk(CLK),
+        
+        .s_axis_tdata(xadc_tdata),
+        .s_axis_tready(),
+        .s_axis_tvalid(),
+        
+        .m_axis_tdata(wave_s_tdata),
+        .m_axis_tready(w_b_tready[2]),
+        .m_axis_tvalid(w_b_tvalid[2])
     );
     
     db_wavelet #(.N_LEVEL(3)) wave (
-        .RST(nRESET),
-        .CLK(CLK),
-        .input_data(data),
-        .output_abs_data(res_wave),
-        .write_enable(we[1])
+        .aresetn(nRESET),
+        .aclk(CLK),
+        
+        .s_axis_data_tdata(wave_s_tdata),
+        .s_axis_data_tready(w_b_tready[2]),
+        .s_axis_data_tvalid(w_b_tvalid[2]),
+        
+        .m_axis_data_tdata(wave_m_tdata),
+        .m_axis_data_tvalid(wave_m_tvalid)
     );
     
-    always @(posedge we[0]) begin
-        if (we[0]==1'b1) begin
-            write_address_homo <= write_address_homo + 1'b1;
-        end else begin
-            write_address_homo <= write_address_homo;
-        end
-    end
+    /*memory_controller mem_ctrl (
+        
+    );
+    
+    blk_mem_gen_0 SRAM_HILB(
+        .addra(1'b0),
+        .clka(CLK),
+        .dina(res_hilb),
+        .wea(1'b1),
+        .douta(),
+        
+        .addrb(6'b0),
+        .clkb(CLK),
+        .doutb(),
+        .web(),
+        .dinb()
+    );
         
     blk_mem_gen_0 SRAM_HOMO(
         .addra(write_address_homo),
         .clka(CLK),
         .dina(res_homo),
-        .wea(we[0]),
+        .wea(1'b1),
         .douta(),
         
         .addrb(6'b0),
@@ -89,19 +167,11 @@ module TopModule(
         .dinb()
     );
     
-    always @(posedge we[1]) begin
-        if (we[1]==1'b1) begin
-            write_address_wave <= write_address_wave + 1'b1;
-        end else begin
-            write_address_wave <= write_address_wave;
-        end
-    end
-    
     blk_mem_gen_0 SRAM_WAVE(
         .addra(write_address_wave),
         .clka(CLK),
         .dina(res_wave),
-        .wea(we[1]),
+        .wea(1'b1),
         .douta(),
 
         .addrb(6'b0),
@@ -109,5 +179,5 @@ module TopModule(
         .doutb(),
         .web(),
         .dinb()
-    );
+    );*/
 endmodule

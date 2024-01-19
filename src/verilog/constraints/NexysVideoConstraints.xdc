@@ -141,8 +141,8 @@ set_property -dict {PACKAGE_PIN G4 IOSTANDARD LVCMOS15} [get_ports nRESET]
 ## XADC Header
 #set_property -dict { PACKAGE_PIN J14   IOSTANDARD LVCMOS33 } [get_ports { vauxn }]; #IO_L3P_T0_DQS_AD1P_15 Sch=xa_p[1]
 #set_property -dict { PACKAGE_PIN H14   IOSTANDARD LVCMOS33 } [get_ports { vauxp }]; #IO_L3N_T0_DQS_AD1N_15 Sch=xa_n[1]
-set_property -dict { PACKAGE_PIN G13   IOSTANDARD LVCMOS33 } [get_ports { vauxn }]; #IO_L1P_T0_AD0P_15 Sch=xa_p[2]
-set_property -dict { PACKAGE_PIN H13   IOSTANDARD LVCMOS33 } [get_ports { vauxp }]; #IO_L1N_T0_AD0N_15 Sch=xa_n[2]
+##set_property -dict { PACKAGE_PIN G13   IOSTANDARD LVCMOS33 } [get_ports { vauxn }]; #IO_L1P_T0_AD0P_15 Sch=xa_p[2]
+##set_property -dict { PACKAGE_PIN H13   IOSTANDARD LVCMOS33 } [get_ports { vauxp }]; #IO_L1N_T0_AD0N_15 Sch=xa_n[2]
 #set_property -dict { PACKAGE_PIN G15   IOSTANDARD LVCMOS33 } [get_ports { xa_p[2] }]; #IO_L2P_T0_AD8P_15 Sch=xa_p[3]
 #set_property -dict { PACKAGE_PIN G16   IOSTANDARD LVCMOS33 } [get_ports { xa_n[2] }]; #IO_L2N_T0_AD8N_15 Sch=xa_n[3]
 #set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { xa_p[3] }]; #IO_L5P_T0_AD9P_15 Sch=xa_p[4]
@@ -150,8 +150,8 @@ set_property -dict { PACKAGE_PIN H13   IOSTANDARD LVCMOS33 } [get_ports { vauxp 
 
 
 ## UART
-#set_property -dict { PACKAGE_PIN AA19  IOSTANDARD LVCMOS33 } [get_ports { uart_rx_out }]; #IO_L15P_T2_DQS_RDWR_B_14 Sch=uart_rx_out
-#set_property -dict { PACKAGE_PIN V18   IOSTANDARD LVCMOS33 } [get_ports { uart_tx_in }]; #IO_L14P_T2_SRCC_14 Sch=uart_tx_in
+set_property -dict { PACKAGE_PIN AA19  IOSTANDARD LVCMOS33 } [get_ports { uart_rx_out }]; #IO_L15P_T2_DQS_RDWR_B_14 Sch=uart_rx_out
+set_property -dict { PACKAGE_PIN V18   IOSTANDARD LVCMOS33 } [get_ports { uart_tx_in }]; #IO_L14P_T2_SRCC_14 Sch=uart_tx_in
 
 
 ## Ethernet
