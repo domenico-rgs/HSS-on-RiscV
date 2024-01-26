@@ -26,61 +26,36 @@ module hilbert(
     output m_axis_data_tvalid
 );
         
-   wire signed [31:0] w_tdata[0:1];
-   wire w_validity[0:1];
-   wire w_ready[0:1];
-
-   wire [0:7] config_tdata;
-   wire config_ready, config_valid;
+   wire signed [31:0] w_tdata;
+   wire w_validity;
+   wire w_ready;
   
    reg signed [31:0] abs_value;
    
    hilber_fir_0 hilb_transform_0(
         .aclk(aclk),
-        .aresetn(aresetn),
+        .aresetn(~aresetn),
         
         .s_axis_data_tdata(s_axis_data_tdata),
         .s_axis_data_tready(s_axis_data_tready),
         .s_axis_data_tvalid(s_axis_data_tvalid),
         
-        .m_axis_data_tdata(w_tdata[0]),
-        .m_axis_data_tready(w_ready[0]),
-        .m_axis_data_tvalid(w_validity[0])
+        .m_axis_data_tdata(w_tdata),
+        .m_axis_data_tready(w_ready),
+        .m_axis_data_tvalid(w_validity)
    );
    
     always @* begin
-        abs_value = (w_tdata[0] < 0) ? -w_tdata[0] : w_tdata[0];
+        abs_value = (w_tdata < 0) ? -w_tdata : w_tdata;
     end
     
-   incrementalNormalization #(.SQRT_STAGES(3), .WIDTH (16), .FXP_BITS(12), .HALF_VALUE(31'h800), .ONE_VALUE(31'h1000)) hilbNorm_0(
+    fir_compiler_0 hilb_downsampling_0(
         .aclk(aclk),
-        .aresetn(aresetn),
+        .aresetn(~aresetn),
         
         .s_axis_data_tdata(abs_value),
-        .s_axis_data_tready(w_ready[0]),
-        .s_axis_data_tvalid(w_validity[0]),
-        
-        .m_axis_data_tdata(w_tdata[1]),
-        .m_axis_data_tready(w_ready[1]),
-        .m_axis_data_tvalid(w_validity[1]),
-        
-        .m_axis_config_tdata(config_tdata),
-        .m_axis_config_tready(config_ready),
-        .m_axis_config_tvalid(config_valid)
-    );
-    
-    poly_decimator_0 hilb_downsampling_0(
-        .aresetn(aresetn),
-        .aclk(aclk),
-        
-        .s_axis_data_tdata(w_tdata[1]),
-        .s_axis_data_tready(w_ready[1]),
-        .s_axis_data_tvalid(w_validity[1]),
-        
-        
-        .s_axis_config_tdata(config_tdata),
-        .s_axis_config_tready(config_ready),
-        .s_axis_config_tvalid(config_valid),
+        .s_axis_data_tready(w_ready),
+        .s_axis_data_tvalid(w_validity),
         
         .m_axis_data_tdata(m_axis_data_tdata),
         .m_axis_data_tvalid(m_axis_data_tvalid)

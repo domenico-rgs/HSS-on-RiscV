@@ -36,26 +36,31 @@ module butterworth_LP(
   
   reg signed [31:0] x_past;
   reg signed [127:0] y_out;
-  reg signed [31:0] y_past;
   reg signed [31:0] coeff[0:N_COEFF-1];
+  
+  reg signed [63:0] test_reg [0:3];
   reg tready_internal, validity;
   
   initial begin
     $readmemh(`BUTTER_COEFF_FILE,coeff);
-    y_past <= 0;
     x_past <= 32'h0;
     y_out <= 32'h0;
+    
+    validity <= 1'b0;
+    tready_internal <= 1'b1;
   end
 
   always @(posedge aclk) begin
     if (aresetn) begin
       x_past <= 32'h0;
       y_out <= 32'h0;
-
+      
+      validity <= 1'b0;
+      tready_internal <= 1'b1;
     end else if (m_axis_data_tready) begin
         if(s_axis_data_tvalid) begin
             x_past <= s_axis_data_tdata;
-            y_out <= (coeff[0] * s_axis_data_tdata + coeff[1] * x_past + coeff[2] * y_out) >>> `H_FXP_DECIMAL_BITS;
+            y_out <= (coeff[0] * s_axis_data_tdata + coeff[1] * x_past - coeff[2] * y_out) >>> `H_FXP_DECIMAL_BITS;
             
             validity <= 1'b1;
         end else begin
@@ -68,7 +73,7 @@ module butterworth_LP(
     end
   end
   
-  assign m_axis_data_tdata = y_out;
+  assign m_axis_data_tdata = y_out[31:0];
   assign s_axis_data_tready = tready_internal;
   assign m_axis_data_tvalid = validity;
 endmodule

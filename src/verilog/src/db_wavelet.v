@@ -33,12 +33,9 @@ module db_wavelet #(parameter N_LEVEL = 3)(
     
     reg signed [31:0] abs_data;
     
-    wire signed [31:0] w_tdata[0:N_LEVEL];
-    wire w_validity[0:1];
-    wire w_ready[0:1];
-    
-    wire [0:7] config_tdata;
-    wire config_ready, config_valid;
+    wire signed [31:0] w_tdata[0:N_LEVEL-1];
+    wire w_validity[0:2];
+    wire w_ready[0:2];
     
     generate genvar i;
         convolution #(.MODE(0)) w_conv_0 (
@@ -85,36 +82,14 @@ module db_wavelet #(parameter N_LEVEL = 3)(
         always @* begin
             abs_data = (w_tdata[N_LEVEL-1] < 0) ? -w_tdata[N_LEVEL-1] : w_tdata[N_LEVEL-1];
         end
-            
-        incrementalNormalization #(.SQRT_STAGES(3), .WIDTH (32), .FXP_BITS(29), .HALF_VALUE(31'h10000000), .ONE_VALUE(31'h20000000)) waveNorm(
-            .aclk(aclk),
-            .aresetn(aresetn),
-            
-            .s_axis_data_tdata(abs_data),
-            .s_axis_data_tvalid(w_validity[N_LEVEL-1]),
-            .s_axis_data_tready(w_ready[2]),
-            
-            .m_axis_data_tdata(w_tdata[N_LEVEL]),
-            .m_axis_data_tready(w_ready[3]),
-            .m_axis_data_tvalid(w_validity[N_LEVEL]),
-            
-            .m_axis_config_tdata(config_tdata),
-            .m_axis_config_tready(config_ready),
-            .m_axis_config_tvalid(config_valid)
-        );
         
         poly_decimator_0 wave_downsampling(
             .aresetn(aresetn),
             .aclk(aclk),
             
-            .s_axis_data_tdata(w_tdata[N_LEVEL]),
-            .s_axis_data_tready(w_ready[3]),
-            .s_axis_data_tvalid(w_validity[N_LEVEL]),
-            
-            
-            .s_axis_config_tdata(config_tdata),
-            .s_axis_config_tready(config_ready),
-            .s_axis_config_tvalid(config_valid),
+            .s_axis_data_tdata(abs_data),
+            .s_axis_data_tvalid(w_validity[N_LEVEL-1]),
+            .s_axis_data_tready(w_ready[2]),
             
             .m_axis_data_tdata(m_axis_data_tdata),
             .m_axis_data_tvalid(m_axis_data_tvalid)

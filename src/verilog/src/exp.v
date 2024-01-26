@@ -47,7 +47,11 @@ module exp #(parameter N_STAGE = 2)(
         for(i=0; i<PIPE_NREG; i = i+1) begin
             pipe_reg[j][i] <= 32'h0;
         end
+        
+        validity[j] <= 1'b0;
     end
+    
+    tready_internal <= 1'b1;
   end
   
   always @(posedge aclk) begin
@@ -56,6 +60,7 @@ module exp #(parameter N_STAGE = 2)(
             for(i=0; i<PIPE_NREG; i = i+1) begin
                 pipe_reg[j][i] <= 32'h0;
             end
+            validity[j] <= 1'b0;
         end
         
         tready_internal <= 1'b1;

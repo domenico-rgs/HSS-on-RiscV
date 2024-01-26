@@ -32,7 +32,7 @@ module log #(parameter N_STAGE = 2) (
     
   localparam PIPE_NREG = 3;
   
-  reg signed [31:0] pipe_reg[0:N_STAGE-1][0:PIPE_NREG-1];
+  reg signed [63:0] pipe_reg[0:N_STAGE-1][0:PIPE_NREG-1];
   reg signed [31:0] coeff[0:N_STAGE-1];
 
   reg validity[0:N_STAGE-1];
@@ -47,7 +47,10 @@ module log #(parameter N_STAGE = 2) (
         for(j=0; j<PIPE_NREG; j = j+1) begin
             pipe_reg[i][j] <= 32'h0;
         end
+        validity[i] <= 1'b0;
     end
+
+    tready_internal <= 1'b1;
   end
 
   always @(posedge aclk) begin
@@ -55,8 +58,12 @@ module log #(parameter N_STAGE = 2) (
         for(i=0; i<N_STAGE; i = i+1) begin
             for(j=0; j<PIPE_NREG; j = j+1) begin
                 pipe_reg[i][j] <= 32'h0;
+                validity[i] <= 1'b0;
             end
         end
+        
+        validity[0] <= 1'b0;
+        tready_internal <= 1'b1;
     end else if(m_axis_data_tready) begin
         if (s_axis_data_tvalid) begin
             //Stage 0
@@ -70,7 +77,11 @@ module log #(parameter N_STAGE = 2) (
                 validity[i] <= validity[i-1];
                 pipe_reg[i][0] <= pipe_reg[i-1][0];
                 pipe_reg[i][1] <= ((pipe_reg[i-1][1] >>> `H_FXP_DECIMAL_BITS) * pipe_reg[i-1][0]); //need to rescale otherwise it scales up at each stage
-                pipe_reg[i][2] <= pipe_reg[i-1][2] + (((pipe_reg[i-1][1] >>> `H_FXP_DECIMAL_BITS) * pipe_reg[i-1][0]) / coeff[i]);
+                if(i % 2 == 0) begin
+                    pipe_reg[i][2] <= pipe_reg[i-1][2] - (((pipe_reg[i-1][1] >>> `H_FXP_DECIMAL_BITS) * pipe_reg[i-1][0]) / coeff[i]);
+                end else begin
+                    pipe_reg[i][2] <= pipe_reg[i-1][2] + (((pipe_reg[i-1][1] >>> `H_FXP_DECIMAL_BITS) * pipe_reg[i-1][0]) / coeff[i]);
+                end
             end
             
         end else begin

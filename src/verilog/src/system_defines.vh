@@ -12,10 +12,13 @@
 `define EXP_COEFF_FILE "mem_files/exp_coeff.mem"
 `define LOG_COEFF_FILE "mem_files/log_coeff.mem"
 
+`define BUT_SND_LO "mem_files/but_snd_lo.mem"
+`define BUT_SND_HI "mem_files/but_snd_hi.mem"
+
 //FXP DEFINITIONS
 `define WAVE_FXP_DECIMAL_BITS 29
-`define H_FXP_DECIMAL_BITS 12
+`define H_FXP_DECIMAL_BITS 26
 
-`define H_ONE 16'h1000 //1 according to the fxp representation in use
+`define H_ONE 32'h4000000 //1 according to the fxp representation in use
 
 
