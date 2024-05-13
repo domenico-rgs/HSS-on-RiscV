@@ -28,7 +28,7 @@ It is implemented in TensorFlow, C/C++ and Cuda. To evaluate the potential appli
 * **data/** - It is the directory that contains, as .npy files, the weights for each network layer and also the data used for tests.
 * **profiling/** - Contains the results from Valgrind/Cachegrind (C codes) and NVIDIA Nsight Systems (Cuda)
 * **src/** - Contains the CNN code in C/C++ and Python (TensorFlow). It is also adapted to run on GPU through CUDA extension and on the AIRISC through their proprietery extensions. Moreover, in the directory there are also the notebooks used for data analysis.
-* **src/verilog** - Within this directory there are the verilog files to implement on Xilinx FGPAs the phonocardiogram signal pre-processing using Vivado.
+* **src/HDL** - In this directory there is the HDL models from Vitis Model Composer to implement in-hardware the phonocardiogram signal pre-processing.
 
 ## Data generation
 To run the network and make inference, layer weights and also data are needed to be extracted from the .npy files.
