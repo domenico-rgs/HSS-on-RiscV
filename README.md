@@ -3,8 +3,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/domenico-rgs/HSS-on-RiscV)](https://github.com/domenico-rgs/HSS-on-RiscV/issues)
 [![GitHub stars](https://img.shields.io/github/stars/domenico-rgs/HSS-on-RiscV)](https://github.com/domenico-rgs/HSS-on-RiscV/stargazers)
 
-Convolutional Neural Network (U-net type) to classify PCG envelograms.
-It is implemented in TensorFlow, C/C++ and Cuda. To evaluate the potential application of a RISC-V processor ([AIRISC Core Complex](https://github.com/Fraunhofer-IMS/airisc_core_complex)) as an embedded device, the code with/without AI accelerators is also present.
+Convolutional Neural Network (U-Net) to classify PCG envelograms.
+It is implemented in TensorFlow, C/C++ and Cuda. To evaluate the potential application of a RISC-V processor ([AIRISC Core Complex](https://github.com/Fraunhofer-IMS/airisc_core_complex)) as an embedded device, the code exploiting AI accelerators is also present.
 
 :bulb: The goal of the CNN as well as its architecture are introduced in this article: [Deep Convolutional Neural Networks for Heart Sound Segmentation - IEEE Journal of Biomedical and Health Informatics](https://ieeexplore.ieee.org/abstract/document/8620278)
 
@@ -12,14 +12,15 @@ It is implemented in TensorFlow, C/C++ and Cuda. To evaluate the potential appli
 
 
 - [Heart Sound Segmentation on RISC-V](#heart-sound-segmentation-on-risc-v)
+  - [Requirements](#requirements)
   - [Directories and files](#directories-and-files)
   - [Data generation](#data-generation)
   - [Run and test](#run-and-test)
   - [Results](#results)
+    - [Citation](#citation)
   - [Notes](#notes)
 
 ## Requirements
-* Vivado 2023.3
 * Cuda 12.3
 * Python 3.11
 * RISC-V GNU Compiler Toolchain
@@ -28,7 +29,6 @@ It is implemented in TensorFlow, C/C++ and Cuda. To evaluate the potential appli
 * **data/** - It is the directory that contains, as .npy files, the weights for each network layer and also the data used for tests.
 * **profiling/** - Contains the results from Valgrind/Cachegrind (C codes) and NVIDIA Nsight Systems (Cuda)
 * **src/** - Contains the CNN code in C/C++ and Python (TensorFlow). It is also adapted to run on GPU through CUDA extension and on the AIRISC through their proprietery extensions. Moreover, in the directory there are also the notebooks used for data analysis.
-* **src/HDL** - In this directory there is the HDL models from Vitis Model Composer to implement in-hardware the phonocardiogram signal pre-processing.
 
 ## Data generation
 To run the network and make inference, layer weights and also data are needed to be extracted from the .npy files.
@@ -48,10 +48,21 @@ To execute the python code, just run the cells in the notebooks.
 ## Results
 :dart: All the results obtained from the tests are explained in the following article: [Acceleration of a CNN-based Heart Sound Segmenter: Implementation on Different Platforms Targeting a Wearable Device](https://doi.org/10.1109/DSD60849.2023.00049)
 
+### Citation
+```bibtex
+@INPROCEEDINGS{10456824,
+author={Ragusa, Domenico and Rodriguez-Almeida, Antonio J. and Nolting,     Stephan and Torti, Emanuele and Fabelo, Himar and Hoyer, Ingo and Utz, Alexander and Callico, Gustavo M. and Leporati, Francesco},
+booktitle={2023 26th Euromicro Conference on Digital System Design (DSD)}, 
+title={Acceleration of a CNN-based Heart Sound Segmenter: Implementation on Different Platforms Targeting a Wearable Device}, 
+year={2023},
+pages={294-301},
+doi={10.1109/DSD60849.2023.00049}
+}
+```
+
 ## Notes
 1. The network for the RISC-V processor makes use of quantization. It is possible to choose the format to use (uniform quantization) in each layer via `#define FXP` in the `segmenter.h` file. Adapting accordingly the data and weigths format when they are generated through the `src/utils/data_generation/` files.
-2. The AIRISC core was implemented on a Nexys4 DDR and on a Nexys Video using the files in the [AIRISC Core Complex](https://github.com/domenico-rgs/airisc_core_complex) forked repository
-3. The AIRISC AI extension and accelerators used were provided under a less permissive license by the Fraunhofer IMS.
+2. The AIRISC core was implemented on a Nexys4 DDR. AIRISC AI extension and accelerators used were provided under a less permissive license by the Fraunhofer IMS.
 
 :warning: WARNING: code using the DOUBLE data type has not been tested.
 
